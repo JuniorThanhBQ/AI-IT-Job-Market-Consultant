@@ -1,0 +1,62 @@
+name: Staging branch deployment workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - staging
+  pull_request:
+    branches:
+      - staging
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+concurrency:
+  group: deploy-staging-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+  pull-requests: read
+
+jobs:
+  ci-pipeline:
+    name: Run CI Pipeline
+    uses: ./.github/workflows/full-ci-commit-workflow.yml
+
+  test-staging:
+    name: Test Docker Build and Run
+    needs: ci-pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2
+
+      - name: Create Environment Config
+        run: bash scripts/create_staging_env.sh
+
+      - name: Build Docker Stack
+        run: docker compose build
+
+      - name: Start Docker Stack
+        run: docker compose up -d
+
+      - name: Verify Container Health
+        run: bash scripts/verify_container_health.sh
+
+      - name: Stop Docker Stack
+        if: always()
+        run: docker compose down -v

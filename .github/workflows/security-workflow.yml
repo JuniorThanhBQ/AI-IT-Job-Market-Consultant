@@ -1,0 +1,204 @@
+name: Security Workflow
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_call:
+  workflow_dispatch:
+
+concurrency:
+  group: security-pipeline-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  secret-scan:
+    name: Secret Scanning
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_SUMMARY: true
+
+  bandit-scan:
+    name: Bandit (Backend)
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57
+        with:
+          enable-cache: true
+          version: "latest"
+
+      - name: Run Bandit
+        run: |
+          # Run Bandit directly to console and fail on findings
+          uvx bandit -r backend -ll -ii --exclude '**/tests/**,**/.venv/**,**/migrations/**'
+
+          # (Commented out for future public repository use)
+          # uvx --with "bandit[sarif]" bandit -r backend \
+          #   -f sarif -o bandit-results.sarif \
+          #   -ll -ii \
+          #   --exclude '**/tests/**,**/.venv/**,**/migrations/**' || true
+
+      # (Commented out for future public repository use)
+      # - name: Upload SARIF
+      #   if: always()
+      #   uses: github/codeql-action/upload-sarif@54f647b7e1bb85c95cddabcd46b0c578ec92bc1a
+      #   with:
+      #     sarif_file: bandit-results.sarif
+      #     category: bandit
+
+  eslint-security:
+    name: ESLint Security (Frontend)
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install SARIF formatter
+        run: npm install --no-save @microsoft/eslint-formatter-sarif
+
+      - name: Run ESLint security scan
+        run: |
+          # Run ESLint directly to console and fail on findings
+          npx eslint .
+
+          # (Commented out for future public repository use)
+          # npx eslint . \
+          #   --format @microsoft/eslint-formatter-sarif \
+          #   --output-file eslint-results.sarif || true
+
+      # (Commented out for future public repository use)
+      # - name: Upload SARIF result
+      #   if: steps.eslint-scan.outputs.sarif-created == 'true'
+      #   uses: github/codeql-action/upload-sarif@54f647b7e1bb85c95cddabcd46b0c578ec92bc1a
+      #   with:
+      #     sarif_file: frontend/eslint-results.sarif
+      #     category: eslint-security
+
+  semgrep-scan:
+    name: Semgrep full-repo scan
+    needs: [bandit-scan, eslint-security]
+    permissions:
+      contents: read
+      security-events: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: semgrep/semgrep:1.168.0
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+
+      - name: Run Semgrep
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        run: |
+          # Run Semgrep with console output and fail on findings
+          semgrep scan \
+            --config p/security-audit \
+            --config p/secrets \
+            --config p/owasp-top-ten \
+            --config p/python \
+            --config p/javascript \
+            --config p/typescript \
+            --error \
+            --metrics=off
+
+          # (Commented out for future public repository use)
+          # semgrep scan \
+          #   --config p/security-audit \
+          #   --config p/secrets \
+          #   --config p/owasp-top-ten \
+          #   --config p/python \
+          #   --config p/javascript \
+          #   --config p/typescript \
+          #   --sarif --output semgrep.sarif \
+          #   --error \
+          #   --metrics=off || true
+
+  security-containers:
+    name: Filesystem Security Scan
+    needs: semgrep-scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 1
+
+      - name: Detect Dockerfiles
+        id: detect-dockerfiles
+        run: bash scripts/security/detect-dockerfiles.sh
+
+      # (Commented out for future public repository use)
+      # - name: Run Trivy vulnerability scanner (SARIF generator)
+      #   uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+      #   with:
+      #     scan-type: 'fs'
+      #     scan-ref: '.'
+      #     scanners: 'vuln,secret,misconfig'
+      #     severity: 'HIGH,CRITICAL'
+      #     format: 'sarif'
+      #     output: 'trivy-results.sarif'
+      #     exit-code: '0'
+
+      # - name: Upload Trivy SARIF Report to GitHub Code Scanning
+      #   uses: github/codeql-action/upload-sarif@54f647b7e1bb85c95cddabcd46b0c578ec92bc1a
+      #   with:
+      #     sarif_file: 'trivy-results.sarif'
+      #     category: 'trivy-security-scan'
+
+      - name: Enforce Trivy Security Gate
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          scanners: 'vuln,secret,misconfig'
+          severity: 'HIGH,CRITICAL'
+          format: 'table'
+          exit-code: '1'
