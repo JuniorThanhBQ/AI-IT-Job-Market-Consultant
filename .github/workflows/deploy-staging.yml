@@ -4,7 +4,14 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'release/**'
+      - staging
+  pull_request:
+    branches:
+      - staging
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 concurrency:
   group: deploy-staging-${{ github.workflow }}-${{ github.ref }}
