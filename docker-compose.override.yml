@@ -1,0 +1,55 @@
+services:
+  backend:
+    restart: "no"
+    ports:
+      - "8081:8000"
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    volumes:
+      - ./backend:/app/backend
+      - ./database:/app/backend/database
+
+  backend-init:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    volumes:
+      - ./backend:/app/backend
+      - ./database:/app/backend/database
+      - ./database/alembic.ini:/app/backend/alembic.ini
+
+  frontend:
+    restart: "no"
+    ports:
+      - "3000:3000"
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        - NEXTJS_API_URL=https://api.${DOMAIN?Variable not set}
+        - NODE_ENV=production
+    volumes:
+      - ./frontend:/app/frontend
+
+  db:
+    restart: unless-stopped
+
+  adminer:
+    restart: "no"
+    image: adminer:5.4.2-standalone@sha256:983261ecc40a4aaf11e25aeda8ef821f5a43a9f024b3967c81cbcc0e6ce43ba3
+    ports:
+      - "8082:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    environment:
+      - ADMINER_DESIGN=pepa-linha-dark
+    networks:
+      - backend
