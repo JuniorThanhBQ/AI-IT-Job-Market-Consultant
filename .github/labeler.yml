@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://json.schemastore.org/pull-request-labeler-5.json
+changed-files-labels-limit: 3 # Incorrect type. Expected "array" ===> False positive
+
+"Type: Documentation":
+  - all:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "**/*.md"
+              - "docs/**"
+          - all-globs-to-all-files:
+              - "!frontend/**"
+              - "!backend/**"
+              - "!.github/**"
+              - "!scripts/**"
+
+"Type: Maintenance":
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+          - "scripts/**"
+          - ".gitignore"
+          - ".pre-commit-config.yaml"
+          - ".editorconfig"
+          - ".gitattributes"
+          - ".github/labeler.yml"
+          - ".github/dependabot.yml"
+          - ".github/workflows/**"
+
+"Type: Enhancement":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "frontend/**"
+          - "backend/**"
+          - "src/**"
+          - "app/**"
+          - "packages/**"
+          - "libs/**"
+          - "components/**"
+          - "api/**"
+          - "docker-compose*.yml"
+          - "**/Dockerfile"

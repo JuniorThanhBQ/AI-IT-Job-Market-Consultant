@@ -1,0 +1,27 @@
+name: Dev branch deployment workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+concurrency:
+  group: deploy-dev-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  ci-pipeline:
+    name: Run CI Pipeline
+    uses: ./.github/workflows/full-ci-commit-workflow.yml
