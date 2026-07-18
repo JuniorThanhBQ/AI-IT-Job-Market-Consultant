@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# AI-IT-Job-Market-Consultant - Frontend
 
-## Getting Started
+This is the user-facing web application for the **AI IT Job Market Consultant (AIJMC)** platform. It provides interactive dashboards, job search interfaces, career analysis charts, and a career consultation chatbot.
 
-First, run the development server:
+---
+
+## I. Architectural Decisions & Tech Stack
+
+Following the system's Architecture Decision Records (ADRs):
+*   **Core Framework:** **Next.js (React App Router)** (ADR-06) written in type-safe **TypeScript**.
+*   **Styling & Components:** Styled with **Tailwind CSS** and modular, accessible UI components from **Shadcn UI**.
+*   **Web Server (Production):** Proxy-passed through **Nginx** (ADR-01) with hardened security protocols.
+    *   H2C smuggling vulnerabilities are mitigated by disabling empty protocol upgrades.
+    *   Host header injection risks are prevented by securing the Nginx Host forwarding scope.
+*   **Linting & Validation:** Configured with ESLint and automatic validation gates in our GitHub Actions pipeline (ADR-04) to block syntax errors and formatting discrepancies before deployment.
+
+---
+
+## II. Development Workflow
+
+### 1. Local Setup & Execution
+Ensure you have Node.js (v20+) installed. Inside the `frontend/` directory:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Install dependencies
+$ npm ci
+
+# Run development server
+$ npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser to inspect the application. The dev server supports hot module replacement (HMR).
+
+### 2. Building for Production
+Verify that the production build compiles successfully:
+
+```bash
+# Build the application
+$ npm run build
+
+# Start the standalone Node.js production server
+$ npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Code Linting & Formatting
+Run ESLint to inspect quality warnings:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+$ npm run lint
+```

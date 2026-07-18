@@ -15,5 +15,3 @@ This document lists the external actions called in workflows at [.github/workflo
 | `github/actions/checkout` | actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 | Checkout github repository | Almost used in all files |
 | `github/actions/setup-python` | actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 |Setup python for git actions | Almost used in all files |
 | `github/actions/setup-node` | actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af |Setup node for git actions | Almost used in all files |
-
-> Note: Actions such as `actions/checkout`, `actions/setup-python`, `actions/setup-node`, and `actions/upload-artifact` are official GitHub actions and are therefore not listed here.

@@ -1,8 +1,8 @@
-# Sprint 1 Report
+# Stage 2 Report
 
-**Week:** 1 - 2 (06/07/2026 - 12/07/2026)
-**Project:** Vietnamese-Software-Engineer-JD-Insights
-**Sprint master:** Van Trung Thanh
+**Week:** 4 - 5 (26/07/2026 - 01/08/2026)
+**Project:** AI-IT-Job-Market-Consultant
+**Project owner:** Van Trung Thanh
 
 ---
 
@@ -19,12 +19,12 @@ Not yet updated
 
 ---
 
-## 3. Plan for the next sprint
+## 3. Plan for the next stage
 Not yet updated
 
 ---
 
-## 4. Sprint evaluation and conclusion
+## 4. Stage evaluation and conclusion
 Not yet updated
 
 ---

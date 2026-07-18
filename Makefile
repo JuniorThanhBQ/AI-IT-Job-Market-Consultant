@@ -13,7 +13,7 @@ help:
 	@echo "  make prod-app-build - Build docker in production mode"
 	@echo "  make app-check 	- Including lint tests for the frontend and backend"
 	@echo "  make clean         - Cleaning unused temporary files (not include node_modules and .venv)"
-	@echo "  make full-clean         - Cleaning almost all unused temporary files"
+	@echo "  make full-clean    - Cleaning almost all unused temporary files"
 
 install:
 	uv sync --all-packages
