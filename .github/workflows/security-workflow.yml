@@ -19,6 +19,7 @@ jobs:
     name: Secret Scanning
     permissions:
       contents: read
+      pull-requests: read
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -194,7 +195,7 @@ jobs:
 
       # (Commented out for future public repository use)
       # - name: Run Trivy vulnerability scanner (SARIF generator)
-      #   uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.28.0
+      #   uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
       #   with:
       #     scan-type: 'fs'
       #     scan-ref: '.'
@@ -211,7 +212,7 @@ jobs:
       #     category: 'trivy-security-scan'
 
       - name: Enforce Trivy Security Gate
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.28.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
         with:
           scan-type: 'fs'
           scan-ref: '.'
