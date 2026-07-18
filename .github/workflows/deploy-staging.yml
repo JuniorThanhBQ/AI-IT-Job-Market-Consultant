@@ -13,6 +13,8 @@ concurrency:
 permissions:
   actions: read
   contents: read
+  security-events: write
+  pull-requests: read
 
 jobs:
   ci-pipeline:
