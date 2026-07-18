@@ -1,0 +1,18 @@
+name: "CodeQL config - backend/frontend monorepo"
+
+paths:
+  - backend
+  - frontend
+
+paths-ignore:
+  - '**/node_modules/**'
+  - '**/dist/**'
+  - '**/.next/**'
+  - '**/build/**'
+  - '**/*.min.js'
+  - '**/tests/**'
+  - '**/test/**'
+  - '**/__pycache__/**'
+  - '**/migrations/**'
+  - '**/.venv/**'
+  - '**/venv/**'
