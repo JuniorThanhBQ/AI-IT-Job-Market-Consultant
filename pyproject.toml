@@ -14,4 +14,5 @@ dev = [
 [tool.uv.workspace]
 members = [
     "backend",
+    "agents",
 ]

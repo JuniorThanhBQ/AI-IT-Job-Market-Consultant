@@ -240,3 +240,8 @@ pnpm-debug.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+AGENTS.md
+.agents/
+
+agents/analysis_agent/adaptive_crawler/crawl_website_information/

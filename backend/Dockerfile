@@ -22,7 +22,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
         --no-editable
 
 COPY backend/scripts backend/scripts
-COPY backend/README.md backend/pyproject.toml ./database/alembic.ini backend/
+COPY backend/README.md backend/pyproject.toml backend/
 COPY backend/app backend/app
 COPY ./database backend/database
 
@@ -47,6 +47,7 @@ RUN chown -R app:app /app
 
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
 COPY --from=builder --chown=app:app /app/backend /app/backend
+COPY --from=builder --chown=app:app /app/backend/database /app/backend/database
 
 USER app
 

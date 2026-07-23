@@ -26,10 +26,10 @@ dev-frontend:
 	npm --prefix frontend run dev
 
 db-migrate:
-	uv run --project backend alembic upgrade head
+	uv run --project backend alembic -c database/alembic.ini upgrade head
 
 db-migration:
-	uv run --project backend alembic revision --autogenerate -m "$(MSG)"
+	uv run --project backend alembic -c database/alembic.ini revision --autogenerate -m "$(MSG)"
 
 dev-app-build:
 	docker compose up -d --build

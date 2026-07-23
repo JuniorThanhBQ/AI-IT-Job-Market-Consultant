@@ -7,16 +7,11 @@ from sqlalchemy import pool
 
 from alembic import context
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
 config = context.config
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Add backend directory to sys.path so we can import app
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
 
 from sqlmodel import SQLModel  # noqa: E402
@@ -25,13 +20,7 @@ import app.models  # noqa: F401, E402
 
 target_metadata = SQLModel.metadata
 
-# Set database URL dynamically
 config.set_main_option("sqlalchemy.url", str(settings.SQLALCHEMY_DATABASE_URI))
-
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
 
 
 def run_migrations_offline() -> None:

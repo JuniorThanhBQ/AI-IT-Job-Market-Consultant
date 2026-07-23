@@ -1,5 +1,6 @@
 import secrets
 import warnings
+from pathlib import Path
 from typing import Annotated, Any, Literal, Self
 
 from pydantic import (
@@ -27,7 +28,7 @@ class Settings(BaseSettings):
         env_file=(".env", "../.env"),
         env_ignore_empty=True,
         extra="ignore",
-        secrets_dir="/run/secrets",
+        secrets_dir="/run/secrets" if Path("/run/secrets").is_dir() else None,
     )
     API_V1_STR: str = "/api/v1"
     SECRET_KEY: str = secrets.token_urlsafe(32)
@@ -53,6 +54,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str = ""
     POSTGRES_DB: str = ""
+    GEMINI_API_KEY: list[str] | str = []
 
     @computed_field  # type: ignore[prop-decorator]
     @property

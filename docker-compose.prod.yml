@@ -37,3 +37,33 @@ services:
             memory: 2G
           reservations:
             memory: 512M
+
+  rabbitmq:
+    restart: always
+    deploy:
+        resources:
+          limits:
+            cpus: '0.5'
+            memory: 512M
+          reservations:
+            memory: 256M
+
+  celery-worker:
+    restart: always
+    deploy:
+        resources:
+          limits:
+            cpus: '1.5'
+            memory: 2G
+          reservations:
+            memory: 512M
+
+  celery-beat:
+    restart: always
+    deploy:
+        resources:
+          limits:
+            cpus: '0.5'
+            memory: 512M
+          reservations:
+            memory: 128M
