@@ -245,3 +245,5 @@ AGENTS.md
 .agents/
 
 agents/analysis_agent/adaptive_crawler/crawl_website_information/
+
+test-results/

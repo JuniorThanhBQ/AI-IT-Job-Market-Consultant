@@ -26,9 +26,12 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "coverage[toml]>=7.6.0",
     "mypy>=2.3.0",
     "pytest>=9.1.1",
+    "pytest-cov>=6.0.0",
     "ruff>=0.15.21",
+    "typos>=1.48.0",
 ]
 
 [build-system]
@@ -38,6 +41,7 @@ build-backend = "hatchling.build"
 [tool.mypy]
 strict = true
 exclude = ["venv", ".venv", "alembic"]
+
 
 [tool.ruff]
 target-version = "py314"
@@ -86,3 +90,8 @@ packages = ["app"]
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+filterwarnings = [
+    "ignore::ResourceWarning",
+    "ignore:The value of FIRST_SUPERUSER_PASSWORD:UserWarning",
+    "ignore:The value of POSTGRES_PASSWORD:UserWarning",
+]

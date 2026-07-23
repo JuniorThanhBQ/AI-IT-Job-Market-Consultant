@@ -2,8 +2,7 @@ import sys
 from logging.config import fileConfig
 from pathlib import Path
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool, text
 
 from alembic import context
 
@@ -16,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
 
 from sqlmodel import SQLModel  # noqa: E402
 from app.core.config import settings  # noqa: E402
-import app.models  # noqa: F401, E402
+import app.db.base  # noqa: F401, E402
 
 target_metadata = SQLModel.metadata
 
@@ -61,6 +60,8 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
+        connection.execute(text("CREATE EXTENSION IF NOT EXISTS vector;"))
+        connection.commit()
         context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
