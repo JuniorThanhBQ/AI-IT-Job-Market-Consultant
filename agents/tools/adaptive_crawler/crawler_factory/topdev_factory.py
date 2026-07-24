@@ -1,7 +1,5 @@
-import asyncio
 import json
 import logging
-import random
 from urllib.parse import urljoin, urlparse
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -13,7 +11,6 @@ from app.modules.company.repository import CompanyRepository
 from app.modules.company.models import Company, CompanyBenefit
 from ..crawler_adapter import JobAdapter
 from .base_factory import BaseCrawlerFactory
-from ..config_crawler import MIN_DELAY_SECONDS, MAX_DELAY_SECONDS
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +20,7 @@ class TopDevCrawlerFactory(BaseCrawlerFactory):
 
         async def handler(context: AdaptivePlaywrightCrawlingContext) -> None:
             url = context.request.url
-            await asyncio.sleep(random.uniform(MIN_DELAY_SECONDS, MAX_DELAY_SECONDS))
+            await self.apply_delay()
             context.log.info(f"Crawling TopDev: {url} (label: {context.request.label})")
 
             html_content = ""

@@ -137,7 +137,7 @@ services:
       context: .
       dockerfile: agents/Dockerfile
     container_name: app-celery-worker
-    command: ["celery", "-A", "agents.celery_app", "worker", "--loglevel=info", "--concurrency=1"]
+    command: ["/app/agents/tools/adaptive_crawler/scripts/start_worker.sh"]
     networks:
       - backend
       - frontend
@@ -148,6 +148,9 @@ services:
       rabbitmq:
         condition: service_healthy
         restart: true
+      redis:
+        condition: service_healthy
+        restart: true
     env_file:
       - .env
     environment:
@@ -158,6 +161,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672//
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
     secrets:
       - postgres_password
       - secret_key
@@ -168,7 +172,7 @@ services:
       context: .
       dockerfile: agents/Dockerfile
     container_name: app-celery-beat
-    command: ["celery", "-A", "agents.celery_app", "beat", "--loglevel=info"]
+    command: ["celery", "-A", "agents.celery_app", "beat", "--loglevel=info", "-s", "/tmp/celerybeat-schedule"]
     networks:
       - backend
     depends_on:
@@ -176,6 +180,9 @@ services:
         condition: service_healthy
         restart: true
       rabbitmq:
+        condition: service_healthy
+        restart: true
+      redis:
         condition: service_healthy
         restart: true
     env_file:
@@ -188,12 +195,28 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672//
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
     secrets:
       - postgres_password
       - secret_key
 
+  redis:
+    image: redis:8.8.0-alpine@sha256:9d317178eceac8454a2284a9e6df2466b93c745529947f0cd42a0fa9609d7005
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+      start_period: 10s
+    networks:
+      - backend
+
+    volumes:
+      - redis-data:/data
+
 volumes:
   app-db-data:
+  redis-data:
 
 networks:
   frontend:

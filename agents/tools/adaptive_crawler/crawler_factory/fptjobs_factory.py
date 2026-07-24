@@ -1,7 +1,5 @@
-import asyncio
 import json
 import logging
-import random
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from crawlee import Request
@@ -10,7 +8,6 @@ from crawlee.crawlers import AdaptivePlaywrightCrawlingContext
 from app.modules.job.repository import JobRepository
 from ..crawler_adapter import JobAdapter
 from .base_factory import BaseCrawlerFactory
-from ..config_crawler import MIN_DELAY_SECONDS, MAX_DELAY_SECONDS
 
 logger = logging.getLogger(__name__)
 
@@ -127,7 +124,7 @@ class FPTJobsCrawlerFactory(BaseCrawlerFactory):
 
         async def handler(context: AdaptivePlaywrightCrawlingContext) -> None:
             url = context.request.url
-            await asyncio.sleep(random.uniform(MIN_DELAY_SECONDS, MAX_DELAY_SECONDS))
+            await self.apply_delay()
             context.log.info(
                 f"Crawling FPTJobs: {url} (label: {context.request.label})"
             )

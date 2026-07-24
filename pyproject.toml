@@ -16,3 +16,6 @@ members = [
     "backend",
     "agents",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

@@ -1,4 +1,4 @@
-.PHONY: help dev-backend dev-frontend db-migrate db-migration db-migrate-docker db-migration-docker install dev-app-build dev-app-down prod-app-build lint docker-lint test app-check pre-commit-check generate-secret clean full-clean
+.PHONY: help dev-backend dev-frontend db-migrate db-migration db-migrate-docker db-migration-docker run-crawler-docker install dev-app-build dev-app-down prod-app-build lint docker-lint test app-check pre-commit-check generate-secret clean full-clean
 .DEFAULT_GOAL := help
 
 help:
@@ -9,6 +9,7 @@ help:
 	@echo "  make db-migration         - Generate a new database migration locally (requires MSG=\"...\")"
 	@echo "  make db-migrate-docker    - Run database migrations in docker backend container"
 	@echo "  make db-migration-docker  - Generate a new database migration in docker backend container (requires MSG=\"...\")"
+	@echo "  make run-crawler-docker   - Run Celery crawler task manually in Docker container"
 	@echo "  make install              - Install dependencies for both backend and frontend"
 	@echo "  make dev-app-build        - Build docker in development mode"
 	@echo "  make dev-app-down         - Down all Docker containers in development mode (warning: includes volumes)."
@@ -43,6 +44,9 @@ db-migrate-docker:
 db-migration-docker:
 	docker compose exec backend alembic -c database/alembic.ini revision --autogenerate -m "$(MSG)"
 
+run-crawler-docker:
+	docker compose exec celery-worker celery -A agents.celery_app call agents.celery_app.run_crawler_task
+
 dev-app-build:
 	docker compose up -d --build
 
@@ -71,6 +75,7 @@ lint:
 
 test:
 	uv run --project backend pytest --cov=app --cov-report=term-missing
+	uv run --project backend pytest agents/tools/adaptive_crawler/tests --cov=agents/tools/adaptive_crawler --cov-report=term-missing
 	npm --prefix frontend run test:e2e
 
 app-check: lint test

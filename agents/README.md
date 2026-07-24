@@ -46,3 +46,9 @@ graph TD
 ### 4. Recommendation Agent (`worker_3.py`)
 *   Performs hybrid relational and semantic vector similarity search via `pgvector` in PostgreSQL to match the candidate's profile against scraped job postings.
 *   Sends matched records to the Gemini API, generating customized career advice, roadmap suggestions, and job recommendations.
+
+Note:
+3. Default "prefork" pool is a known bad fit for Playwright
+
+Celery's default pool is prefork (fork-based multiprocessing). Playwright objects cannot be pickled and passed to children, so a browser instance must be initialized inside the task or via the worker_process_init signal to create a per-process browser instance rather than relying on default fork behavior. Left as-is, this risks broken/duplicated browser handles across forked workers, hangs, or crashes under real crawl load.
+Fix: either explicitly set --pool=solo or --pool=threads in the CMD (the solo pool executes tasks in the main process/thread, which aligns with Playwright's blocking sync API — scale by running multiple worker containers instead of multiple forked processes), or if you need prefork's parallelism, initialize/tear down the browser per worker process explicitly via Celery's worker_process_init/worker_process_shutdown signals instead of at import time. Note: switching away from prefork silently disables some prefork-only features like soft_timeout and max_tasks_per_child, so factor that into the choice.

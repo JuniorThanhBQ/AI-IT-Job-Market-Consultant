@@ -44,24 +44,26 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
+RUN groupadd -r app && useradd -r -g app app && chown app:app /app
+
 # hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
+    tini \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /app/.venv /app/.venv
-COPY --from=builder /app/backend /app/backend
-COPY --from=builder /app/agents /app/agents
+COPY --from=builder --chown=app:app /app/.venv /app/.venv
+COPY --from=builder --chown=app:app /app/backend /app/backend
+COPY --from=builder --chown=app:app /app/agents /app/agents
 
 RUN python -m playwright install chromium && \
     python -m playwright install-deps chromium && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    chown -R app:app /app/.cache
 
-RUN groupadd -r app && useradd -r -g app app
-RUN chown -R app:app /app
+RUN chmod +x /app/agents/tools/adaptive_crawler/scripts/start_worker.sh
 
 USER app
 
-WORKDIR /app
-
-CMD ["celery", "-A", "agents.celery_app", "worker", "--loglevel=info"]
+ENTRYPOINT ["tini", "--"]
+CMD ["/app/agents/tools/adaptive_crawler/scripts/start_worker.sh"]

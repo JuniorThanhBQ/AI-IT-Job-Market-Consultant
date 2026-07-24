@@ -67,3 +67,13 @@ services:
             memory: 512M
           reservations:
             memory: 128M
+
+  redis:
+    restart: always
+    deploy:
+        resources:
+          limits:
+            cpus: '0.5'
+            memory: 512M
+          reservations:
+            memory: 256M

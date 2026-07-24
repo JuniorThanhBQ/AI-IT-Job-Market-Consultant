@@ -76,3 +76,6 @@ services:
     volumes:
       - ./backend:/app/backend
       - ./agents:/app/agents
+
+  redis:
+    restart: "no"

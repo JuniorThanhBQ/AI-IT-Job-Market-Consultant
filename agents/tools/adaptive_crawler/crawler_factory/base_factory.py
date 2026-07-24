@@ -1,20 +1,26 @@
 from abc import ABC, abstractmethod
+import asyncio
 from datetime import timedelta
+import random
+
 from crawlee import ConcurrencySettings
-from crawlee.configuration import Configuration
 from crawlee.crawlers import AdaptivePlaywrightCrawler
 from crawlee.events import LocalEventManager
-from crawlee.storage_clients import FileSystemStorageClient
+from crawlee.storage_clients import RedisStorageClient
+from crawlee.storages import RequestQueue
 
-from ..helpers import CustomRenderingTypePredictor
 from ..config_crawler import (
-    MAX_REQUESTS_PER_CRAWL,
-    MAX_REQUEST_RETRIES,
-    MAX_CONCURRENCY,
-    REQUEST_HANDLER_TIMEOUT_SECONDS,
     BROWSER_TYPE,
     HEADLESS,
+    MAX_CONCURRENCY,
+    MAX_DELAY_SECONDS,
+    MAX_REQUEST_RETRIES,
+    MAX_REQUESTS_PER_CRAWL,
+    MIN_DELAY_SECONDS,
+    REDIS_URL,
+    REQUEST_HANDLER_TIMEOUT_SECONDS,
 )
+from ..helpers import CustomRenderingTypePredictor, generate_session_fingerprint
 
 
 class BaseCrawlerFactory(ABC):
@@ -22,23 +28,15 @@ class BaseCrawlerFactory(ABC):
     def get_handler(self, session_factory):
         pass
 
+    async def apply_delay(self) -> None:
+        await asyncio.sleep(random.uniform(MIN_DELAY_SECONDS, MAX_DELAY_SECONDS))
+
     def get_browser_context_options(self) -> dict:
-        return {
-            "user_agent": (
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/122.0.0.0 Safari/537.36"
-            ),
-            "locale": "vi-VN",
-            "extra_http_headers": {
-                "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
-            },
-            "viewport": {"width": 1280, "height": 720},
-        }
+        return generate_session_fingerprint()
 
     async def handle_error(self, context, error) -> None:
         context.log.warning(
-            f"[{self.__class__.__name__}] Request failed (will retry): "
+            f"[{self.__class__.__name__}] Request failed (retry): "
             f"{context.request.url} — {error}"
         )
 
@@ -48,14 +46,24 @@ class BaseCrawlerFactory(ABC):
             f"{context.request.url} — {error}"
         )
 
-    def create_crawler(
-        self, session_factory, storage_dir: str | None = None
+    async def create_crawler(
+        self,
+        session_factory,
+        storage_client: RedisStorageClient | None = None,
+        event_manager: LocalEventManager | None = None,
     ) -> AdaptivePlaywrightCrawler:
         predictor = CustomRenderingTypePredictor()
+        site_name = self.__class__.__name__.lower().replace("crawlerfactory", "")
 
-        config = Configuration(storage_dir=storage_dir) if storage_dir else None
-        storage_client = FileSystemStorageClient()
-        event_manager = LocalEventManager.from_config(config)
+        if storage_client is None:
+            storage_client = RedisStorageClient(connection_string=REDIS_URL)
+
+        if event_manager is None:
+            event_manager = LocalEventManager.from_config()
+
+        request_queue = await RequestQueue.open(
+            name=f"rq-{site_name}", storage_client=storage_client
+        )
 
         crawler = AdaptivePlaywrightCrawler.with_beautifulsoup_static_parser(
             max_requests_per_crawl=MAX_REQUESTS_PER_CRAWL,
@@ -65,6 +73,7 @@ class BaseCrawlerFactory(ABC):
             ),
             request_handler_timeout=timedelta(seconds=REQUEST_HANDLER_TIMEOUT_SECONDS),
             rendering_type_predictor=predictor,
+            request_manager=request_queue,
             playwright_crawler_specific_kwargs={
                 "browser_type": BROWSER_TYPE,
                 "headless": HEADLESS,
@@ -78,7 +87,6 @@ class BaseCrawlerFactory(ABC):
                 },
                 "browser_new_context_options": self.get_browser_context_options(),
             },
-            configuration=config,
             storage_client=storage_client,
             event_manager=event_manager,
         )

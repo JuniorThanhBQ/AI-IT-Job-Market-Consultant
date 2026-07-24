@@ -1,7 +1,41 @@
 from typing import Dict, Literal
 from urllib.parse import urlparse
+import redis.asyncio as redis
 from crawlee import Request
-from crawlee.crawlers import RenderingTypePredictor, RenderingTypePrediction
+from crawlee.crawlers import RenderingTypePrediction, RenderingTypePredictor
+from crawlee.fingerprint_suite import (
+    DefaultFingerprintGenerator,
+    HeaderGeneratorOptions,
+)
+
+_fingerprint_generator = DefaultFingerprintGenerator(
+    header_options=HeaderGeneratorOptions(locales=["vi-VN", "en-US"])
+)
+
+
+def generate_session_fingerprint() -> dict:
+    fp = _fingerprint_generator.generate()
+
+    return {
+        "user_agent": fp.navigator.userAgent,
+        "viewport": {
+            "width": fp.screen.width,
+            "height": fp.screen.height,
+        },
+        "locale": "vi-VN",
+        "timezone_id": "Asia/Ho_Chi_Minh",
+        "extra_http_headers": fp.headers,
+    }
+
+
+async def check_redis_connection(redis_url: str) -> None:
+    client = redis.from_url(redis_url)
+    try:
+        await client.ping()
+    except Exception as e:
+        raise RuntimeError(f"Cannot connect to Redis at {redis_url}: {e}") from e
+    finally:
+        await client.aclose()
 
 
 class CustomRenderingTypePredictor(RenderingTypePredictor):
@@ -24,11 +58,11 @@ class CustomRenderingTypePredictor(RenderingTypePredictor):
             if domain == known_domain or domain.endswith("." + known_domain):
                 return RenderingTypePrediction(
                     rendering_type="client only" if is_dynamic else "static",
-                    detection_probability_recommendation=0.0,
+                    detection_probability_recommendation=0.2,
                 )
         return RenderingTypePrediction(
             rendering_type="static",
-            detection_probability_recommendation=0.0,
+            detection_probability_recommendation=0.5,
         )
 
     def store_result(

@@ -64,7 +64,32 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = ""
     POSTGRES_DB: str = "app"
+    RABBITMQ_SERVER: str = "rabbitmq"
+    RABBITMQ_PORT: int = 5672
+    RABBITMQ_USER: str = "guest"
+    RABBITMQ_PASSWORD: str = "guest"
+    CUSTOM_RABBITMQ_URL: str | None = None
+    REDIS_SERVER: str = "redis"
+    REDIS_PORT: int = 6379
+    CUSTOM_REDIS_URL: str | None = None
+    CELERY_WORKER_MAX_TASKS_PER_CHILD: int = 50
     GEMINI_API_KEY: list[str] | str = []
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def REDIS_URL(self) -> str:
+        if self.CUSTOM_REDIS_URL:
+            return self.CUSTOM_REDIS_URL
+        return f"redis://{self.REDIS_SERVER}:{self.REDIS_PORT}/0"
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def RABBITMQ_URL(self) -> str:
+        if self.CUSTOM_RABBITMQ_URL:
+            return self.CUSTOM_RABBITMQ_URL
+        password = self.RABBITMQ_PASSWORD or get_secret("rabbitmq_password", "guest")
+        user = self.RABBITMQ_USER or get_secret("rabbitmq_user", "guest")
+        return f"amqp://{user}:{password}@{self.RABBITMQ_SERVER}:{self.RABBITMQ_PORT}//"
 
     @computed_field  # type: ignore[prop-decorator]
     @property
@@ -80,6 +105,31 @@ class Settings(BaseSettings):
             port=self.POSTGRES_PORT,
             path=db,
         )
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def ASYNC_SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
+        password = self.POSTGRES_PASSWORD or get_secret("postgres_password")
+        user = self.POSTGRES_USER or get_secret("postgres_user", "postgres")
+        db = self.POSTGRES_DB or get_secret("postgres_db", "app")
+        return PostgresDsn.build(
+            scheme="postgresql+asyncpg",
+            username=user,
+            password=password,
+            host=self.POSTGRES_SERVER,
+            port=self.POSTGRES_PORT,
+            path=db,
+        )
+
+    CRAWLER_MAX_CONCURRENCY: int = 1
+    SITE_CRAWL_TIMEOUT_SECONDS: int = 300
+    CRAWLER_MAX_REQUESTS_PER_CRAWL: int = 300
+    CRAWLER_MAX_REQUEST_RETRIES: int = 2
+    CRAWLER_REQUEST_HANDLER_TIMEOUT_SECONDS: int = 120
+    CRAWLER_MIN_DELAY_SECONDS: float = 2.5
+    CRAWLER_MAX_DELAY_SECONDS: float = 5.0
+    CRAWLER_BROWSER_TYPE: str = "chromium"
+    CRAWLER_HEADLESS: bool = True
 
     SMTP_TLS: bool = True
     SMTP_SSL: bool = False
