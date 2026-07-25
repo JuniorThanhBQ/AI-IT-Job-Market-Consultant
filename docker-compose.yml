@@ -27,17 +27,14 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - SENTRY_DSN=${SENTRY_DSN}
-      - SECRET_KEY=
-      - POSTGRES_PASSWORD=
-      - FIRST_SUPERUSER_PASSWORD=
-      - SMTP_PASSWORD=
+      - PYTHONPATH=/app/backend
     secrets:
       - postgres_password
       - secret_key
       - first_superuser_password
       - smtp_password
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/openapi.json"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -66,17 +63,14 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - SENTRY_DSN=${SENTRY_DSN}
-      - SECRET_KEY=
-      - POSTGRES_PASSWORD=
-      - FIRST_SUPERUSER_PASSWORD=
-      - SMTP_PASSWORD=
+      - PYTHONPATH=/app/backend
     secrets:
       - postgres_password
       - secret_key
       - first_superuser_password
       - smtp_password
     command: >
-      sh -c "alembic upgrade head && python app/fixtures/initial_data.py"
+      sh -c "alembic -c database/alembic.ini upgrade head && python app/fixtures/initial_data.py"
 
   nginx:
     image: nginx:stable-alpine3.24-slim@sha256:ddde39c6e51f02fde7410c2e9c234cf2d0a4c7bdbbe176aeb37d8ad7ab4eb58c
@@ -84,8 +78,6 @@ services:
       - frontend
     ports:
       - "80:80"
-    volumes:
-      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       frontend:
         condition: service_healthy
@@ -125,8 +117,106 @@ services:
     secrets:
       - postgres_password
 
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: app-rabbitmq
+    networks:
+      - backend
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  celery-worker:
+    image: '${DOCKER_IMAGE_CELERY?Variable not set}:${TAG-latest}'
+    build:
+      context: .
+      dockerfile: agents/Dockerfile
+    container_name: app-celery-worker
+    command: ["/app/agents/tools/adaptive_crawler/scripts/start_worker.sh"]
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      rabbitmq:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app/backend:/app
+      - POSTGRES_SERVER=db
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672//
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
+    secrets:
+      - postgres_password
+      - secret_key
+
+  celery-beat:
+    image: '${DOCKER_IMAGE_CELERY?Variable not set}:${TAG-latest}'
+    build:
+      context: .
+      dockerfile: agents/Dockerfile
+    container_name: app-celery-beat
+    command: ["celery", "-A", "agents.celery_app", "beat", "--loglevel=info", "-s", "/tmp/celerybeat-schedule"]
+    networks:
+      - backend
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      rabbitmq:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app/backend:/app
+      - POSTGRES_SERVER=db
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672//
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
+    secrets:
+      - postgres_password
+      - secret_key
+
+  redis:
+    image: redis:8.8.0-alpine@sha256:9d317178eceac8454a2284a9e6df2466b93c745529947f0cd42a0fa9609d7005
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+      start_period: 10s
+    networks:
+      - backend
+
+    volumes:
+      - redis-data:/data
+
 volumes:
   app-db-data:
+  redis-data:
 
 networks:
   frontend:

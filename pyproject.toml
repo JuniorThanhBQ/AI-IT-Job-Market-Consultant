@@ -1,7 +1,7 @@
 [project]
 name = "ai-it-job-market-consultant"
 version = "0.1.0"
-description = "Welcome to my graduate project"
+description = "This project used uv to manage python package"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = []
@@ -14,4 +14,8 @@ dev = [
 [tool.uv.workspace]
 members = [
     "backend",
+    "agents",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

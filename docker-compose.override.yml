@@ -32,8 +32,14 @@ services:
     volumes:
       - ./frontend:/app/frontend
 
+  nginx:
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
   db:
     restart: unless-stopped
+    ports:
+      - "5432:5432"
 
   adminer:
     restart: "no"
@@ -53,3 +59,23 @@ services:
       - ADMINER_DESIGN=pepa-linha-dark
     networks:
       - backend
+      - frontend
+
+  rabbitmq:
+    restart: "no"
+
+  celery-worker:
+    restart: "no"
+    volumes:
+      - ./backend:/app/backend
+      - ./agents:/app/agents
+      - ./database:/app/backend/database
+
+  celery-beat:
+    restart: "no"
+    volumes:
+      - ./backend:/app/backend
+      - ./agents:/app/agents
+
+  redis:
+    restart: "no"

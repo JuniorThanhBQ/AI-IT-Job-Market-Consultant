@@ -1,0 +1,21 @@
+User-agent: *
+# Allow public assets and sitemap
+Allow: /
+Allow: /Content/
+Allow: /content/
+Allow: /Scripts/
+Allow: /scripts/
+Allow: /Public/
+Allow: /public/
+Allow: /sitemap.xml
+
+# Disallow internal/App data and framework files
+Disallow: /bin/
+Disallow: /App_Data/
+Disallow: /App_Start/
+Disallow: /Views/
+Disallow: /packages/
+Disallow: /Web.Inside/
+Disallow: /Inside/
+Disallow: /Web.config
+Sitemap: https://fptjobs.com/sitemap.xml

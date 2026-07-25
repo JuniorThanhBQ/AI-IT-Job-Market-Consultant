@@ -42,6 +42,7 @@ htmlcov/
 .nox/
 .coverage
 .coverage.*
+!/.coverage
 .cache
 nosetests.xml
 coverage.xml
@@ -240,3 +241,10 @@ pnpm-debug.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+AGENTS.md
+.agents/
+
+**/crawl_website_information/**/*.html
+
+test-results/

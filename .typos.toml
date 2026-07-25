@@ -1,0 +1,13 @@
+[files]
+extend-exclude = [
+    "database",
+]
+
+[default.extend-words]
+selectin = "selectin"
+FPT = "FPT"
+OT = "OT"
+ot = "ot"
+Tham = "Tham"
+tham = "tham"
+Nam = "Nam"

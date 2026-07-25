@@ -37,7 +37,7 @@ def send_email(
     html_content: str = "",
 ) -> None:
     assert settings.emails_enabled, "no provided configuration for email variables"
-    assert settings.EMAILS_FROM_EMAIL  # For type checker
+    assert settings.EMAILS_FROM_EMAIL
     message = emails.message.Message(
         subject=subject,
         html=html_content,

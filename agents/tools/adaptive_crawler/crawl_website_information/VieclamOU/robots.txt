@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /pdwfilebrowser/
+Disallow: /counter/*
+Sitemap: https://vieclam.ou.edu.vn/sitemap.xml
