@@ -57,6 +57,12 @@ class TestTextParser:
             == "Google"
         )
 
+    def test_resolve_company_name_from_title_split(self):
+        result = resolve_company_name(
+            None, "Software Engineer - Microsoft", None, "source"
+        )
+        assert result == "Microsoft"
+
     def test_resolve_company_name_from_url(self):
         result = resolve_company_name(
             None, "Software Engineer", "https://careers.microsoft.com/job", "source"

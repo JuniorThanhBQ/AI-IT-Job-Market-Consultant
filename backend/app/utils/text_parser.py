@@ -67,6 +67,25 @@ def list_to_paragraph(items: list[str]) -> str:
     return "\n".join(filter(None, items)) if items else ""
 
 
+def _parse_company_from_job_title(title_str: str) -> str | None:
+    match = re.search(
+        r"\bat\s+([^,\-\|\(\)]+)|^(.*?)\b(?:hiring|tuyển dụng|tuyển)\b",
+        title_str,
+        re.IGNORECASE,
+    )
+    if match:
+        candidate = (match.group(1) or match.group(2)).strip()
+        if candidate:
+            return candidate
+
+    parts = re.split(r"[\-\|\(\)]", title_str)
+    if len(parts) > 1:
+        candidate = parts[-1].strip()
+        if candidate and len(candidate) < 35:
+            return candidate
+    return None
+
+
 def resolve_company_name(
     scraped_name: str | None, job_title: str | None, job_url: str | None, source: str
 ) -> str:
@@ -81,22 +100,9 @@ def resolve_company_name(
 
     if job_title:
         title_str = clean_html_text(job_title)
-
-        match = re.search(
-            r"\bat\s+([^,\-\|\(\)]+)|^(.*?)\b(?:hiring|tuyển dụng|tuyển)\b",
-            title_str,
-            re.IGNORECASE,
-        )
-        if match:
-            candidate = (match.group(1) or match.group(2)).strip()
-            if candidate:
-                return candidate
-
-        parts = re.split(r"[\-\|\(\)]", title_str)
-        if len(parts) > 1:
-            candidate = parts[-1].strip()
-            if candidate and len(candidate) < 35:
-                return candidate
+        candidate = _parse_company_from_job_title(title_str)
+        if candidate:
+            return candidate
 
     if job_url:
         extracted = tldextract.extract(job_url)

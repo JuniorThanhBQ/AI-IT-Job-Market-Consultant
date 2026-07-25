@@ -1,12 +1,14 @@
 import json
 import logging
-import random
+import secrets
 
 import httpx
 
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_EMBEDDING_MODEL = "models/gemini-embedding-001"
 
 
 def get_gemini_api_key() -> str:
@@ -18,28 +20,28 @@ def get_gemini_api_key() -> str:
             try:
                 parsed_keys = json.loads(keys)
                 if isinstance(parsed_keys, list) and len(parsed_keys) > 0:
-                    return random.choice(parsed_keys)
+                    return secrets.choice(parsed_keys)
             except Exception:
                 pass
         return keys
     if isinstance(keys, list) and len(keys) > 0:
-        return random.choice(keys)
+        return secrets.choice(keys)
     return ""
 
 
 def _normalize_model_name(model_name: str) -> str:
     if not model_name:
-        return "models/gemini-embedding-001"
+        return DEFAULT_EMBEDDING_MODEL
     clean = model_name.strip()
     if clean.startswith("models/"):
         clean = clean[len("models/") :]
     if clean in ["embedding-001", "gemini-embedding-001"]:
-        return "models/gemini-embedding-001"
+        return DEFAULT_EMBEDDING_MODEL
     return f"models/{clean}"
 
 
 async def generate_embedding_async(
-    text: str, model_name: str = "models/gemini-embedding-001"
+    text: str, model_name: str = DEFAULT_EMBEDDING_MODEL
 ) -> list[float]:
     api_key = get_gemini_api_key()
     if not api_key:
@@ -67,15 +69,15 @@ async def generate_embedding_async(
                     f"Unexpected embedding size returned: {len(embedding)}. Expected 768."
                 )
                 return [0.0] * 768
-    except Exception as e:
-        logger.error(
-            f"Error calling Gemini Embedding API ({full_model_name}): {e}. Returning zero-vector fallback."
+    except Exception:
+        logger.exception(
+            f"Error calling Gemini Embedding API ({full_model_name}). Returning zero-vector fallback."
         )
         return [0.0] * 768
 
 
 def generate_embedding(
-    text: str, model_name: str = "models/gemini-embedding-001"
+    text: str, model_name: str = DEFAULT_EMBEDDING_MODEL
 ) -> list[float]:
     api_key = get_gemini_api_key()
     if not api_key:
@@ -102,8 +104,8 @@ def generate_embedding(
                 f"Unexpected embedding size returned: {len(embedding)}. Expected 768."
             )
             return [0.0] * 768
-    except Exception as e:
-        logger.error(
-            f"Error calling Gemini Embedding API ({full_model_name}): {e}. Returning zero-vector fallback."
+    except Exception:
+        logger.exception(
+            f"Error calling Gemini Embedding API ({full_model_name}). Returning zero-vector fallback."
         )
         return [0.0] * 768
