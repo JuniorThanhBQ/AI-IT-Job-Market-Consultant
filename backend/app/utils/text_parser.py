@@ -16,7 +16,9 @@ def clean_html_text(text: str) -> str:
         )
 
     text = text.replace("\xa0", " ")
-    return re.sub(r"\s+", " ", text).strip()
+    text = re.sub(r"\s+", " ", text)
+    text = re.sub(r"\s+([.,!?;:])", r"\1", text)
+    return text.strip()
 
 
 def parse_to_list(input_data: Any) -> list[str]:
@@ -39,11 +41,11 @@ def parse_to_list(input_data: Any) -> list[str]:
                 if (clean := clean_html_text(li.decode_contents()))
             ]
 
-    text = clean_html_text(input_data)
+    raw_lines = input_data.split("\n")
     cleaned_lines = []
 
-    for line in text.split("\n"):
-        line_str = line.strip()
+    for line in raw_lines:
+        line_str = clean_html_text(line)
         if not line_str:
             continue
 
@@ -53,8 +55,9 @@ def parse_to_list(input_data: Any) -> list[str]:
         if line_str:
             cleaned_lines.append(line_str)
 
-    if not cleaned_lines and text.strip():
-        sentences = re.split(r"(?<=[.!?])\s+", text)
+    if not cleaned_lines and clean_html_text(input_data).strip():
+        text_clean = clean_html_text(input_data)
+        sentences = re.split(r"(?<=[.!?])\s+", text_clean)
         cleaned_lines = [s for s in sentences if s.strip()]
 
     return cleaned_lines

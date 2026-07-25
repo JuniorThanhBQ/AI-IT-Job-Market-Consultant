@@ -10,6 +10,7 @@ class JobStatus(StrEnum):
 
 class SeniorityLevel(StrEnum):
     INTERN = "Intern"
+    FRESHER = "Fresher"
     JUNIOR = "Junior"
     MID = "Mid"
     SENIOR = "Senior"

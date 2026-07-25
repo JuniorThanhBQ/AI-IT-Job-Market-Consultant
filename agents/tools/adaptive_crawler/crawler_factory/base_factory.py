@@ -64,12 +64,19 @@ class BaseCrawlerFactory(ABC):
         request_queue = await RequestQueue.open(
             name=f"rq-{site_name}", storage_client=storage_client
         )
+        await request_queue.drop()
+        request_queue = await RequestQueue.open(
+            name=f"rq-{site_name}", storage_client=storage_client
+        )
 
         crawler = AdaptivePlaywrightCrawler.with_beautifulsoup_static_parser(
             max_requests_per_crawl=MAX_REQUESTS_PER_CRAWL,
             max_request_retries=MAX_REQUEST_RETRIES,
             concurrency_settings=ConcurrencySettings(
-                max_concurrency=MAX_CONCURRENCY, desired_concurrency=MAX_CONCURRENCY
+                max_concurrency=MAX_CONCURRENCY,
+                desired_concurrency=(
+                    MAX_CONCURRENCY if MAX_CONCURRENCY == 1 else MAX_CONCURRENCY - 1
+                ),
             ),
             request_handler_timeout=timedelta(seconds=REQUEST_HANDLER_TIMEOUT_SECONDS),
             rendering_type_predictor=predictor,

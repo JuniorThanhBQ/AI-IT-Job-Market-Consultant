@@ -1,8 +1,47 @@
+import json
 import re
 import hashlib
+from pathlib import Path
+
+_SKILL_CATEGORIES_CACHE: dict[str, list[str]] | None = None
+
+
+def _get_skill_taxonomy() -> dict[str, list[str]]:
+    global _SKILL_CATEGORIES_CACHE
+    if _SKILL_CATEGORIES_CACHE is None:
+        json_path = Path(__file__).parent.parent / "resources" / "skill_categories.json"
+        if json_path.exists():
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    _SKILL_CATEGORIES_CACHE = json.load(f)
+            except Exception:
+                _SKILL_CATEGORIES_CACHE = {}
+        else:
+            _SKILL_CATEGORIES_CACHE = {}
+    return _SKILL_CATEGORIES_CACHE
 
 
 class JobAdapterBase:
+    @classmethod
+    def classify_skill_category(cls, skill_name: str) -> str:
+        if not skill_name:
+            return "Technical"
+        clean = skill_name.strip().lower()
+        taxonomy = _get_skill_taxonomy()
+
+        for category, terms in taxonomy.items():
+            for term in terms:
+                term_clean = term.strip().lower()
+                if (
+                    clean == term_clean
+                    or clean.startswith(f"{term_clean} ")
+                    or clean.endswith(f" {term_clean}")
+                    or f" {term_clean} " in clean
+                ):
+                    return category
+
+        return "Technical"
+
     @staticmethod
     def calculate_content_hash(
         title: str, company_name: str, description: str, location: str

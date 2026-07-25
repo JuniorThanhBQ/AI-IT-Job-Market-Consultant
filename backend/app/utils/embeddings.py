@@ -27,14 +27,66 @@ def get_gemini_api_key() -> str:
     return ""
 
 
-def generate_embedding(text: str) -> list[float]:
-    api_key = get_gemini_api_key()
-    return [0.0] * 768
+def _normalize_model_name(model_name: str) -> str:
+    if not model_name:
+        return "models/gemini-embedding-001"
+    clean = model_name.strip()
+    if clean.startswith("models/"):
+        clean = clean[len("models/") :]
+    if clean in ["embedding-001", "gemini-embedding-001"]:
+        return "models/gemini-embedding-001"
+    return f"models/{clean}"
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-2:embedContent?key={api_key}"
+
+async def generate_embedding_async(
+    text: str, model_name: str = "models/gemini-embedding-001"
+) -> list[float]:
+    api_key = get_gemini_api_key()
+    if not api_key:
+        logger.warning("No GEMINI_API_KEY found. Returning zero-vector fallback.")
+        return [0.0] * 768
+
+    full_model_name = _normalize_model_name(model_name)
+    url = f"https://generativelanguage.googleapis.com/v1beta/{full_model_name}:embedContent?key={api_key}"
     payload = {
-        "model": "models/gemini-embedding-2",
-        "content": {"parts": [{"text": text}]},
+        "model": full_model_name,
+        "content": {"parts": [{"text": text[:8000] if text else ""}]},
+        "outputDimensionality": 768,
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(url, json=payload)
+            response.raise_for_status()
+            data = response.json()
+            embedding = data.get("embedding", {}).get("values", [])
+            if len(embedding) == 768:
+                return embedding
+            else:
+                logger.error(
+                    f"Unexpected embedding size returned: {len(embedding)}. Expected 768."
+                )
+                return [0.0] * 768
+    except Exception as e:
+        logger.error(
+            f"Error calling Gemini Embedding API ({full_model_name}): {e}. Returning zero-vector fallback."
+        )
+        return [0.0] * 768
+
+
+def generate_embedding(
+    text: str, model_name: str = "models/gemini-embedding-001"
+) -> list[float]:
+    api_key = get_gemini_api_key()
+    if not api_key:
+        logger.warning("No GEMINI_API_KEY found. Returning zero-vector fallback.")
+        return [0.0] * 768
+
+    full_model_name = _normalize_model_name(model_name)
+    url = f"https://generativelanguage.googleapis.com/v1beta/{full_model_name}:embedContent?key={api_key}"
+    payload = {
+        "model": full_model_name,
+        "content": {"parts": [{"text": text[:8000] if text else ""}]},
         "outputDimensionality": 768,
     }
 
@@ -52,6 +104,6 @@ def generate_embedding(text: str) -> list[float]:
             return [0.0] * 768
     except Exception as e:
         logger.error(
-            f"Error calling Gemini Embedding API: {e}. Returning zero-vector fallback."
+            f"Error calling Gemini Embedding API ({full_model_name}): {e}. Returning zero-vector fallback."
         )
         return [0.0] * 768

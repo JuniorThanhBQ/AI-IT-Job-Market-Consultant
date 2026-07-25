@@ -1,0 +1,6 @@
+# Allow all bots to crawl the entire site except one page
+User-Agent: *
+Disallow: /subscriptions/new
+User-Agent: *
+Allow: /
+Sitemap: https://itviec.com/dunggiatminh.xml

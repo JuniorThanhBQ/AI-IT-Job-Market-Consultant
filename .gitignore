@@ -244,6 +244,6 @@ next-env.d.ts
 AGENTS.md
 .agents/
 
-crawl_website_information/
+**/crawl_website_information/**/*.html
 
 test-results/

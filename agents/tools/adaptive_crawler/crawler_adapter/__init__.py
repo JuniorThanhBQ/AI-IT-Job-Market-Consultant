@@ -3,11 +3,12 @@ from typing import Any
 from app.modules.job.models import Job
 
 from .base_adapter import JobAdapterBase
-from .itjobs_adapter import from_itjobs
-from .itviec_adapter import from_itviec
-from .topdev_adapter import from_topdev
-from .vieclam_ou_adapter import from_vieclam_ou
-from .fptjobs_adapter import from_fptjobs
+
+# from .itjobs_adapter import adapter_itjobs
+from .itviec_adapter import adapter_itviec
+# from .topdev_adapter import adapter_topdev
+# from .vieclam_ou_adapter import adapter_vieclam_ou
+# from .fptjobs_adapter import adapter_fptjobs
 
 
 class JobAdapter:
@@ -19,38 +20,38 @@ class JobAdapter:
             title, company_name, description, location
         )
 
-    @staticmethod
-    def from_itjobs(raw_data: dict[str, Any]) -> Job:
-        return from_itjobs(raw_data)
+    # @staticmethod
+    # def adapter_itjobs(raw_data: dict[str, Any]) -> Job:
+    #     return adapter_itjobs(raw_data)
 
     @staticmethod
-    def from_itviec(raw_data: dict[str, Any]) -> Job:
-        return from_itviec(raw_data)
+    def adapter_itviec(raw_data: dict[str, Any]) -> Job:
+        return adapter_itviec(raw_data)
 
-    @staticmethod
-    def from_topdev(raw_data: dict[str, Any]) -> Job:
-        return from_topdev(raw_data)
+    # @staticmethod
+    # def adapter_topdev(raw_data: dict[str, Any]) -> Job:
+    #     return adapter_topdev(raw_data)
 
-    @staticmethod
-    def from_vieclam_ou(raw_data: dict[str, Any]) -> Job:
-        return from_vieclam_ou(raw_data)
+    # @staticmethod
+    # def adapter_vieclam_ou(raw_data: dict[str, Any]) -> Job:
+    #     return adapter_vieclam_ou(raw_data)
 
-    @staticmethod
-    def from_fptjobs(raw_data: dict[str, Any]) -> Job:
-        return from_fptjobs(raw_data)
+    # @staticmethod
+    # def adapter_fptjobs(raw_data: dict[str, Any]) -> Job:
+    #     return adapter_fptjobs(raw_data)
 
     @staticmethod
     def to_job(raw_data: dict[str, Any], source: str) -> Job:
         source_lower = source.lower().strip()
-        if source_lower == "itjobs":
-            return from_itjobs(raw_data)
-        elif source_lower == "itviec":
-            return from_itviec(raw_data)
-        elif source_lower == "topdev":
-            return from_topdev(raw_data)
-        elif source_lower == "vieclam_ou":
-            return from_vieclam_ou(raw_data)
-        elif source_lower == "fptjobs":
-            return from_fptjobs(raw_data)
+        # if source_lower == "itjobs":
+        #     return adapter_itjobs(raw_data)
+        if source_lower == "itviec":
+            return adapter_itviec(raw_data)
+        # elif source_lower == "topdev":
+        #     return adapter_topdev(raw_data)
+        # elif source_lower == "vieclam_ou":
+        #     return adapter_vieclam_ou(raw_data)
+        # elif source_lower == "fptjobs":
+        #     return adapter_fptjobs(raw_data)
         else:
             raise ValueError(f"Unknown crawler source: {source}")

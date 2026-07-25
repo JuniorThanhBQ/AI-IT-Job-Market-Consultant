@@ -13,6 +13,10 @@ from app.db.base_model import BaseModel
 
 if TYPE_CHECKING:
     from app.modules.job.models import Job
+else:
+
+    class Job:
+        pass
 
 
 class CompanyBenefit(BaseModel, table=True):
@@ -76,6 +80,7 @@ class Company(BaseModel, table=True):
         sa_relationship=relationship(
             "Job",
             back_populates="company",
+            uselist=True,
             lazy="selectin",
         )
     )

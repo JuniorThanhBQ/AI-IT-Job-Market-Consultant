@@ -44,7 +44,7 @@ def test_cgroup_v2_memory_max(monkeypatch):
     def mock_exists(path):
         return path == "/sys/fs/cgroup/memory.max"
 
-    m_open = mock_open(read_data="2097152000\n")  # ~2000 MB -> 4 concurrency max
+    m_open = mock_open(read_data="2097152000\n")
 
     with patch("os.path.exists", side_effect=mock_exists):
         with patch("builtins.open", m_open):
@@ -87,7 +87,7 @@ def test_cgroup_v1_memory_limit(monkeypatch):
     def mock_exists(path):
         return path == "/sys/fs/cgroup/memory/memory.limit_in_bytes"
 
-    m_open = mock_open(read_data="1048576000\n")  # ~1000 MB -> 2 concurrency max
+    m_open = mock_open(read_data="1048576000\n")
 
     with patch("os.path.exists", side_effect=mock_exists):
         with patch("builtins.open", m_open):
