@@ -6,7 +6,7 @@ from .base_adapter import JobAdapterBase
 
 # from .itjobs_adapter import adapter_itjobs
 from .itviec_adapter import adapter_itviec
-# from .topdev_adapter import adapter_topdev
+from .topdev_adapter import adapter_topdev
 # from .vieclam_ou_adapter import adapter_vieclam_ou
 # from .fptjobs_adapter import adapter_fptjobs
 
@@ -28,9 +28,9 @@ class JobAdapter:
     def adapter_itviec(raw_data: dict[str, Any]) -> Job:
         return adapter_itviec(raw_data)
 
-    # @staticmethod
-    # def adapter_topdev(raw_data: dict[str, Any]) -> Job:
-    #     return adapter_topdev(raw_data)
+    @staticmethod
+    def adapter_topdev(raw_data: dict[str, Any]) -> Job:
+        return adapter_topdev(raw_data)
 
     # @staticmethod
     # def adapter_vieclam_ou(raw_data: dict[str, Any]) -> Job:
@@ -47,8 +47,8 @@ class JobAdapter:
         #     return adapter_itjobs(raw_data)
         if source_lower == "itviec":
             return adapter_itviec(raw_data)
-        # elif source_lower == "topdev":
-        #     return adapter_topdev(raw_data)
+        elif source_lower == "topdev":
+            return adapter_topdev(raw_data)
         # elif source_lower == "vieclam_ou":
         #     return adapter_vieclam_ou(raw_data)
         # elif source_lower == "fptjobs":

@@ -13,7 +13,7 @@ from .crawler_factory import (
     # FPTJobsCrawlerFactory,
     # ITJobsCrawlerFactory,
     ITViecCrawlerFactory,
-    # TopDevCrawlerFactory,
+    TopDevCrawlerFactory,
     # VieclamOUCrawlerFactory,
 )
 from .helpers import check_redis_connection
@@ -22,9 +22,9 @@ logger = logging.getLogger(__name__)
 
 CRAWLERS = {
     ITViecCrawlerFactory: ["https://itviec.com/it-jobs"],
-    # TopDevCrawlerFactory: [
-    #     "https://topdev.vn/jobs/search?job_categories_ids=2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C67"
-    # ],
+    TopDevCrawlerFactory: [
+        "https://topdev.vn/jobs/search?job_categories_ids=2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C67"
+    ],
     # ITJobsCrawlerFactory: ["https://itjobs.com.vn"],
     # VieclamOUCrawlerFactory: [
     #     "https://vieclam.ou.edu.vn/tim-viec-lam/nganh-cntt-phan-mem.1/vi",
@@ -75,13 +75,20 @@ async def main() -> None:
 
     try:
         async with event_manager:
+            tasks = []
             for factory_cls, urls in CRAWLERS.items():
                 factory = factory_cls()
-                try:
-                    await run_crawler_for_site(
+                task = asyncio.create_task(
+                    run_crawler_for_site(
                         session_factory, factory, urls, storage_client, event_manager
                     )
-                except Exception as e:
-                    logger.error(f"Crawl failed for {factory_cls.__name__}: {e}")
+                )
+                tasks.append(task)
+
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+
+            for factory_cls, result in zip(CRAWLERS.keys(), results):
+                if isinstance(result, Exception):
+                    logger.error(f"Crawl failed for {factory_cls.__name__}: {result}")
     finally:
         await engine.dispose()
