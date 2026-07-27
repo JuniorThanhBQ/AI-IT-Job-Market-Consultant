@@ -246,3 +246,4 @@ AGENTS.md
 **/crawl_website_information/**/*.html
 
 test-results/
+tmp/
