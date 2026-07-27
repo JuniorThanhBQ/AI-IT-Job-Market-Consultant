@@ -2,6 +2,7 @@ import logging
 from sqlalchemy import func, text
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import select
+from app.core.enums import JobStatus
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.modules.job.models import Job, Skills
@@ -33,6 +34,13 @@ class JobRepository:
         statement = select(Job).where(Job.url == cleaned)
         result = await self.session.exec(statement)
         return result.first()
+
+    async def get_open_jobs_batch(self, limit: int = 100, offset: int = 0) -> list[Job]:
+        statement = (
+            select(Job).where(Job.status == JobStatus.OPEN).offset(offset).limit(limit)
+        )
+        result = await self.session.exec(statement)
+        return list(result.all())
 
     async def save_or_update(self, job: Job, generate_embedding: bool = True) -> Job:
         if not job.url:

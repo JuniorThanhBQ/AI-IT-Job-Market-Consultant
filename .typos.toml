@@ -1,6 +1,7 @@
 [files]
 extend-exclude = [
     "database",
+    "**/tests/**"
 ]
 
 [default.extend-words]

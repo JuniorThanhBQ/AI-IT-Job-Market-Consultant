@@ -124,6 +124,7 @@ class TestMainCrawlerLoop:
         mock_factory_cls.__name__ = "BadFactory"
 
         mock_crawlers_dict.items.return_value = [(mock_factory_cls, ["http://bad.url"])]
+        mock_crawlers_dict.keys.return_value = [mock_factory_cls]
         mock_run_crawler.side_effect = Exception("Simulated fatal error")
 
         asyncio.run(main())

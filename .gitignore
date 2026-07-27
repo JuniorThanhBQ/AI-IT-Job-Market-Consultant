@@ -42,10 +42,8 @@ htmlcov/
 .nox/
 .coverage
 .coverage.*
-!/.coverage
 .cache
 nosetests.xml
-coverage.xml
 *.cover
 *.py.cover
 .hypothesis/
@@ -248,3 +246,4 @@ AGENTS.md
 **/crawl_website_information/**/*.html
 
 test-results/
+tmp/

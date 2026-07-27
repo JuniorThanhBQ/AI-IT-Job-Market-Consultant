@@ -1,4 +1,4 @@
-.PHONY: help dev-backend dev-frontend db-migrate db-migration db-migrate-docker db-migration-docker run-crawler-docker install dev-app-build dev-app-down prod-app-build lint docker-lint test app-check pre-commit-check generate-secret clean full-clean
+.PHONY: help dev-backend dev-frontend db-migrate db-migration db-migrate-docker db-migration-docker run-crawler-docker install dev-app-build dev-app-down prod-app-build lint docker-lint test app-check pre-commit-check generate-secret clean full-clean coverage-xml
 .DEFAULT_GOAL := help
 
 help:
@@ -77,6 +77,9 @@ test:
 	uv run --project backend pytest --cov=app --cov-report=term-missing
 	uv run --project backend pytest agents/tools/adaptive_crawler/tests --cov=agents/tools/adaptive_crawler --cov-report=term-missing
 	npm --prefix frontend run test:e2e
+
+coverage-xml:
+	uv run --project backend pytest --cov=app --cov-report=xml:coverage.xml
 
 app-check: lint test
 
