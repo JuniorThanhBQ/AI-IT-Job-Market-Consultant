@@ -1,5 +1,5 @@
-import HomePage from "@/features/HomePage/HomePage";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <HomePage activePage="intro" />;
+  redirect("/vi");
 }
