@@ -155,6 +155,11 @@ def update_password_me(
     body: UpdatePassword,
     current_user: CurrentUser,
 ) -> Any:
+    if not current_user.hashed_password:
+        raise HTTPException(
+            status_code=400,
+            detail="Password is not set for this user. Please set it using password recovery or social accounts settings.",
+        )
     is_valid, _ = security.verify_password(
         body.current_password, current_user.hashed_password
     )

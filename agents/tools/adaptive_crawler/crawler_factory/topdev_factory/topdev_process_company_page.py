@@ -2,7 +2,7 @@ import logging
 from bs4 import BeautifulSoup
 from crawlee.crawlers import AdaptivePlaywrightCrawlingContext
 
-from app.modules.company.models import Company, CompanyBenefit
+from ...crawler_adapter.topdev_adapter import adapter_topdev_company
 from ...crawler_repository import CompanyRepository
 
 logger = logging.getLogger(__name__)
@@ -35,9 +35,24 @@ async def process_company_page(
     company_type = None
     country = "Unknown"
     location = "Vietnam"
-    working_days = None
-    overtime_policy = None
-    slogan = None
+    slogan_elem = soup.find(
+        "span",
+        class_=lambda c: (
+            c
+            and all(
+                cls in c
+                for cls in [
+                    "block",
+                    "text-sm",
+                    "font-medium",
+                    "text-text-700",
+                    "md:my-1",
+                    "md:text-base",
+                ]
+            )
+        ),
+    )
+    slogan = slogan_elem.get_text(strip=True) if slogan_elem else None
     description = ""
     website = ""
     benefits_list = []
@@ -103,7 +118,7 @@ async def process_company_page(
             for li in ul_elem.find_all("li"):
                 txt = li.get_text(strip=True)
                 if txt:
-                    benefits_list.append(CompanyBenefit(name=txt))
+                    benefits_list.append(txt.strip())
 
     website_span = soup.find("span", string=lambda s: s and "Company Website" in s)
     if website_span:
@@ -111,23 +126,24 @@ async def process_company_page(
         if website_link:
             website = website_link.get("href", "")
 
-    vector_context = f"Company Name: {name}. Industry: {industry}. Size: {size}. Location: {location}. Description: {description}."
-    company_obj = Company(
-        name=name,
-        industry=industry,
-        size=size,
-        location=location,
-        addresses=[location],
-        description=description,
-        website=website,
-        slogan=slogan,
-        company_type=company_type,
-        country=country,
-        working_days=working_days,
-        overtime_policy=overtime_policy,
-        vector_context=vector_context,
-        benefits=benefits_list,
-    )
+    raw_data = {
+        "url": url,
+        "location": location,
+        "company_info": {
+            "name": name,
+            "industry": industry,
+            "type": company_type,
+            "size": size,
+            "description": description,
+            "profile_url": website,
+            "country": country,
+            "addresses": [location] if location else [],
+        },
+        "benefits": benefits_list,
+        "slogan": slogan,
+    }
+
+    company_obj = adapter_topdev_company(raw_data)
     async with session_factory() as session:
         company_repo = CompanyRepository(session)
         await company_repo.save_or_update(company_obj)

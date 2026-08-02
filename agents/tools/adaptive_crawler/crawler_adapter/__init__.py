@@ -35,7 +35,7 @@ class JobAdapter:
         source_lower = source.lower().strip()
         if source_lower == "itjobs":
             return adapter_itjobs(raw_data)
-        elif source_lower == "itviec":
+        if source_lower == "itviec":
             return adapter_itviec(raw_data)
         elif source_lower == "topdev":
             return adapter_topdev(raw_data)

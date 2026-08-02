@@ -1,14 +1,12 @@
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 from typing import Any
 
 from app.core.enums import (
-    CompanyType,
-    Currency,
+    CrawlWebsite,
     JobStatus,
-    SeniorityLevel,
-    WorkingModel,
 )
-from app.modules.company.models import Company, CompanyBenefit
+from app.modules.company.models import Company
 from app.modules.job.models import Job, Skills
 from app.utils.text_parser import (
     clean_html_text,
@@ -16,66 +14,97 @@ from app.utils.text_parser import (
     resolve_company_name,
     resolve_job_description,
 )
+from app.utils.itviec_utils import (
+    map_working_model,
+    map_seniority_level,
+    map_company_type,
+    map_currency,
+    map_country,
+    map_working_hours,
+    process_job_vector_context,
+)
 
 from .base_adapter import JobAdapterBase
 
 
-def _map_working_model(raw_model: str) -> WorkingModel:
-    lowered = (raw_model or "").lower()
-    if "remote" in lowered:
-        return WorkingModel.REMOTE
-    elif "hybrid" in lowered:
-        return WorkingModel.HYBRID
-    elif "office" in lowered or "onsite" in lowered:
-        return WorkingModel.ONSITE
-    return WorkingModel.ONSITE
+def adapter_itviec_company(raw_data: dict[str, Any]) -> Company:
+    if (
+        "company" in raw_data
+        and isinstance(raw_data["company"], dict)
+        and "name" in raw_data["company"]
+    ):
+        comp_data = raw_data["company"]
+    else:
+        comp_data = raw_data
 
+    name = (comp_data.get("name") or "").strip()
+    industry = (comp_data.get("industry") or "IT Services").strip()
+    size = (comp_data.get("size") or "50-150 employees").strip()
+    location = (comp_data.get("location") or "Vietnam").strip()
+    description = (comp_data.get("description") or "").strip()
+    website = (comp_data.get("website") or "").strip()
+    slogan = (comp_data.get("slogan") or "").strip()
+    raw_comp_type = comp_data.get("company_type") or comp_data.get("type") or "Product"
+    company_type = map_company_type(raw_comp_type)
+    company_country = map_country(comp_data.get("country") or "Vietnam")
+    working_days = comp_data.get("working_days")
+    overtime_policy = comp_data.get("overtime_policy")
+    addresses = comp_data.get("addresses") or [location]
 
-def _map_seniority_level(title: str, raw_seniority: str = "") -> SeniorityLevel:
-    combined = f"{title} {raw_seniority}".lower()
-    if "intern" in combined:
-        return SeniorityLevel.INTERN
-    elif "fresher" in combined:
-        return SeniorityLevel.FRESHER
-    elif "junior" in combined:
-        return SeniorityLevel.JUNIOR
-    elif "senior" in combined:
-        return SeniorityLevel.SENIOR
-    elif "lead" in combined:
-        return SeniorityLevel.LEAD
-    elif "manager" in combined:
-        return SeniorityLevel.MANAGER
-    elif "director" in combined:
-        return SeniorityLevel.DIRECTOR
-    elif "executive" in combined:
-        return SeniorityLevel.EXECUTIVE
-    return SeniorityLevel.MID
+    raw_benefits = comp_data.get("benefits") or []
+    benefits = []
+    for b in raw_benefits:
+        if isinstance(b, dict):
+            val = b.get("name")
+        elif hasattr(b, "name"):
+            val = b.name
+        else:
+            val = str(b)
+        cleaned = clean_html_text(val)
+        if cleaned:
+            benefits.append(cleaned)
 
+    vector_context = comp_data.get("vector_context")
+    if not vector_context:
+        parts = []
+        if name:
+            parts.append(f"Company Name: {name}.")
+        if slogan:
+            parts.append(f"Slogan: {slogan}.")
+        if company_type:
+            parts.append(f"Type: {company_type}.")
+        if industry:
+            parts.append(f"Industry: {industry}.")
+        if size:
+            parts.append(f"Size: {size}.")
+        if company_country:
+            parts.append(f"Country: {company_country}.")
+        if location:
+            parts.append(f"Location: {location}.")
+        if working_days:
+            parts.append(f"Working Days: {working_days}.")
+        if overtime_policy:
+            parts.append(f"Overtime Policy: {overtime_policy}.")
+        if description:
+            parts.append(f"Description: {description}.")
+        vector_context = " ".join(parts)
 
-def _map_company_type(raw_type: str) -> CompanyType:
-    lowered = (raw_type or "").lower()
-    if "outsource" in lowered or "outsourcing" in lowered:
-        return CompanyType.OUTSOURCING
-    elif "consulting" in lowered:
-        return CompanyType.CONSULTING
-    elif "agency" in lowered:
-        return CompanyType.AGENCY
-    elif "product" in lowered:
-        return CompanyType.PRODUCT
-    return CompanyType.PRODUCT
-
-
-def _map_currency(raw_currency: str) -> Currency:
-    lowered = (raw_currency or "").lower()
-    if "usd" in lowered or "$" in lowered:
-        return Currency.USD
-    elif "eur" in lowered or "€" in lowered:
-        return Currency.EUR
-    elif "jpy" in lowered or "¥" in lowered:
-        return Currency.JPY
-    elif "sgd" in lowered:
-        return Currency.SGD
-    return Currency.VND
+    return Company(
+        name=name,
+        industry=industry,
+        size=size,
+        location=location,
+        description=description,
+        website=website,
+        company_type=company_type,
+        country=company_country,
+        addresses=addresses,
+        working_days=working_days,
+        overtime_policy=overtime_policy,
+        slogan=slogan,
+        vector_context=vector_context,
+        benefits=benefits,
+    )
 
 
 def adapter_itviec(raw_data: dict[str, Any]) -> Job:
@@ -105,20 +134,13 @@ def adapter_itviec(raw_data: dict[str, Any]) -> Job:
 
     scraped_comp_name = (comp_data.get("name") or raw_data.get("company") or "").strip()
     company_name = resolve_company_name(scraped_comp_name, title, url, "itviec")
-    company_industry = (comp_data.get("industry") or "IT Services").strip()
-    company_size = (comp_data.get("size") or "50-150 employees").strip()
     company_location = (
         overview_data.get("location") or raw_data.get("location") or "Vietnam"
     ).strip()
-    company_desc = f"{company_name} is an active technology employer."
-    company_web = ""
-    slogan = ""
-    raw_comp_type = comp_data.get("type") or "Product"
-    company_type = _map_company_type(raw_comp_type)
-    company_country = comp_data.get("country") or "Vietnam"
-    working_days = comp_data.get("working_days")
-    overtime_policy = comp_data.get("overtime_policy")
-    company_addresses = comp_data.get("addresses") or [company_location]
+    company_desc = (
+        comp_data.get("description")
+        or f"{company_name} is an active technology employer."
+    ).strip()
 
     raw_benefits = (
         comp_data.get("benefits")
@@ -126,11 +148,14 @@ def adapter_itviec(raw_data: dict[str, Any]) -> Job:
         or raw_data.get("benefits")
         or []
     )
-    benefits = [
-        CompanyBenefit(name=clean_html_text(b))
-        for b in raw_benefits
-        if clean_html_text(b)
-    ]
+
+    comp_copy = dict(comp_data)
+    comp_copy["name"] = company_name
+    comp_copy["location"] = company_location
+    comp_copy["description"] = company_desc
+    comp_copy["benefits"] = raw_benefits
+
+    company_obj = adapter_itviec_company(comp_copy)
 
     raw_job_desc = details_data.get("description") or raw_data.get("description")
     responsibilities = parse_to_list(
@@ -160,7 +185,7 @@ def adapter_itviec(raw_data: dict[str, Any]) -> Job:
 
     now = datetime.now(timezone.utc)
     valid_through = schema_data.get("validThrough")
-    expired_date = now + timedelta(days=30)
+    expired_date = (now + timedelta(days=30)).replace(tzinfo=None)
     if valid_through:
         try:
             expired_date = datetime.strptime(valid_through[:10], "%Y-%m-%d")
@@ -207,19 +232,20 @@ def adapter_itviec(raw_data: dict[str, Any]) -> Job:
     if max_sal == 0.0 and schema_max_sal is not None:
         max_sal = schema_max_sal
 
-    currency = _map_currency(schema_curr or parsed_curr_str)
+    currency = map_currency(schema_curr or parsed_curr_str)
 
-    working_hours = (
+    raw_working_hours = (
         schema_data.get("employmentType")
         or raw_data.get("working_hours")
         or "Full-time"
     ).strip()
+    working_hours = map_working_hours(raw_working_hours)
 
     raw_work_model = (
         overview_data.get("work_model") or raw_data.get("working_model") or "At office"
     )
-    working_model = _map_working_model(raw_work_model)
-    seniority = _map_seniority_level(title, raw_data.get("seniority", ""))
+    working_model = map_working_model(raw_work_model)
+    seniority = map_seniority_level(title, raw_data.get("seniority", ""))
 
     raw_skills = overview_data.get("skills") or raw_data.get("skills") or []
     skills = [
@@ -232,14 +258,7 @@ def adapter_itviec(raw_data: dict[str, Any]) -> Job:
     ]
 
     content_hash = JobAdapterBase.calculate_content_hash(
-        title, company_name, job_desc, company_location
-    )
-
-    comp_vector_context = (
-        f"Company Name: {company_name}. Slogan: {slogan or 'N/A'}. Type: {company_type}. "
-        f"Industry: {company_industry}. Size: {company_size}. Country: {company_country}. "
-        f"Location: {company_location}. Working Days: {working_days or 'N/A'}. "
-        f"Overtime Policy: {overtime_policy or 'N/A'}. Description: {company_desc}."
+        title, company_obj.name, job_desc, company_obj.location
     )
 
     skills_str = ", ".join([s.name for s in skills])
@@ -248,28 +267,22 @@ def adapter_itviec(raw_data: dict[str, Any]) -> Job:
     req_str = "\n".join(required_qualifications)
     nice_str = "\n".join(nice_to_have)
 
-    job_vector_context = (
-        f"Job Title: {title}. Company: {company_name}. Location: {company_location}. Seniority: {seniority}. "
-        f"Salary: {min_sal}-{max_sal} {currency}. Working Hours: {working_hours}. Working Model: {working_model}. "
-        f"Domains: {domains_str}. Responsibilities: {resp_str}. Required Qualifications: {req_str}. "
-        f"Nice to Have: {nice_str}. General Description: {job_desc}. Skills: {skills_str}."
-    )
-
-    company_obj = Company(
-        name=company_name,
-        industry=company_industry,
-        size=company_size,
-        location=company_location,
-        description=company_desc,
-        website=company_web,
-        company_type=company_type,
-        country=company_country,
-        addresses=company_addresses,
-        working_days=working_days,
-        overtime_policy=overtime_policy,
-        slogan=slogan,
-        vector_context=comp_vector_context,
-        benefits=benefits,
+    job_vector_context = process_job_vector_context(
+        title=title,
+        company_name=company_obj.name,
+        location=company_obj.location,
+        seniority=seniority,
+        min_sal=min_sal,
+        max_sal=max_sal,
+        currency=currency,
+        working_hours=working_hours,
+        working_model=working_model,
+        domains_str=domains_str,
+        resp_str=resp_str,
+        req_str=req_str,
+        nice_str=nice_str,
+        job_desc=job_desc,
+        skills_str=skills_str,
     )
 
     return Job(
@@ -279,8 +292,8 @@ def adapter_itviec(raw_data: dict[str, Any]) -> Job:
         expired_date=expired_date,
         updated_date=now,
         seniority=seniority,
-        min_salary=min_sal,
-        max_salary=max_sal,
+        min_salary=Decimal(str(min_sal)),
+        max_salary=Decimal(str(max_sal)),
         currency=currency,
         working_hours=working_hours,
         working_model=working_model,
@@ -291,7 +304,7 @@ def adapter_itviec(raw_data: dict[str, Any]) -> Job:
         nice_to_have=nice_to_have,
         domains=domains,
         vector_context=job_vector_context,
-        source="itviec",
+        source=CrawlWebsite.ITVIEC,
         url=url,
         company=company_obj,
         skills=skills,

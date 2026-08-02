@@ -9,6 +9,12 @@ services:
     volumes:
       - ./backend:/app/backend
       - ./database:/app/backend/database
+      - ./agents:/app/agents
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
 
   backend-init:
     build:
@@ -70,12 +76,14 @@ services:
       - ./backend:/app/backend
       - ./agents:/app/agents
       - ./database:/app/backend/database
+      - ./scripts:/app/scripts
 
   celery-beat:
     restart: "no"
     volumes:
       - ./backend:/app/backend
       - ./agents:/app/agents
+      - ./scripts:/app/scripts
 
   redis:
     restart: "no"

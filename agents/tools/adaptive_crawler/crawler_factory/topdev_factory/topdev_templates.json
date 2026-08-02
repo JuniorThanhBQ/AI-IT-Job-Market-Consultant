@@ -1,0 +1,22 @@
+{
+  "rules": {
+    "detail": {
+      "labels": ["detail", "updater_detail"],
+      "url_contains": ["/detail-jobs/"],
+      "url_not_contains": [],
+      "special_rules": []
+    },
+    "company": {
+      "labels": ["company"],
+      "url_contains": ["/companies/", "/nha-tuyen-dung/"],
+      "url_not_contains": [],
+      "special_rules": []
+    }
+  },
+  "selectors": {
+    "job_link": "a.line-clamp-3[href*=\"/detail-jobs/\"]"
+  },
+  "settings": {
+    "wait_for_networkidle": true
+  }
+}

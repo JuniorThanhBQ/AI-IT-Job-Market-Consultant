@@ -19,7 +19,7 @@ import app.db.base  # noqa: F401, E402
 
 target_metadata = SQLModel.metadata
 
-config.set_main_option("sqlalchemy.url", str(settings.SQLALCHEMY_DATABASE_URI))
+config.set_main_option("sqlalchemy.url", str(settings.database.SQLALCHEMY_DATABASE_URI))
 
 
 def run_migrations_offline() -> None:

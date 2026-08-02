@@ -1,12 +1,13 @@
 import logging
 from sqlalchemy import func, text
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from app.core.enums import JobStatus
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.modules.job.models import Job, Skills
-from app.utils.embeddings import generate_embedding_async
+from app.modules.job.models import Job, Skills, JobEmbedding
+from app.utils.embeddings import generate_embedding_async, DEFAULT_EMBEDDING_MODEL
 from .company_repository import CompanyRepository
 
 logger = logging.getLogger(__name__)
@@ -31,7 +32,9 @@ class JobRepository:
         if not url:
             return None
         cleaned = url.strip()
-        statement = select(Job).where(Job.url == cleaned)
+        statement = (
+            select(Job).where(Job.url == cleaned).options(selectinload(Job.embedding))
+        )
         result = await self.session.exec(statement)
         return result.first()
 
@@ -52,6 +55,14 @@ class JobRepository:
 
         temp_company = job.company
         temp_skills = job.skills
+
+        if temp_company and hasattr(temp_company, "jobs") and job in temp_company.jobs:
+            temp_company.jobs.remove(job)
+
+        if temp_skills:
+            for skill in temp_skills:
+                if hasattr(skill, "jobs") and job in skill.jobs:
+                    skill.jobs.remove(job)
 
         job.company = None
         job.skills = []
@@ -86,6 +97,29 @@ class JobRepository:
 
         existing = await self.get_by_url(job_url_clean)
 
+        needs_embedding = True
+        if existing and existing.embedding:
+            if existing.vector_context == job.vector_context:
+                needs_embedding = False
+
+        embedding_obj = None
+        if generate_embedding and needs_embedding and job.vector_context:
+            try:
+                vector = await generate_embedding_async(
+                    job.vector_context, model_name=DEFAULT_EMBEDDING_MODEL
+                )
+                embedding_obj = JobEmbedding(
+                    embedding=vector,
+                    embedding_model=DEFAULT_EMBEDDING_MODEL,
+                    token_used=getattr(vector, "token_used", 0.0),
+                    latency=getattr(vector, "latency", 0.0),
+                    log=getattr(vector, "log", None),
+                )
+            except Exception as e:
+                logger.error(
+                    f"Failed to generate embedding for job '{job_url_clean}': {e}"
+                )
+
         if existing:
             if persisted_company:
                 existing.company = persisted_company
@@ -93,50 +127,19 @@ class JobRepository:
             if persisted_skills:
                 existing.skills = persisted_skills
 
-            needs_embedding = True
-            if existing.embedding:
-                if existing.vector_context == job.vector_context:
-                    job.embedding = existing.embedding
-                    job.embedding_model = existing.embedding_model
-                    job.embedding_version = existing.embedding_version
-                    needs_embedding = False
-
-            if (
-                generate_embedding
-                and needs_embedding
-                and job.vector_context
-                and not job.embedding
-            ):
-                try:
-                    job.embedding = await generate_embedding_async(
-                        job.vector_context, model_name="models/gemini-embedding-001"
-                    )
-                    job.embedding_model = "models/gemini-embedding-001"
-                    job.embedding_version = 1
-                except Exception as e:
-                    logger.error(
-                        f"Failed to generate embedding for job '{job_url_clean}': {e}"
-                    )
-
             self._update_job_fields(existing, job)
+            if embedding_obj:
+                if existing.embedding:
+                    existing.embedding.embedding = embedding_obj.embedding
+                    existing.embedding.embedding_model = embedding_obj.embedding_model
+                    existing.embedding.token_used = embedding_obj.token_used
+                    existing.embedding.latency = embedding_obj.latency
+                    existing.embedding.log = embedding_obj.log
+                else:
+                    existing.embedding = embedding_obj
             self.session.add(existing)
             await self.session.flush()
             return existing
-
-        embedding = None
-        embedding_model = None
-        embedding_version = None
-        if generate_embedding and job.vector_context and not job.embedding:
-            try:
-                embedding = await generate_embedding_async(
-                    job.vector_context, model_name="models/gemini-embedding-001"
-                )
-                embedding_model = "models/gemini-embedding-001"
-                embedding_version = 1
-            except Exception as e:
-                logger.error(
-                    f"Failed to generate embedding for job '{job_url_clean}': {e}"
-                )
 
         try:
             async with self.session.begin_nested():
@@ -150,10 +153,8 @@ class JobRepository:
                 if persisted_skills:
                     job.skills = persisted_skills
 
-                if embedding:
-                    job.embedding = embedding
-                    job.embedding_model = embedding_model
-                    job.embedding_version = embedding_version
+                if embedding_obj:
+                    job.embedding = embedding_obj
 
                 await self.session.flush()
                 return job
@@ -166,10 +167,17 @@ class JobRepository:
                 if persisted_skills:
                     existing.skills = persisted_skills
                 self._update_job_fields(existing, job)
-                if embedding:
-                    existing.embedding = embedding
-                    existing.embedding_model = embedding_model
-                    existing.embedding_version = embedding_version
+                if embedding_obj:
+                    if existing.embedding:
+                        existing.embedding.embedding = embedding_obj.embedding
+                        existing.embedding.embedding_model = (
+                            embedding_obj.embedding_model
+                        )
+                        existing.embedding.token_used = embedding_obj.token_used
+                        existing.embedding.latency = embedding_obj.latency
+                        existing.embedding.log = embedding_obj.log
+                    else:
+                        existing.embedding = embedding_obj
                 self.session.add(existing)
                 await self.session.flush()
                 return existing
@@ -199,12 +207,8 @@ class JobRepository:
         target.nice_to_have = source.nice_to_have or target.nice_to_have
         target.domains = source.domains or target.domains
         target.vector_context = source.vector_context or target.vector_context
-        target.source = source.source or target.source
-
-        if source.embedding:
-            target.embedding = source.embedding
-            target.embedding_model = source.embedding_model
-            target.embedding_version = source.embedding_version
+        if source.source:
+            target.source = source.source
 
         if source.company:
             target.company = source.company

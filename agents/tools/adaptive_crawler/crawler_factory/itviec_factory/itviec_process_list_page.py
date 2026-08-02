@@ -10,12 +10,24 @@ logger = logging.getLogger(__name__)
 
 
 async def process_list_page(
-    context: AdaptivePlaywrightCrawlingContext, soup: BeautifulSoup, url: str
+    context: AdaptivePlaywrightCrawlingContext,
+    soup: BeautifulSoup,
+    url: str,
+    config: dict | None = None,
 ) -> None:
     context.log.info(f"Parsing ITViec list page: {url}")
-    job_links = soup.select(
-        "h3[data-search--job-selection-target='jobTitle'] a, h3.imt-3 a"
+
+    selectors = config.get("selectors", {}) if config else {}
+    job_link_selector = selectors.get(
+        "job_link",
+        "h3[data-search--job-selection-target='jobTitle'] a, h3.imt-3 a",
     )
+    pagination_selector = selectors.get(
+        "pagination_page_link",
+        "nav.ipagination div.page a",
+    )
+
+    job_links = soup.select(job_link_selector)
     enqueued_count = 0
     seen_urls = set()
 
@@ -59,7 +71,7 @@ async def process_list_page(
                 pass
         else:
             page_nums = []
-            for page_elem in soup.select("nav.ipagination div.page a"):
+            for page_elem in soup.select(pagination_selector):
                 txt = page_elem.get_text(strip=True)
                 if txt.isdigit():
                     page_nums.append(int(txt))

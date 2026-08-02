@@ -1,16 +1,24 @@
 from __future__ import annotations
 
 from datetime import datetime
+from decimal import Decimal
 
-from pgvector.sqlalchemy import Vector
-from sqlalchemy import JSON, CheckConstraint, Index
+from pydantic import model_validator
+from sqlalchemy import JSON, CheckConstraint, Index, Numeric
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from sqlmodel import Column, Field, Relationship, SQLModel
 
-from app.core.enums import Currency, JobStatus, SeniorityLevel, WorkingModel
-from app.db.base_model import BaseModel
+from app.core.enums import (
+    CrawlWebsite,
+    Currency,
+    JobStatus,
+    SeniorityLevel,
+    WorkingModel,
+)
+from app.db.base_model import BaseModel, EmbeddingModel
 from app.modules.company.models import Company
+from app.utils.utils import validate_salary_range
 
 
 class JobSkill(SQLModel, table=True):
@@ -18,6 +26,8 @@ class JobSkill(SQLModel, table=True):
 
     job_id: int = Field(foreign_key="jobs.id", primary_key=True, ondelete="CASCADE")
     skill_id: int = Field(foreign_key="skills.id", primary_key=True, ondelete="CASCADE")
+
+    __table_args__ = (Index("idx_job_skills_skill_id", "skill_id"),)
 
 
 class Skills(SQLModel, table=True):
@@ -27,14 +37,41 @@ class Skills(SQLModel, table=True):
     name: str = Field(index=True, unique=True)
     category: str
 
-    jobs: list[Job] = Relationship(
+    jobs: list["Job"] = Relationship(  # noqa: UP037
         sa_relationship=relationship(
             "Job",
             back_populates="skills",
             secondary="job_skills",
             uselist=True,
-            lazy="selectin",
+            passive_deletes=True,
+            lazy="select",
         )
+    )
+
+
+class JobEmbedding(EmbeddingModel, table=True):
+    __tablename__ = "job_embeddings"
+
+    job_id: int = Field(
+        foreign_key="jobs.id", unique=True, index=True, ondelete="CASCADE"
+    )
+
+    job: Job = Relationship(
+        sa_relationship=relationship(
+            "Job",
+            back_populates="embedding",
+            uselist=False,
+        )
+    )
+
+    __table_args__ = (
+        Index(
+            "idx_job_embeddings_embedding_hnsw",
+            "embedding",
+            postgresql_using="hnsw",
+            postgresql_with={"m": 16, "ef_construction": 64},
+            postgresql_ops={"embedding": "vector_cosine_ops"},
+        ),
     )
 
 
@@ -48,8 +85,8 @@ class Job(BaseModel, table=True):
     job_description: str
     expired_date: datetime
     seniority: SeniorityLevel = Field(index=True)
-    min_salary: float
-    max_salary: float
+    min_salary: Decimal = Field(sa_column=Column(Numeric(12, 2), nullable=False))
+    max_salary: Decimal = Field(sa_column=Column(Numeric(12, 2), nullable=False))
     currency: Currency = Field(default=Currency.VND, index=True)
     working_hours: str
     working_model: WorkingModel = Field(default=WorkingModel.ONSITE, index=True)
@@ -68,24 +105,12 @@ class Job(BaseModel, table=True):
         default=None, sa_column=Column(JSONB().with_variant(JSON(), "sqlite"))
     )
     vector_context: str
-    embedding: list[float] | None = Field(
-        default=None, sa_column=Column(Vector(768).with_variant(JSON(), "sqlite"))
-    )
-    embedding_model: str | None = Field(default=None, index=True)
-    embedding_version: int | None = Field(default=None, index=True)
-    source: str
+    source: CrawlWebsite = Field(index=True)
     url: str = Field(unique=True, index=True)
 
     __table_args__ = (
         CheckConstraint(
             "min_salary <= max_salary", name="check_min_salary_le_max_salary"
-        ),
-        Index(
-            "idx_jobs_embedding_hnsw",
-            "embedding",
-            postgresql_using="hnsw",
-            postgresql_with={"m": 16, "ef_construction": 64},
-            postgresql_ops={"embedding": "vector_cosine_ops"},
         ),
     )
 
@@ -93,7 +118,7 @@ class Job(BaseModel, table=True):
         sa_relationship=relationship(
             "Company",
             back_populates="jobs",
-            lazy="selectin",
+            lazy="joined",
         )
     )
     skills: list[Skills] = Relationship(
@@ -102,6 +127,22 @@ class Job(BaseModel, table=True):
             back_populates="jobs",
             secondary="job_skills",
             uselist=True,
+            passive_deletes=True,
             lazy="selectin",
         )
     )
+    embedding: JobEmbedding | None = Relationship(
+        sa_relationship=relationship(
+            "JobEmbedding",
+            back_populates="job",
+            uselist=False,
+            cascade="all, delete-orphan",
+            passive_deletes=True,
+            lazy="select",
+        )
+    )
+
+    @model_validator(mode="after")
+    def validate_salary_range(self):
+        validate_salary_range(self.min_salary, self.max_salary)
+        return self

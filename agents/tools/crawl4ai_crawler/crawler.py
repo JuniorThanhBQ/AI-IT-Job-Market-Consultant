@@ -63,7 +63,7 @@ def clean_json_string(s: str) -> str:
 
 async def run_crawl4ai_main() -> None:
     engine = create_async_engine(
-        str(settings.ASYNC_SQLALCHEMY_DATABASE_URI), echo=False
+        str(settings.database.ASYNC_SQLALCHEMY_DATABASE_URI), echo=False
     )
     session_factory = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 

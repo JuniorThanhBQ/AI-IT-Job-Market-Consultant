@@ -241,9 +241,16 @@ pnpm-debug.log*
 next-env.d.ts
 
 AGENTS.md
+AGENTS-HISTORY.md
 .agents/
 
 **/crawl_website_information/**/*.html
 
 test-results/
 tmp/
+
+models_temp.py
+
+# Rclone config credentials
+rclone.conf
+backend/rclone.conf

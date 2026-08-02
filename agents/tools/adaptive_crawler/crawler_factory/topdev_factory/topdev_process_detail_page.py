@@ -2,36 +2,17 @@ import json
 import logging
 import re
 from datetime import datetime, timezone
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from crawlee import Request
 from crawlee.crawlers import AdaptivePlaywrightCrawlingContext
 
+from app.core.enums import JobStatus
+from app.utils.topdev_utils import extract_company_meta
 from ...crawler_repository import JobRepository
 from ...crawler_adapter import JobAdapter
 
 logger = logging.getLogger(__name__)
-
-
-def extract_company_meta(company_search_context, keyword: str) -> str | None:
-    lbl = company_search_context.find(
-        lambda tag: (
-            tag.name == "span"
-            and tag.get_text(strip=True)
-            and keyword in tag.get_text(strip=True).lower()
-        )
-    )
-    if lbl and lbl.parent:
-        val_span = lbl.parent.find(
-            "span", class_=lambda c: c and "font-semibold" in c and "text-text-700" in c
-        )
-        if val_span:
-            return re.sub(r"\s+", " ", val_span.get_text(separator=" ")).strip()
-        for s in lbl.parent.find_all("span"):
-            if s != lbl:
-                return re.sub(r"\s+", " ", s.get_text(separator=" ")).strip()
-
-    return None
 
 
 async def process_detail_page(
@@ -41,6 +22,23 @@ async def process_detail_page(
     session_factory,
 ) -> None:
     context.log.info(f"Extracting detail page: {url}")
+
+    is_not_found = context.http_response and context.http_response.status_code in [
+        404,
+        410,
+    ]
+    if is_not_found:
+        context.log.info(f"Job posting closed or not found for URL: {url}")
+        async with session_factory() as session:
+            repo = JobRepository(session)
+            existing = await repo.get_by_url(url)
+            if existing:
+                existing.status = JobStatus.CLOSED
+                existing.updated_date = datetime.now(timezone.utc)
+                session.add(existing)
+                await session.commit()
+        return
+
     title = None
     company_name = None
     skills = []
@@ -279,10 +277,9 @@ async def process_detail_page(
     company_industry = extract_company_meta(company_search_context, "industry")
     company_size = extract_company_meta(company_search_context, "size")
     if company_size:
-        company_size = re.sub(r"[^\d-]", "", company_size)
-
-    if company_size:
-        company_size = re.sub(r"[^\d-]", "", company_size)
+        match = re.search(r"(\d+-\d+|\d+\+?|\d+)", company_size)
+        if match:
+            company_size = f"{match.group(1)} employees"
 
     responsibilities = []
     resp_header = soup.find(
@@ -330,7 +327,7 @@ async def process_detail_page(
         "url": url,
         "description": description,
         "requirements": requirements or "No requirements specified",
-        "nice_to_have": nice_to_have,
+        "nice_to_have": [],
         "responsibilities": responsibilities,
         "benefits": benefits,
         "location": location,
@@ -340,60 +337,6 @@ async def process_detail_page(
             "valid_through": valid_through,
         },
     }
-
-    is_updater = context.request.label == "updater_detail"
-    if is_updater:
-        is_not_found = False
-        if context.http_response and context.http_response.status_code in [
-            404,
-            410,
-        ]:
-            is_not_found = True
-        elif context._page:
-            current_url = context.page.url
-            if urlparse(current_url).path != urlparse(url).path:
-                if (
-                    "/it-jobs/" not in current_url
-                    and "/detail-jobs/" not in current_url
-                ):
-                    is_not_found = True
-
-        page_text = soup.get_text().lower()
-        is_expired_text = any(
-            msg in page_text
-            for msg in [
-                "ngưng nhận hồ sơ",
-                "hết hạn",
-                "job expired",
-                "posting expired",
-            ]
-        )
-
-        if is_not_found or is_expired_text:
-            context.log.info(
-                f"Job posting not found or expired: {url}. Marking as Closed."
-            )
-            async with session_factory() as session:
-                repo = JobRepository(session)
-                existing = await repo.get_by_url(url)
-                if existing:
-                    existing.status = "Closed"
-                    existing.updated_date = datetime.now(timezone.utc)
-                    session.add(existing)
-                    await session.commit()
-            return
-
-    if (
-        not title
-        or title.strip().lower() in ["unknown title", "no title", ""]
-        or not description
-        or description.strip().lower()
-        in ["no description provided", "not provided", ""]
-    ):
-        context.log.warning(
-            f"New parsed data is null/empty for URL {url} due to extraction error. Keeping old record."
-        )
-        return
 
     job = JobAdapter.to_job(raw_data, "topdev")
     async with session_factory() as session:

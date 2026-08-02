@@ -7,60 +7,11 @@ from crawlee import Request
 from crawlee.crawlers import AdaptivePlaywrightCrawlingContext
 
 from app.core.enums import JobStatus
+from app.utils.itviec_utils import parse_skills_paragraph
 from ...crawler_adapter import adapter_itviec
 from ...crawler_repository import JobRepository
 
 logger = logging.getLogger(__name__)
-
-
-def parse_skills_paragraph(div_elem):
-    reqs_list = []
-    nice_list = []
-    target = reqs_list
-
-    for elem in div_elem.children:
-        if not hasattr(elem, "name") or not elem.name:
-            continue
-        elem_txt = elem.get_text(strip=True).lower()
-        if elem.name in ["p", "div", "strong", "h4", "h5"]:
-            if "nice to have" in elem_txt or "preferred" in elem_txt:
-                target = nice_list
-                continue
-            elif (
-                "qualifications" in elem_txt
-                or "requirements" in elem_txt
-                or "must have" in elem_txt
-                or "skills" in elem_txt
-            ):
-                target = reqs_list
-                continue
-
-        if elem.name in ["ul", "ol"]:
-            lis = [
-                li.get_text(strip=True)
-                for li in elem.find_all("li")
-                if li.get_text(strip=True)
-            ]
-            target.extend(lis)
-        elif elem.name == "p" and not elem.find("strong"):
-            ptxt = elem.get_text(strip=True)
-            if ptxt:
-                target.append(ptxt)
-
-    if not reqs_list and not nice_list:
-        lis = [
-            li.get_text(strip=True)
-            for li in div_elem.select("li")
-            if li.get_text(strip=True)
-        ]
-        if lis:
-            reqs_list = lis
-        else:
-            c_txt = div_elem.get_text(separator="\n", strip=True)
-            if c_txt:
-                reqs_list = [c_txt]
-
-    return reqs_list, nice_list
 
 
 async def process_detail_page(
@@ -68,8 +19,19 @@ async def process_detail_page(
     soup: BeautifulSoup,
     url: str,
     session_factory,
+    config: dict | None = None,
 ) -> None:
     context.log.info(f"Processing ITViec detail page: {url}")
+
+    selectors = config.get("selectors", {}) if config else {}
+    main_container_selector = selectors.get("main_container", "div.row.im-0.ip-0")
+    company_link_selector = selectors.get(
+        "company_link", "a.text-it-black.text-hover-red.cursor-pointer"
+    )
+    company_info_row_selector = selectors.get(
+        "company_info_row", "div.row.ipy-2, div.row.border-bottom-dashed"
+    )
+    paragraph_selector = selectors.get("paragraph", "div.imy-5.paragraph")
 
     has_search_button = bool(
         soup.select_one("button.ibtn-search, button.ibtn-primary.ibtn-search")
@@ -104,7 +66,7 @@ async def process_detail_page(
         except Exception as e:
             context.log.warning(f"Error parsing JSON-LD: {e}")
 
-    main_container = soup.select_one("div.row.im-0.ip-0")
+    main_container = soup.select_one(main_container_selector)
     if not main_container:
         raise ValueError(
             "Main container <div class='row im-0 ip-0'> not found on detail page"
@@ -119,9 +81,7 @@ async def process_detail_page(
 
     company_name = schema_data.get("hiringOrganization", {}).get("name", "")
     company_href = None
-    company_elem = main_container.select_one(
-        "a.text-it-black.text-hover-red.cursor-pointer"
-    )
+    company_elem = main_container.select_one(company_link_selector)
     if company_elem:
         company_href = company_elem.get("href")
         text = company_elem.get_text(strip=True)
@@ -141,7 +101,7 @@ async def process_detail_page(
     working_days = None
     overtime_policy = None
 
-    for row in main_container.select("div.row.ipy-2, div.row.border-bottom-dashed"):
+    for row in main_container.select(company_info_row_selector):
         label_elem = row.select_one("div.text-dark-grey")
         if not label_elem:
             continue
@@ -241,7 +201,7 @@ async def process_detail_page(
     requirements = []
     nice_to_have = []
 
-    paragraph_divs = main_container.select("div.imy-5.paragraph")
+    paragraph_divs = main_container.select(paragraph_selector)
     for p_div in paragraph_divs:
         header = p_div.find(["h2", "h3"])
         header_text = header.get_text(strip=True).lower() if header else ""

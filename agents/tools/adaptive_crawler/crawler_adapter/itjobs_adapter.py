@@ -1,14 +1,12 @@
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 from typing import Any
 
 from app.core.enums import (
-    CompanyType,
-    Currency,
     JobStatus,
-    SeniorityLevel,
-    WorkingModel,
+    CrawlWebsite,
 )
-from app.modules.company.models import Company, CompanyBenefit
+from app.modules.company.models import Company
 from app.modules.job.models import Job, Skills
 from app.utils.text_parser import (
     clean_html_text,
@@ -16,76 +14,103 @@ from app.utils.text_parser import (
     resolve_company_name,
     resolve_job_description,
 )
-
+from app.utils.itviec_utils import (
+    map_company_type,
+    map_currency,
+    map_country,
+    map_working_hours,
+    map_working_model,
+    map_seniority_level,
+    process_job_vector_context,
+)
 from .base_adapter import JobAdapterBase
 
 
-def _map_working_model(raw_model: str) -> WorkingModel:
-    lowered = (raw_model or "").lower()
-    if "remote" in lowered:
-        return WorkingModel.REMOTE
-    elif "hybrid" in lowered:
-        return WorkingModel.HYBRID
-    elif "office" in lowered or "onsite" in lowered:
-        return WorkingModel.ONSITE
-    return WorkingModel.ONSITE
+def adapter_itjobs_company(raw_data: dict[str, Any]) -> Company:
+    comp_data = raw_data.get("company")
+    if not isinstance(comp_data, dict):
+        comp_data = {}
 
+    scraped_company = (comp_data.get("name") or raw_data.get("company") or "").strip()
+    title = (
+        raw_data.get("job", {}).get("title") or raw_data.get("title") or ""
+    ).strip()
+    url = (
+        raw_data.get("job", {}).get("apply_url") or raw_data.get("url") or ""
+    ).strip()
+    company_name = resolve_company_name(scraped_company, title, url, "itjobs")
 
-def _map_seniority_level(title: str, raw_seniority: str = "") -> SeniorityLevel:
-    combined = f"{title} {raw_seniority}".lower()
-    if "intern" in combined:
-        return SeniorityLevel.INTERN
-    elif "fresher" in combined:
-        return SeniorityLevel.FRESHER
-    elif "junior" in combined:
-        return SeniorityLevel.JUNIOR
-    elif "senior" in combined:
-        return SeniorityLevel.SENIOR
-    elif "lead" in combined:
-        return SeniorityLevel.LEAD
-    elif "manager" in combined:
-        return SeniorityLevel.MANAGER
-    elif "director" in combined:
-        return SeniorityLevel.DIRECTOR
-    elif "executive" in combined:
-        return SeniorityLevel.EXECUTIVE
-    return SeniorityLevel.MID
+    company_industry = "Information Technology"
+    company_size = (
+        comp_data.get("size") or raw_data.get("company_size") or "25-99"
+    ).strip()
+    company_location = (
+        raw_data.get("job", {}).get("location") or raw_data.get("location") or "Vietnam"
+    ).strip()
+    raw_comp_desc = (
+        comp_data.get("company_description")
+        or raw_data.get("company_description")
+        or ""
+    )
+    company_desc = clean_html_text(raw_comp_desc).strip()
+    company_web = ""
 
+    raw_comp_type = comp_data.get("type") or raw_data.get("company_type") or "Product"
+    company_type = map_company_type(raw_comp_type)
 
-def _map_company_type(raw_type: str) -> CompanyType:
-    lowered = (raw_type or "").lower()
-    if "outsource" in lowered or "outsourcing" in lowered:
-        return CompanyType.OUTSOURCING
-    elif "consulting" in lowered:
-        return CompanyType.CONSULTING
-    elif "agency" in lowered:
-        return CompanyType.AGENCY
-    elif "product" in lowered:
-        return CompanyType.PRODUCT
-    return CompanyType.PRODUCT
+    raw_comp_country = (
+        comp_data.get("country") or raw_data.get("company_country") or "Vietnam"
+    )
+    company_country = map_country(raw_comp_country)
 
+    company_address = comp_data.get("address") or raw_data.get("company_address")
+    company_addresses = [company_address] if company_address else []
 
-def _map_currency(raw_currency: str) -> Currency:
-    lowered = (raw_currency or "").lower()
-    if "usd" in lowered or "$" in lowered:
-        return Currency.USD
-    elif "eur" in lowered or "€" in lowered:
-        return Currency.EUR
-    elif "jpy" in lowered or "¥" in lowered:
-        return Currency.JPY
-    elif "sgd" in lowered:
-        return Currency.SGD
-    return Currency.VND
+    slogan = raw_data.get("company_slogan") or ""
+
+    raw_benefits = raw_data.get("benefits") or []
+    benefits = [clean_html_text(b).strip() for b in raw_benefits if clean_html_text(b)]
+
+    parts = []
+    if company_name:
+        parts.append(f"Company Name: {company_name}.")
+    if slogan:
+        parts.append(f"Slogan: {slogan}.")
+    if company_type:
+        parts.append(f"Type: {company_type}.")
+    if company_industry:
+        parts.append(f"Industry: {company_industry}.")
+    if company_size:
+        parts.append(f"Size: {company_size}.")
+    if company_country:
+        parts.append(f"Country: {company_country}.")
+    if company_location:
+        parts.append(f"Location: {company_location}.")
+    if company_desc:
+        parts.append(f"Description: {company_desc}.")
+    comp_vector_context = " ".join(parts)
+
+    return Company(
+        name=company_name,
+        industry=company_industry,
+        size=company_size,
+        location=company_location,
+        description=company_desc,
+        website=company_web,
+        company_type=company_type,
+        country=company_country,
+        addresses=company_addresses,
+        working_days=None,
+        vector_context=comp_vector_context,
+        benefits=benefits,
+        slogan=slogan,
+    )
 
 
 def adapter_itjobs(raw_data: dict[str, Any]) -> Job:
     job_data = raw_data.get("job")
     if not isinstance(job_data, dict):
         job_data = {}
-
-    comp_data = raw_data.get("company")
-    if not isinstance(comp_data, dict):
-        comp_data = {}
 
     requirements_data = raw_data.get("requirements")
     if not isinstance(requirements_data, dict):
@@ -119,60 +144,29 @@ def adapter_itjobs(raw_data: dict[str, Any]) -> Job:
     now = datetime.now(timezone.utc)
     expired_date = (now + timedelta(days=30)).replace(tzinfo=None)
 
-    slogan = raw_data.get("company_slogan") or ""
-
     raw_salary = (
         job_data.get("salary") or raw_data.get("salary") or "Thỏa Thuận"
     ).strip()
     min_salary, max_salary, parsed_curr_str = JobAdapterBase.parse_salary(raw_salary)
-    currency = _map_currency(parsed_curr_str)
+    currency = map_currency(parsed_curr_str)
 
     raw_seniority = (
         job_data.get("experience_level") or raw_data.get("seniority") or "Junior/Middle"
     ).strip()
-    seniority = _map_seniority_level(title, raw_seniority)
+    seniority = map_seniority_level(title, raw_seniority)
 
-    working_hours = (
+    working_hours_raw = (
         job_data.get("type") or raw_data.get("working_hours") or "Toàn thời gian"
     ).strip()
+    working_hours = map_working_hours(working_hours_raw)
 
-    working_model = _map_working_model("On-site")
+    working_model = map_working_model("On-site")
 
     url = (job_data.get("apply_url") or raw_data.get("url") or "").strip()
     if url and not url.startswith("http"):
         url = f"https://itjobs.com.vn{url}"
 
-    scraped_company = (comp_data.get("name") or raw_data.get("company") or "").strip()
-    company_name = resolve_company_name(scraped_company, title, url, "itjobs")
-
-    company_industry = "Information Technology"
-    company_size = (
-        comp_data.get("size") or raw_data.get("company_size") or "25-99"
-    ).strip()
-    company_location = (
-        job_data.get("location") or raw_data.get("location") or "Vietnam"
-    ).strip()
-    raw_comp_desc = (
-        comp_data.get("company_description")
-        or raw_data.get("company_description")
-        or ""
-    )
-    company_desc = clean_html_text(raw_comp_desc).strip()
-    company_web = ""
-
-    raw_comp_type = comp_data.get("type") or raw_data.get("company_type") or "Product"
-    company_type = _map_company_type(raw_comp_type)
-    company_country = (
-        comp_data.get("country") or raw_data.get("company_country") or "Vietnam"
-    )
-    company_address = comp_data.get("address") or raw_data.get("company_address")
-
-    raw_benefits = raw_data.get("benefits") or []
-    benefits = [
-        CompanyBenefit(name=clean_html_text(b))
-        for b in raw_benefits
-        if clean_html_text(b)
-    ]
+    company_obj = adapter_itjobs_company(raw_data)
 
     raw_skills = raw_data.get("technical_skills_tags") or raw_data.get("skills") or []
     skills = [
@@ -185,42 +179,29 @@ def adapter_itjobs(raw_data: dict[str, Any]) -> Job:
     ]
 
     content_hash = JobAdapterBase.calculate_content_hash(
-        title, company_name, job_desc, company_location
-    )
-
-    comp_vector_context = (
-        f"Company Name: {company_name}. Slogan: None. Type: {company_type}. "
-        f"Industry: {company_industry}. Size: {company_size}. Country: {company_country}. "
-        f"Location: {company_location}. Working Days: . Overtime Policy: . "
-        f"Description: {company_desc}."
+        title, company_obj.name, job_desc, company_obj.location
     )
 
     skills_str = ", ".join([s.name for s in skills])
     resp_str = "\n".join(responsibilities)
     req_str = "\n".join(required_qualifications)
 
-    job_vector_context = (
-        f"Job Title: {title}. Company: {company_name}. Location: {company_location}. Seniority: {seniority}. "
-        f"Salary: {min_salary}-{max_salary} {currency}. "
-        f"Working Hours: {working_hours}. Working Model: {working_model}. "
-        f"Domains: . Responsibilities: {resp_str}. Required Qualifications: {req_str}. "
-        f"Nice to Have: . General Description: {job_desc}. Skills: {skills_str}."
-    )
-
-    company_obj = Company(
-        name=company_name,
-        industry=company_industry,
-        size=company_size,
-        location=company_location,
-        description=company_desc,
-        website=company_web,
-        company_type=company_type,
-        country=company_country,
-        addresses=[company_address] if company_address else [],
-        working_days=None,
-        vector_context=comp_vector_context,
-        benefits=benefits,
-        slogan=slogan,
+    job_vector_context = process_job_vector_context(
+        title=title,
+        company_name=company_obj.name,
+        location=company_obj.location,
+        seniority=seniority,
+        min_sal=min_salary,
+        max_sal=max_salary,
+        currency=currency,
+        working_hours=working_hours,
+        working_model=working_model,
+        domains_str="",
+        resp_str=resp_str,
+        req_str=req_str,
+        nice_str="",
+        job_desc=job_desc,
+        skills_str=skills_str,
     )
 
     return Job(
@@ -230,8 +211,8 @@ def adapter_itjobs(raw_data: dict[str, Any]) -> Job:
         expired_date=expired_date,
         updated_date=now,
         seniority=seniority,
-        min_salary=min_salary,
-        max_salary=max_salary,
+        min_salary=Decimal(str(min_salary)),
+        max_salary=Decimal(str(max_salary)),
         currency=currency,
         working_hours=working_hours,
         working_model=working_model,
@@ -242,7 +223,7 @@ def adapter_itjobs(raw_data: dict[str, Any]) -> Job:
         nice_to_have=[],
         domains=[],
         vector_context=job_vector_context,
-        source="itjobs",
+        source=CrawlWebsite.ITJOBS,
         url=url,
         company=company_obj,
         skills=skills,

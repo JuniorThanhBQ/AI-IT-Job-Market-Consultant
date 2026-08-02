@@ -2,9 +2,8 @@ import logging
 from bs4 import BeautifulSoup
 from crawlee.crawlers import AdaptivePlaywrightCrawlingContext
 
-from app.modules.company.models import Company, CompanyBenefit
 from ...crawler_repository import CompanyRepository
-from ...crawler_adapter.itviec_adapter import _map_company_type
+from ...crawler_adapter.itviec_adapter import adapter_itviec_company
 from app.utils.text_parser import clean_html_text
 
 logger = logging.getLogger(__name__)
@@ -34,42 +33,29 @@ async def process_company_page(
     if gen_info_hdr:
         container = gen_info_hdr.find_parent("div")
         if container:
-            for row in container.select(".row"):
-                txt = row.get_text()
-                if "Company type" in txt:
-                    company_type = (
-                        row.select_one(".normal-text, div:last-child").get_text(
-                            strip=True
-                        )
-                        if row.select_one(".normal-text, div:last-child")
-                        else company_type
-                    )
-                elif "Company industry" in txt:
-                    industry = (
-                        row.select_one("div:last-child").get_text(strip=True)
-                        if row.select_one("div:last-child")
-                        else industry
-                    )
-                elif "Company size" in txt:
-                    size = (
-                        row.select_one(".normal-text, div:last-child").get_text(
-                            strip=True
-                        )
-                        if row.select_one(".normal-text, div:last-child")
-                        else size
-                    )
-                elif "Country" in txt:
-                    span = row.select_one("span")
-                    if span:
-                        country = span.get_text(strip=True)
-                elif "Working days" in txt:
-                    wd_el = row.select_one(".normal-text")
-                    if wd_el:
-                        working_days = wd_el.get_text(strip=True)
-                elif "Overtime policy" in txt:
-                    overtime_el = row.select_one(".normal-text")
-                    if overtime_el:
-                        overtime_policy = overtime_el.get_text(strip=True)
+            labels = container.select(".text-dark-grey")
+
+            for label_el in labels:
+                label_text = label_el.get_text(strip=True)
+
+                value_container = label_el.find_next_sibling("div")
+                if not value_container:
+                    continue
+
+                value_text = value_container.get_text(strip=True)
+
+                if "Company type" in label_text:
+                    company_type = value_text
+                elif "Company industry" in label_text:
+                    industry = value_text
+                elif "Company size" in label_text:
+                    size = value_text
+                elif "Country" in label_text:
+                    country = value_text
+                elif "Working days" in label_text:
+                    working_days = value_text
+                elif "Overtime policy" in label_text:
+                    overtime_policy = value_text
 
     company_type = clean_html_text(company_type)
     industry = clean_html_text(industry)
@@ -105,44 +91,46 @@ async def process_company_page(
         "h2", string=lambda s: s and "love working here" in s.lower()
     )
     if benefits_hdr:
-        benefits_ul = benefits_hdr.find_next("ul")
-        if benefits_ul:
-            for li in benefits_ul.find_all("li"):
+        container = benefits_hdr.find_parent("div")
+        if container:
+            for li in container.find_all("li"):
                 btxt = clean_html_text(li.get_text(strip=True))
                 if btxt:
-                    benefits_list.append(CompanyBenefit(name=btxt))
+                    benefits_list.append(btxt)
 
     location = "Vietnam"
     loc_div = soup.select_one("div.location span.text-break")
     if loc_div:
         location = clean_html_text(loc_div.get_text(strip=True))
 
-    vector_context = (
-        f"Company Name: {name}. Slogan: {slogan or 'N/A'}. Type: {company_type}. "
-        f"Industry: {industry}. Size: {size}. Country: {country}. Location: {location}. "
-        f"Working Days: {working_days or 'N/A'}. Overtime Policy: {overtime_policy or 'N/A'}. "
-        f"Description: {description}."
-    )
+    addresses = []
+    loc_spans = soup.select("div.location span.text-break")
+    if loc_spans:
+        for span in loc_spans:
+            addr_text = clean_html_text(span.get_text(strip=True))
+            if addr_text:
+                addresses.append(addr_text)
 
-    company_type = _map_company_type(company_type)
+    if not addresses:
+        addresses = [location] if location else []
 
-    company_obj = Company(
-        name=name,
-        industry=industry,
-        size=size,
-        location=location,
-        description=description,
-        website=website,
-        slogan=slogan,
-        company_type=company_type,
-        country=country,
-        addresses=[location],
-        working_days=working_days,
-        overtime_policy=overtime_policy,
-        vector_context=vector_context,
-        benefits=benefits_list,
-    )
+    raw_data = {
+        "name": name,
+        "industry": industry,
+        "size": size,
+        "location": location,
+        "description": description,
+        "website": website,
+        "slogan": slogan,
+        "company_type": company_type,
+        "country": country,
+        "addresses": addresses,
+        "working_days": working_days,
+        "overtime_policy": overtime_policy,
+        "benefits": benefits_list,
+    }
 
+    company_obj = adapter_itviec_company(raw_data)
     async with session_factory() as session:
         repo = CompanyRepository(session)
         await repo.save_or_update(company_obj)

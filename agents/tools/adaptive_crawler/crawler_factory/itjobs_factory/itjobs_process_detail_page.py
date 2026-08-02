@@ -118,6 +118,8 @@ async def process_detail_page(
     desc_sect = soup.select_one(".job-description-section .jp_overview_wrapper")
     if desc_sect:
         description = desc_sect.get_text("\n", strip=True)
+        if description.startswith("Tóm tắt công việc"):
+            description = description[len("Tóm tắt công việc") :].lstrip(" \t\n\r:,-")
 
     req_sect = soup.select_one(".job-requirement-section .jp_overview_wrapper")
     if req_sect:

@@ -20,3 +20,6 @@ backend = { workspace = true }
 
 [tool.pytest.ini_options]
 pythonpath = ["..", "."]
+
+[tool.setuptools]
+packages = ["subagents", "supervisor", "prompt_templates"]

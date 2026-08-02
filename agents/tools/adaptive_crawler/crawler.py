@@ -67,20 +67,16 @@ async def main() -> None:
 
     try:
         async with event_manager:
-            tasks = []
             for factory_cls, urls in CRAWLERS.items():
                 factory = factory_cls()
-                task = asyncio.create_task(
-                    run_crawler_for_site(
+                try:
+                    await run_crawler_for_site(
                         session_factory, factory, urls, storage_client, event_manager
                     )
-                )
-                tasks.append(task)
-
-            results = await asyncio.gather(*tasks, return_exceptions=True)
-
-            for factory_cls, result in zip(CRAWLERS.keys(), results):
-                if isinstance(result, Exception):
-                    logger.error(f"Crawl failed for {factory_cls.__name__}: {result}")
+                except Exception as result:
+                    logger.error(
+                        f"Crawl failed for {factory_cls.__name__}: {result}",
+                        exc_info=result,
+                    )
     finally:
         await engine.dispose()

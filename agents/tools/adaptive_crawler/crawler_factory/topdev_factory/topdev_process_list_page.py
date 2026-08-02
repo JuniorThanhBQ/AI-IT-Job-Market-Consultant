@@ -10,10 +10,19 @@ logger = logging.getLogger(__name__)
 
 
 async def process_list_page(
-    context: AdaptivePlaywrightCrawlingContext, soup: BeautifulSoup, url: str
+    context: AdaptivePlaywrightCrawlingContext,
+    soup: BeautifulSoup,
+    url: str,
+    config: dict | None = None,
 ) -> None:
     context.log.info(f"Parsing list page for URLs: {url}")
-    links = soup.select('a.line-clamp-3[href*="/detail-jobs/"]')
+
+    selectors = config.get("selectors", {}) if config else {}
+    job_link_selector = selectors.get(
+        "job_link", 'a.line-clamp-3[href*="/detail-jobs/"]'
+    )
+
+    links = soup.select(job_link_selector)
     enqueued_count = 0
 
     for link in links:

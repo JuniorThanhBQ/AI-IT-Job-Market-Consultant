@@ -13,7 +13,7 @@ def create_user(*, session: Session, user_create: UserCreate) -> User:
     db_obj = User(
         email=user_create.email,
         hashed_password=get_password_hash(user_create.password),
-        full_name=user_create.full_name,
+        username=user_create.username,
         is_superuser=user_create.is_superuser,
         is_active=user_create.is_active,
     )
@@ -41,7 +41,7 @@ def update_user(*, session: Session, db_user: User, user_in: UserUpdate) -> User
 
 def authenticate(*, session: Session, email: str, password: str) -> User | None:
     db_user = get_user_by_email(session=session, email=email)
-    if not db_user:
+    if not db_user or not db_user.hashed_password:
         return None
     is_valid, _ = verify_password(password, db_user.hashed_password)
     if not is_valid:

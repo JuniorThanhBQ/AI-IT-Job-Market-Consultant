@@ -28,6 +28,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - SENTRY_DSN=${SENTRY_DSN}
       - PYTHONPATH=/app/backend
+      - RCLONE_CONFIG=/app/backend/rclone.conf
     secrets:
       - postgres_password
       - secret_key
@@ -161,6 +162,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672//
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - RCLONE_CONFIG=/app/backend/rclone.conf
       - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
     secrets:
       - postgres_password
@@ -195,6 +197,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672//
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - RCLONE_CONFIG=/app/backend/rclone.conf
       - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
     secrets:
       - postgres_password

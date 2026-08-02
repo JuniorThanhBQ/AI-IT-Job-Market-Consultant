@@ -3,6 +3,8 @@ import re
 import hashlib
 from pathlib import Path
 
+from app.utils.utils import clean_field
+
 _SKILL_CATEGORIES_CACHE: dict[str, list[str]] | None = None
 
 
@@ -46,13 +48,14 @@ class JobAdapterBase:
     def calculate_content_hash(
         title: str, company_name: str, description: str, location: str
     ) -> str:
-        norm_title = (title or "").lower().strip()
-        norm_company = (company_name or "").lower().strip()
-        norm_description = (description or "").lower().strip()
-        norm_description = re.sub(r"<[^>]+>", "", norm_description)
-        norm_location = (location or "").lower().strip()
-        raw_fingerprint = (
-            f"{norm_title}|{norm_company}|{norm_description}|{norm_location}"
+        norm_title = clean_field(title)
+        norm_company = clean_field(company_name)
+        norm_description = re.sub(r"</?[a-zA-Z][^>]*>", " ", description or "")
+        norm_description = clean_field(norm_description)
+        norm_location = clean_field(location)
+        raw_fingerprint = "\x1f".join(
+            f"{len(f)}:{f}"
+            for f in (norm_title, norm_company, norm_description, norm_location)
         )
         return hashlib.sha256(raw_fingerprint.encode("utf-8")).hexdigest()
 

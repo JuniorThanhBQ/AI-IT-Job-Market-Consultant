@@ -28,6 +28,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 COPY backend backend
 COPY agents agents
+COPY scripts scripts
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync \
@@ -44,17 +45,27 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
-RUN groupadd -r app && useradd -r -g app app && chown app:app /app
+RUN groupadd -r -g 10001 app && useradd -r -u 10001 -g app app && chown app:app /app
 
-# hadolint ignore=DL3008
+# hadolint ignore=DL3008,DL4006
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     tini \
+    rclone \
+    gnupg2 \
+    ca-certificates \
+    && install -d /etc/apt/keyrings \
+    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/keyrings/postgresql.gpg \
+    && . /etc/os-release && echo "deb [signed-by=/etc/apt/keyrings/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt/ ${VERSION_CODENAME}-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update && apt-get install -y --no-install-recommends \
+        postgresql-client-18 \
+    && apt-get purge -y --auto-remove gnupg2 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
 COPY --from=builder --chown=app:app /app/backend /app/backend
 COPY --from=builder --chown=app:app /app/agents /app/agents
+COPY --from=builder --chown=app:app /app/scripts /app/scripts
 
 RUN python -m playwright install chromium && \
     python -m playwright install-deps chromium && \
@@ -63,7 +74,7 @@ RUN python -m playwright install chromium && \
 
 RUN chmod +x /app/agents/tools/adaptive_crawler/scripts/start_worker.sh
 
-USER app
+USER 10001
 
 ENTRYPOINT ["tini", "--"]
 CMD ["/app/agents/tools/adaptive_crawler/scripts/start_worker.sh"]

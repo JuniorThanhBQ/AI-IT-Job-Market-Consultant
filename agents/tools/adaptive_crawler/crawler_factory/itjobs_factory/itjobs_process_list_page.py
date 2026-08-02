@@ -9,13 +9,21 @@ logger = logging.getLogger(__name__)
 
 
 async def process_list_page(
-    context: AdaptivePlaywrightCrawlingContext, soup: BeautifulSoup, url: str
+    context: AdaptivePlaywrightCrawlingContext,
+    soup: BeautifulSoup,
+    url: str,
+    config: dict | None = None,
 ) -> None:
     context.log.info(f"Parsing list page for URLs: {url}")
 
+    selectors = config.get("selectors", {}) if config else {}
+    show_more_selector = selectors.get("show_more_button", "#btnShowMoreJob")
+    job_link_selector = selectors.get(
+        "job_link", "a.jp_job_post_link, a.top-jobs__item"
+    )
+
     if context._page:
-        show_more_selector = "#btnShowMoreJob"
-        for i in range(20):
+        for i in range(15):
             try:
                 button = await context.page.query_selector(show_more_selector)
                 if button and await button.is_visible():
@@ -30,7 +38,7 @@ async def process_list_page(
         html_content = await context.page.content()
         soup = BeautifulSoup(html_content, "html.parser")
 
-    anchors = soup.select("a.jp_job_post_link, a.top-jobs__item")
+    anchors = soup.select(job_link_selector)
     enqueued_count = 0
 
     for a in anchors:

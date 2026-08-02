@@ -21,6 +21,9 @@ help:
 	@echo "  make generate-secret      - Generate a secure random SECRET_KEY for FastAPI"
 	@echo "  make clean                - Cleaning unused temporary files (not include node_modules and .venv)"
 	@echo "  make full-clean           - Cleaning almost all unused temporary files"
+	@echo "  make backup-restore       - Run backup & restore admin commands (requires CMD=[list|backup|restore|restore-override])"
+	@echo "  make backup-restore-docker - Run backup & restore admin commands inside Docker container (requires CMD=[list|backup|restore|restore-override])"
+
 
 install:
 	uv sync --all-packages
@@ -66,8 +69,11 @@ docker-lint:
 
 lint:
 	uv run --project backend ruff check backend agents
+	uv run --project backend radon cc backend agents
+	uv run --project backend radon mi backend agents
 	uv run --project backend mypy backend/app
 	uv run --project backend typos
+	uv run --project backend pylint --rcfile=backend/pyproject.toml backend
 	npm --prefix frontend run lint
 	docker run --rm -i hadolint/hadolint < backend/Dockerfile
 	docker run --rm -i hadolint/hadolint < frontend/Dockerfile
@@ -94,3 +100,9 @@ clean:
 
 full-clean:
 	python scripts/clean_temporary_files.py --dist
+
+backup-restore:
+	@uv run --project backend python scripts/backup_restore_runner.py "$(CMD)"
+
+backup-restore-docker:
+	@docker compose exec celery-worker python scripts/backup_restore_runner.py "$(CMD)"

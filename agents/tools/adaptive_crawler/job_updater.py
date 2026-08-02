@@ -40,7 +40,7 @@ async def update_jobs_workflow() -> None:
                         break
 
                     logger.info(
-                        f"Đang xử lý {len(jobs_batch)} jobs, từ offset {offset}..."
+                        f"Processing {len(jobs_batch)} jobs, from offset {offset}..."
                     )
                     tasks = [process_job(job, http_session) for job in jobs_batch]
                     results = await asyncio.gather(*tasks, return_exceptions=True)
