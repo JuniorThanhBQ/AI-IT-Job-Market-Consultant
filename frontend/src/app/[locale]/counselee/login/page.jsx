@@ -2,13 +2,65 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Bot, ArrowRight } from "lucide-react";
+import { Bot, ArrowRight, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function AuthPage() {
   const t = useTranslations("Auth");
   const [isLogin, setIsLogin] = useState(true);
+  const { login, register } = useAuth();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+    setError("");
+    setIsSubmitting(true);
+    try {
+      await login(email, password);
+    } catch (err) {
+      setError(err?.message || "Invalid email or password.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || !password || !username) {
+      setError("Please fill in all fields.");
+      return;
+    }
+    setError("");
+    setIsSubmitting(true);
+    try {
+      await register(email, username, password);
+    } catch (err) {
+      setError(
+        err?.message || "Registration failed. Please check your inputs.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleToggle = (loginState) => {
+    setIsLogin(loginState);
+    setError("");
+    setEmail("");
+    setPassword("");
+    setUsername("");
+  };
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 py-24 overflow-hidden">
@@ -78,9 +130,15 @@ export default function AuthPage() {
                     {t("login_desc")}
                   </p>
 
+                  {error && (
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl p-4 mb-6 text-sm font-medium">
+                      {error}
+                    </div>
+                  )}
+
                   <form
                     className="flex flex-col gap-6"
-                    onSubmit={(e) => e.preventDefault()}
+                    onSubmit={handleLoginSubmit}
                   >
                     <div className="flex flex-col gap-2">
                       <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-2">
@@ -88,8 +146,11 @@ export default function AuthPage() {
                       </label>
                       <input
                         type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder={t("placeholder_email")}
                         className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:border-transparent transition-all text-slate-900 dark:text-white font-medium"
+                        disabled={isSubmitting}
                       />
                     </div>
 
@@ -99,8 +160,11 @@ export default function AuthPage() {
                       </label>
                       <input
                         type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         placeholder={t("placeholder_password")}
                         className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:border-transparent transition-all text-slate-900 dark:text-white font-medium"
+                        disabled={isSubmitting}
                       />
                     </div>
 
@@ -114,12 +178,20 @@ export default function AuthPage() {
                     </div>
 
                     <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full mt-4 bg-blue-600 text-white rounded-full py-4 text-lg font-bold tracking-wide shadow-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 group"
+                      whileHover={isSubmitting ? {} : { scale: 1.02 }}
+                      whileTap={isSubmitting ? {} : { scale: 0.98 }}
+                      disabled={isSubmitting}
+                      type="submit"
+                      className="w-full mt-4 bg-blue-600 text-white rounded-full py-4 text-lg font-bold tracking-wide shadow-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {t("btn_login")}
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      {isSubmitting ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <>
+                          {t("btn_login")}
+                          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
                     </motion.button>
                   </form>
 
@@ -128,7 +200,7 @@ export default function AuthPage() {
                       {t("toggle_to_signup")}
                     </p>
                     <button
-                      onClick={() => setIsLogin(false)}
+                      onClick={() => handleToggle(false)}
                       className="text-blue-600 font-bold"
                     >
                       {t("btn_ghost_signup")}
@@ -154,18 +226,27 @@ export default function AuthPage() {
                     {t("signup_desc")}
                   </p>
 
+                  {error && (
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl p-4 mb-6 text-sm font-medium">
+                      {error}
+                    </div>
+                  )}
+
                   <form
                     className="flex flex-col gap-5"
-                    onSubmit={(e) => e.preventDefault()}
+                    onSubmit={handleRegisterSubmit}
                   >
                     <div className="flex flex-col gap-2">
                       <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-2">
-                        {t("label_name")}
+                        {t("label_username")}
                       </label>
                       <input
                         type="text"
-                        placeholder={t("placeholder_name")}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder={t("placeholder_username")}
                         className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:border-transparent transition-all text-slate-900 dark:text-white font-medium"
+                        disabled={isSubmitting}
                       />
                     </div>
 
@@ -175,8 +256,11 @@ export default function AuthPage() {
                       </label>
                       <input
                         type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder={t("placeholder_email")}
                         className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:border-transparent transition-all text-slate-900 dark:text-white font-medium"
+                        disabled={isSubmitting}
                       />
                     </div>
 
@@ -186,18 +270,29 @@ export default function AuthPage() {
                       </label>
                       <input
                         type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         placeholder={t("placeholder_password")}
                         className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 focus:border-transparent transition-all text-slate-900 dark:text-white font-medium"
+                        disabled={isSubmitting}
                       />
                     </div>
 
                     <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full mt-6 bg-blue-600 text-white rounded-full py-4 text-lg font-bold tracking-wide shadow-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 group"
+                      whileHover={isSubmitting ? {} : { scale: 1.02 }}
+                      whileTap={isSubmitting ? {} : { scale: 0.98 }}
+                      disabled={isSubmitting}
+                      type="submit"
+                      className="w-full mt-6 bg-blue-600 text-white rounded-full py-4 text-lg font-bold tracking-wide shadow-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {t("btn_signup")}
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      {isSubmitting ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <>
+                          {t("btn_signup")}
+                          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
                     </motion.button>
                   </form>
 
@@ -206,7 +301,7 @@ export default function AuthPage() {
                       {t("toggle_to_login")}
                     </p>
                     <button
-                      onClick={() => setIsLogin(true)}
+                      onClick={() => handleToggle(true)}
                       className="text-blue-600 font-bold"
                     >
                       {t("btn_ghost_login")}

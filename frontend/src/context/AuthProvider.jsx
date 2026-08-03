@@ -15,6 +15,15 @@ export function AuthProvider({ children }) {
     let isMounted = true;
 
     const initializeAuth = async () => {
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (!token) {
+        if (isMounted) {
+          setLoading(false);
+        }
+        return;
+      }
+
       try {
         const userData = await userApi.getMe();
         if (isMounted) {
@@ -22,6 +31,7 @@ export function AuthProvider({ children }) {
         }
       } catch (error) {
         if (isMounted) {
+          localStorage.removeItem("token");
           setUser(null);
         }
       } finally {
@@ -40,10 +50,23 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      await authApi.login({ email, password });
-      const userData = await userApi.getMe();
-      setUser(userData);
-      router.push("/");
+      const data = await authApi.login(email, password);
+      if (data && data.access_token) {
+        localStorage.setItem("token", data.access_token);
+        const userData = await userApi.getMe();
+        setUser(userData);
+        router.push("/counselee/overview");
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const register = async (email, username, password) => {
+    try {
+      await authApi.register(email, username, password);
+      // Auto login after registering
+      await login(email, password);
     } catch (error) {
       throw error;
     }
@@ -51,7 +74,7 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await authApi.logout();
+      localStorage.removeItem("token");
     } catch (error) {
       console.error(error);
     } finally {
@@ -64,6 +87,7 @@ export function AuthProvider({ children }) {
     user,
     loading,
     login,
+    register,
     logout,
     isAuthenticated: !!user,
   };

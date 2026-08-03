@@ -2,11 +2,14 @@
 
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, Bot, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { useHeader } from "@/components/shared/hooks/useHeader";
+import { useAuth } from "@/context/AuthProvider";
+import { cn } from "@/lib/utils";
 
 export default function Header() {
+  const { isAuthenticated, user } = useAuth();
   const {
     t,
     locale,
@@ -72,12 +75,24 @@ export default function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-2">
-          <Button variant="ghost" className="text-slate-900 dark:text-white">
-            {t("login")}
-          </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6">
-            {t("get_started")}
-          </Button>
+          <Link
+            href={isAuthenticated ? "/counselee/overview" : "/counselee/login"}
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              "text-slate-900 dark:text-white font-bold",
+            )}
+          >
+            {isAuthenticated ? user?.username || "Dashboard" : t("login")}
+          </Link>
+          <Link
+            href={isAuthenticated ? "/counselee/overview" : "/counselee/login"}
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6",
+            )}
+          >
+            {isAuthenticated ? "Market Dashboard" : t("get_started")}
+          </Link>
 
           <div className="relative ml-2" ref={langMenuRef}>
             <button
@@ -196,12 +211,30 @@ export default function Header() {
 
               <div className="h-px bg-slate-200 dark:bg-slate-800 my-2" />
               <div className="flex flex-col gap-3">
-                <Button variant="outline" className="w-full justify-center">
-                  {t("login")}
-                </Button>
-                <Button className="w-full justify-center bg-blue-600 hover:bg-blue-700 text-white">
-                  {t("get_started")}
-                </Button>
+                <Link
+                  href={
+                    isAuthenticated ? "/counselee/overview" : "/counselee/login"
+                  }
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "w-full justify-center",
+                  )}
+                >
+                  {isAuthenticated ? user?.username || "Dashboard" : t("login")}
+                </Link>
+                <Link
+                  href={
+                    isAuthenticated ? "/counselee/overview" : "/counselee/login"
+                  }
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    buttonVariants({ variant: "default" }),
+                    "w-full justify-center bg-blue-600 hover:bg-blue-700 text-white",
+                  )}
+                >
+                  {isAuthenticated ? "Market Dashboard" : t("get_started")}
+                </Link>
               </div>
             </div>
           </motion.div>

@@ -32,11 +32,22 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+      target: dependencies
       args:
-        - NEXTJS_API_URL=https://api.${DOMAIN?Variable not set}
-        - NODE_ENV=production
+        - NEXTJS_API_URL=http://localhost:8081/api/v1
+        - NODE_ENV=development
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+      - NEXT_PUBLIC_API_URL=http://localhost:8081/api/v1
     volumes:
-      - ./frontend:/app/frontend
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/package.json:/app/package.json
+      - ./frontend/next.config.mjs:/app/next.config.mjs
+      - ./frontend/jsconfig.json:/app/jsconfig.json
+      - ./frontend/postcss.config.mjs:/app/postcss.config.mjs
+    command: npm run dev
 
   nginx:
     volumes:
