@@ -73,6 +73,17 @@ class ConsultantMode(StrEnum):
     DEEP_ANALYSIS_EVALUATION = "DEEP_ANALYSIS_EVALUATION"
 
 
+class ActionType(StrEnum):
+    CHART = "CHART"
+    SQL_TOP_SKILLS = "SQL_TOP_SKILLS"
+    SALARY_BENCHMARK = "SALARY_BENCHMARK"
+    DEMAND_TREND = "DEMAND_TREND"
+    CV_SCORE = "CV_SCORE"
+    SKILL_GAP = "SKILL_GAP"
+    MATCH_RANKING = "MATCH_RANKING"
+    DEFAULT = "DEFAULT"
+
+
 class CrawlWebsite(StrEnum):
     ITVIEC = "ITViec"
     TOPDEV = "TopDev"

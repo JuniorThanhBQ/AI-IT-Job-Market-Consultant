@@ -1,42 +1,38 @@
-import httpx
-import logging
-from app.utils.embeddings import get_gemini_api_key
+"""Backward-compatible module.
 
-logger = logging.getLogger(__name__)
-
-MARKET_ANALYSIS_PROMPT = """Bạn là một chuyên gia phân tích thị trường việc làm ngành IT.
-Dưới đây là các dữ liệu công việc và công ty liên quan nhất trên thị trường hiện tại:
-
-{rag_context}
-
-Yêu cầu từ người dùng:
-"{user_input}"
-
-Nhiệm vụ: Dựa vào tập dữ liệu trên, hãy phân tích thị trường, xu hướng, yêu cầu kỹ năng và trả lời trực tiếp câu hỏi của người dùng một cách chuyên nghiệp.
-
-YÊU CẦU BẮT BUỘC VỀ ĐỊNH DẠNG:
-Chỉ trả về văn bản thuần túy (plain text). TUYỆT ĐỐI KHÔNG sử dụng cú pháp Markdown (không dùng dấu * để in đậm, in nghiêng, không dùng # tạo tiêu đề, không tạo danh sách gạch đầu dòng, không code block). Nếu cần liệt kê, hãy dùng số thứ tự thông thường (1., 2., 3.).
-"""
-
-
-async def run_market_analysis(user_input: str, rag_context: str) -> str:
-    prompt = MARKET_ANALYSIS_PROMPT.format(
-        rag_context=rag_context, user_input=user_input
+Preserves the old import path:
+    from agents.subagents.market_analysis_agent.market_analysis_agent import (
+        MarketAnalysisAgent, run_market_analysis,
     )
 
-    api_key = get_gemini_api_key()
+New code should import from the package directly:
+    from agents.subagents.market_analysis_agent import MarketAnalysisAgent
+"""
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
-    payload = {"contents": [{"parts": [{"text": prompt}]}]}
+from agents.state import AgentState
+from agents.subagents.market_analysis_agent.agent import MarketAnalysisAgent
 
-    try:
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.post(url, json=payload)
-            response.raise_for_status()
-            data = response.json()
+__all__ = ["MarketAnalysisAgent", "run_market_analysis"]
 
-            result_text = data["candidates"][0]["content"]["parts"][0]["text"]
-            return result_text.strip()
-    except Exception:
-        logger.exception("Error calling Gemini API for market analysis")
-        return "Xin lỗi, hiện tại tôi không thể phân tích thị trường do lỗi kết nối với AI."
+
+async def run_market_analysis(
+    user_input: str, rag_context: str, action_type: str | None = None
+) -> str:
+    """Thin wrapper preserving the old function-based call signature."""
+    agent = MarketAnalysisAgent()
+    state = AgentState(
+        user_input=user_input,
+        rag_context=rag_context,
+        action_type=action_type,
+        user_profile=None,
+        market_analysis=None,
+        personal_evaluation=None,
+        recommendations=None,
+        execution_order=[],
+        final_result="",
+        error=None,
+        status="ok",
+        tool_outputs=None,
+    )
+    result = await agent.execute(state)
+    return result.get("market_analysis", "")

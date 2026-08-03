@@ -1,89 +1,61 @@
-import operator
-from enum import Enum
-from typing import cast, TypedDict, Annotated
-from langgraph.graph import StateGraph, START, END
+"""Supervisor orchestrator — entry point for multi-agent execution.
 
-from ..subagents.market_analysis_agent.market_analysis_agent import run_market_analysis
+This module is the only public interface for running agent pipelines.
+It builds a LangGraph graph based on the requested intent and invokes it.
+"""
+
+import logging
+from typing import Any
+
+from agents.graph import Intent, build_graph
+from agents.state import create_initial_state
+
+# ── Register all agents on import ──────────────────────────────
+# Side-effect imports: each module registers its agent instance.
+from agents.registry import register_agent
+from agents.subagents.market_analysis_agent import MarketAnalysisAgent
+from agents.subagents.personalization_agent import PersonalizationAgent
+from agents.subagents.recommendation_agent import RecommendationAgent
+
+register_agent(MarketAnalysisAgent())
+register_agent(PersonalizationAgent())
+register_agent(RecommendationAgent())
+
+logger = logging.getLogger(__name__)
 
 
-class Intent(str, Enum):
-    MARKET_ANALYSIS = "MARKET_ANALYSIS"
-    PERSONAL_STANDARD_EVALUATION = "PERSONAL_STANDARD_EVALUATION"
-    JOB_RECOMMEND = "JOB_RECOMMEND"
-    DEEP_ANALYSIS_EVALUATION = "DEEP_ANALYSIS_EVALUATION"
+async def execute_agent_flow(
+    intent: Intent,
+    user_input: str,
+    rag_context: str,
+    action_type: str | None = None,
+    user_profile: dict | None = None,
+) -> dict[str, Any]:
+    """Build and run the agent pipeline for the given intent.
 
+    Args:
+        intent: Which pipeline to execute (determines agent sequence).
+        user_input: The user's query text.
+        rag_context: Pre-built RAG context string (retrieved documents).
+        action_type: Optional action modifier (e.g. CHART, SQL_TOP_SKILLS).
+        user_profile: Optional user profile dict for personalization.
 
-class AgentState(TypedDict):
-    user_input: str
-    rag_context: str
-    execution_order: Annotated[list[str], operator.add]
-    final_result: str
+    Returns:
+        The final ``AgentState`` dict after all agents have executed.
+    """
+    graph = build_graph(intent)
 
-
-async def market_node(state: AgentState):
-    analysis_result = await run_market_analysis(
-        state["user_input"], state["rag_context"]
+    initial_state = create_initial_state(
+        user_input=user_input,
+        rag_context=rag_context,
+        action_type=action_type,
+        user_profile=user_profile,
     )
-    return {
-        "execution_order": ["market_analysis_agent"],
-        "final_result": analysis_result,
-    }
 
-
-async def personal_node(state: AgentState):
-    return {
-        "execution_order": ["personalization_agent"],
-        "final_result": state.get("final_result", ""),
-    }
-
-
-async def recommend_node(state: AgentState):
-    return {
-        "execution_order": ["recommendation_agent"],
-        "final_result": state.get("final_result", ""),
-    }
-
-
-ROUTES = {
-    Intent.MARKET_ANALYSIS: [("market_analysis", market_node)],
-    Intent.PERSONAL_STANDARD_EVALUATION: [("personalization", personal_node)],
-    Intent.JOB_RECOMMEND: [
-        ("personalization", personal_node),
-        ("recommendation", recommend_node),
-    ],
-    Intent.DEEP_ANALYSIS_EVALUATION: [
-        ("market_analysis", market_node),
-        ("personalization", personal_node),
-        ("recommendation", recommend_node),
-    ],
-}
-
-
-async def execute_agent_flow(intent: Intent, user_input: str, rag_context: str) -> dict:
-    pipeline = ROUTES[intent]
-
-    builder = StateGraph(AgentState)
-
-    for name, node_func in pipeline:
-        builder.add_node(name, node_func)
-
-    builder.add_edge(START, pipeline[0][0])
-
-    for i in range(len(pipeline) - 1):
-        builder.add_edge(pipeline[i][0], pipeline[i + 1][0])
-
-    builder.add_edge(pipeline[-1][0], END)
-
-    graph = builder.compile()
-
-    initial_state = cast(
-        AgentState,
-        {
-            "user_input": user_input,
-            "rag_context": rag_context,
-            "execution_order": [],
-            "final_result": "",
-        },
+    logger.info(
+        "Executing agent flow: intent=%s, action_type=%s",
+        intent.value,
+        action_type,
     )
 
     result = await graph.ainvoke(initial_state)

@@ -1,4 +1,5 @@
 import os
+import shlex
 import subprocess
 import sys
 
@@ -13,6 +14,14 @@ def main():
         sys.exit(1)
 
     cmd = sys.argv[1].strip()
+
+    # Validate against allowed commands to prevent argument/command injection
+    allowed_cmds = {"list", "backup", "restore"}
+    if cmd not in allowed_cmds:
+        print(f"Error: Invalid command '{cmd}'. Must be one of {allowed_cmds}")
+        sys.exit(1)
+
+    safe_cmd = shlex.quote(cmd)
     pwd = settings.backup.BACKUP_RESTORE_ADMIN_PASSWORD
 
     result = subprocess.run(
@@ -22,7 +31,7 @@ def main():
             "app.db.backup.cli",
             "--password",
             pwd,
-            cmd,
+            safe_cmd,
         ]
     )
     sys.exit(result.returncode)

@@ -118,6 +118,13 @@ enable = [
     "cyclic-import",
 ]
 
+[tool.pylint.similar]
+min-similarity-lines = 10
+ignore-comments = "yes"
+ignore-docstrings = "yes"
+ignore-imports = "yes"
+ignore-signatures = "yes"
+
 [tool.radon]
 cc_min = "B"
 show_complexity = true

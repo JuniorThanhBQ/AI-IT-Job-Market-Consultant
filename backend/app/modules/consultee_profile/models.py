@@ -46,12 +46,12 @@ class ConsulteeEmbedding(EmbeddingModel, table=True):
 class ConsulteeProfile(BaseModel, table=True):
     __tablename__ = "consultee_profiles"
 
-    first_name: str
-    last_name: str
-    birthday: date = Field(sa_type=Date)
-    biography: str
-    goal: str
-    vector_context: str
+    first_name: str | None = None
+    last_name: str | None = None
+    birthday: date | None = Field(default=None, sa_type=Date)
+    biography: str | None = None
+    goal: str | None = None
+    vector_context: str | None = None
     user_id: uuid.UUID = Field(
         foreign_key="user.id", unique=True, index=True, ondelete="CASCADE"
     )
@@ -86,12 +86,16 @@ class ConsulteeProfile(BaseModel, table=True):
 
     @field_validator("first_name", "last_name")
     @classmethod
-    def validate_names(cls, v: str) -> str:
+    def validate_names(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
         return name_validator(v)
 
     @field_validator("birthday")
     @classmethod
-    def birthday_validator(cls, v: date) -> date:
+    def birthday_validator(cls, v: date | None) -> date | None:
+        if v is None:
+            return v
         return validate_birthday(v)
 
 
@@ -101,10 +105,10 @@ class CurriculumVitae(BaseModel, table=True):
     profile_id: int = Field(
         foreign_key="consultee_profiles.id", unique=True, index=True, ondelete="CASCADE"
     )
-    general_information: str | None
-    job_position: str | None
-    summary: str | None
-    education: str | None
+    general_information: str | None = None
+    job_position: str | None = None
+    summary: str | None = None
+    education: str | None = None
     certifications: list[str] | None = Field(
         default=None, sa_column=Column(JSONB().with_variant(JSON(), "sqlite"))
     )
@@ -116,7 +120,7 @@ class CurriculumVitae(BaseModel, table=True):
     bad_text_recognition: bool = False
     exceed_page_limit: bool = False
     using_cv_mode: bool = False
-    attachment: str | None
+    attachment: str | None = None
 
     profile: ConsulteeProfile = Relationship(
         sa_relationship=relationship(

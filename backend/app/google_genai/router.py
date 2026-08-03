@@ -8,4 +8,4 @@ class ModelRouter:
             return GeminiModel.GEMINI_EMBEDDING_001
         if has_large_context or task_type == "reasoning":
             return GeminiModel.GEMINI_2_5_PRO
-        return GeminiModel.GEMINI_2_5_FLASH
+        return GeminiModel.GEMINI_3_5_FLASH

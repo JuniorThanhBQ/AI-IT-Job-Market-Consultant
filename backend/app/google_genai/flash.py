@@ -7,6 +7,6 @@ class FlashModelService(BaseModelService):
     def __init__(self, client_manager: GenAIClientManager):
         super().__init__(
             client_manager=client_manager,
-            model=GeminiModel.GEMINI_2_5_FLASH.value,
+            model=GeminiModel.GEMINI_3_5_FLASH.value,
             model_name_log="Flash",
         )
