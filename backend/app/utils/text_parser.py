@@ -4,6 +4,8 @@ from typing import Any
 import tldextract
 from bs4 import BeautifulSoup
 
+extract_tld = tldextract.TLDExtract(cache_dir=None)
+
 
 def clean_html_text(text: str) -> str:
     if not text:
@@ -26,10 +28,15 @@ def parse_to_list(input_data: Any) -> list[str]:
         return []
 
     if isinstance(input_data, list):
-        return [clean for item in input_data if (clean := clean_html_text(str(item)))]
+        results = []
+        for item in input_data:
+            results.extend(parse_to_list(item))
+        return results
 
     if not isinstance(input_data, str):
         return []
+
+    input_data = input_data.replace("•", "\n")
 
     if "<li" in input_data.lower():
         soup = BeautifulSoup(input_data, "html.parser")
@@ -105,7 +112,7 @@ def resolve_company_name(
             return candidate
 
     if job_url:
-        extracted = tldextract.extract(job_url)
+        extracted = extract_tld(job_url)
         if extracted.domain:
             return extracted.domain.capitalize()
 

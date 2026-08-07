@@ -11,7 +11,6 @@ router = APIRouter()
 
 
 def get_company_service(session: SessionDep) -> CompanyService:
-    """Dependency injector for CompanyService."""
     return CompanyService(session)
 
 
@@ -27,7 +26,6 @@ def list_companies_endpoint(
     limit: int = Query(default=20, ge=1, le=100),
     service: CompanyService = Depends(get_company_service),
 ):
-    """Retrieve filtered, paginated list of hiring companies."""
     return service.list_companies(
         name=name,
         industry=industry,
@@ -43,7 +41,6 @@ def get_company_endpoint(
     _current_user: CurrentUser,  # pylint: disable=unused-argument
     service: CompanyService = Depends(get_company_service),
 ):
-    """Retrieve detailed company card by database ID."""
     company = service.get_company(id)
     if not company:
         raise HTTPException(

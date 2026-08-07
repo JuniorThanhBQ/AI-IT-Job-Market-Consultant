@@ -10,7 +10,6 @@ from app.modules.job.models import Job
 
 
 def get_job_by_id(*, session: Session, job_id: int) -> Job | None:
-    """Retrieve a single job with all pre-loaded associations by its ID."""
     return session.get(Job, job_id)
 
 
@@ -25,8 +24,6 @@ def list_jobs(
     skip: int = 0,
     limit: int = 20,
 ) -> list[Job]:
-    """Retrieve a filtered, paginated list of open/active job postings."""
-    # Only fetch jobs that are open or draft (not closed/expired) by default
     stmt = select(Job).where(Job.status == JobStatus.OPEN)
 
     if title:

@@ -1,12 +1,12 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform, useInView } from "motion/react";
 import {
   ArrowUpRight,
-  Sparkles,
   BrainCircuit,
   TrendingUp,
+  FileUser,
   Database,
   Network,
   Server,
@@ -15,6 +15,41 @@ import VerticalScrollbar from "@/components/shared/VerticalScrollbar";
 import { useTranslations } from "next-intl";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
 import Image from "next/image";
+
+function BlinkingStat({ targetValue, label }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <div
+      ref={ref}
+      className="flex flex-col items-center justify-center p-6 md:p-8 bg-white/80 dark:bg-slate-900/40 backdrop-blur-md rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl transition-all duration-500 hover:scale-105 hover:bg-white/90 dark:hover:bg-slate-900/50"
+    >
+      <motion.span
+        animate={
+          isInView
+            ? {
+                opacity: [1, 0, 1, 0, 1, 0, 1],
+              }
+            : {
+                opacity: 0,
+              }
+        }
+        transition={{
+          duration: 1.5,
+          times: [0, 0.16, 0.33, 0.5, 0.66, 0.83, 1],
+          ease: "easeInOut",
+        }}
+        className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4 min-h-[1.2em] font-mono text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-600 dark:from-white dark:via-blue-100 dark:to-white"
+      >
+        {targetValue}
+      </motion.span>
+      <span className="text-sm md:text-base font-bold uppercase tracking-widest text-slate-500 dark:text-blue-200 text-center">
+        {label}
+      </span>
+    </div>
+  );
+}
 
 export default function Introduction() {
   const t = useTranslations("Introduction");
@@ -86,7 +121,7 @@ export default function Introduction() {
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md mb-8 shadow-sm"
           >
-            <Sparkles className="w-4 h-4 text-blue-600" />
+            <FileUser className="w-4 h-4 text-blue-600" />
             <span className="text-sm font-medium text-slate-900 dark:text-slate-200 uppercase tracking-widest">
               {t("hero_badge")}
             </span>
@@ -140,72 +175,80 @@ export default function Introduction() {
         className="relative min-h-screen flex items-center justify-center px-6 py-24 bg-slate-100 dark:bg-slate-900 z-20"
       >
         <div className="w-full max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-20%" }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="mb-24 text-center max-w-3xl mx-auto"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white mb-6">
-              {t("platforms_title")}
-            </h2>
-            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400">
-              {t("platforms_desc")}
-            </p>
-          </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-10 gap-12 lg:gap-16 items-start lg:items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="lg:col-span-4 lg:sticky lg:top-32"
+            >
+              <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6">
+                {t("platforms_title")}
+              </h2>
+              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 leading-relaxed  text-justify">
+                {t("platforms_desc")}
+              </p>
+            </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-justify">
-            {[
-              {
-                name: t("platforms_itviec"),
-                desc: t("platforms_itviec_desc"),
-                image: LOGO.ITVIEC,
-                delay: 0,
-              },
-              {
-                name: t("platforms_topdev"),
-                desc: t("platforms_topdev_desc"),
-                image: LOGO.TOPDEV,
-                delay: 0.2,
-              },
-              {
-                name: t("platforms_itjobs"),
-                desc: t("platforms_itjobs_desc"),
-                image: LOGO.ITJOBS,
-                delay: 0.4,
-              },
-            ].map((platform, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 100 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-10%" }}
-                transition={{
-                  duration: 1,
-                  delay: platform.delay,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                whileHover={{ y: -10 }}
-                className="bg-white dark:bg-slate-950 p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl group"
-              >
-                <div className="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 shadow-sm p-2 border border-slate-100 dark:border-slate-700">
-                  <Image
-                    src={platform.image}
-                    alt={platform.name}
-                    className="w-full h-full object-contain"
-                    width={112}
-                    height={112}
-                  />
-                </div>
-                <h3 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
-                  {platform.name}
-                </h3>
-                <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
-                  {platform.desc}
-                </p>
-              </motion.div>
-            ))}
+            <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
+              {[
+                {
+                  name: t("platforms_itviec"),
+                  desc: t("platforms_itviec_desc"),
+                  image: LOGO.ITVIEC,
+                  delay: 0,
+                },
+                {
+                  name: t("platforms_topdev"),
+                  desc: t("platforms_topdev_desc"),
+                  image: LOGO.TOPDEV,
+                  delay: 0.1,
+                },
+                {
+                  name: t("platforms_itjobs"),
+                  desc: t("platforms_itjobs_desc"),
+                  image: LOGO.ITJOBS,
+                  delay: 0.2,
+                },
+                {
+                  name: t("platforms_vietnamworks"),
+                  desc: t("platforms_vietnamworks_desc"),
+                  image: LOGO.VIETNAMWORKS,
+                  delay: 0.3,
+                },
+              ].map((platform, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-10%" }}
+                  transition={{
+                    duration: 0.8,
+                    delay: platform.delay,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  whileHover={{ y: -10 }}
+                  className="bg-white dark:bg-slate-950 p-8 md:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl group text-left"
+                >
+                  <div className="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 shadow-sm p-2 border border-slate-100 dark:border-slate-700">
+                    <Image
+                      src={platform.image}
+                      alt={platform.name}
+                      className="w-full h-full object-contain"
+                      width={112}
+                      height={112}
+                    />
+                  </div>
+                  <h3 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
+                    {platform.name}
+                  </h3>
+                  <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm md:text-base text-justify">
+                    {platform.desc}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -225,7 +268,7 @@ export default function Introduction() {
             <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
               {t("features_title_1")} <br /> {t("features_title_2")}
             </h2>
-            <p className="text-xl text-slate-500 dark:text-slate-400 max-w-md pb-2">
+            <p className="text-xl text-slate-500 dark:text-slate-400 max-w-md pb-2 text-right">
               {t("features_subtitle")}
             </p>
           </motion.div>
@@ -235,19 +278,19 @@ export default function Introduction() {
               {
                 title: t("feature_1_title"),
                 desc: t("feature_1_desc"),
-                icon: BrainCircuit,
+                icon: TrendingUp,
                 color: "bg-slate-50 dark:bg-slate-900",
               },
               {
                 title: t("feature_2_title"),
                 desc: t("feature_2_desc"),
-                icon: TrendingUp,
+                icon: BrainCircuit,
                 color: "bg-slate-50 dark:bg-slate-900",
               },
               {
                 title: t("feature_3_title"),
                 desc: t("feature_3_desc"),
-                icon: Sparkles,
+                icon: FileUser,
                 color: "bg-slate-50 dark:bg-slate-900",
               },
             ].map((feature, i) => (
@@ -264,11 +307,11 @@ export default function Introduction() {
                 whileHover={{ y: -12, scale: 1.02 }}
                 className={`p-10 md:p-12 rounded-[2.5rem] ${feature.color} flex flex-col justify-between aspect-square group transition-transform duration-500 border border-slate-100 dark:border-slate-800`}
               >
-                <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center mb-12 shadow-sm border border-slate-100 dark:border-slate-800">
-                  <feature.icon className="w-8 h-8 text-blue-600" />
+                <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center shadow-sm border border-slate-100 dark:border-slate-800 mx-auto my-2">
+                  <feature.icon className="w-12 h-12 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-4 group-hover:text-blue-600 transition-colors">
+                  <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 group-hover:text-blue-600 transition-colors text-center">
                     {feature.title}
                   </h3>
                   <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed text-justify">
@@ -281,34 +324,35 @@ export default function Introduction() {
         </div>
       </section>
 
-      <section
-        id="cta"
-        className="relative min-h-screen flex items-center justify-center px-6 bg-blue-600 dark:bg-blue-900 text-white z-30 overflow-hidden"
-      >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 1 }}
-          viewport={{ once: true, margin: "-20%" }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-10 text-center w-full max-w-5xl mx-auto flex flex-col items-center"
-        >
-          <h2 className="text-[8vw] md:text-[6vw] leading-none font-black tracking-tighter mb-12">
-            {t("cta_heading")}
-          </h2>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="group relative flex items-center gap-6 bg-white dark:bg-slate-950 text-blue-600 dark:text-white pl-10 pr-4 py-4 rounded-full text-2xl font-bold overflow-hidden shadow-2xl"
-          >
-            <span className="relative z-10">{t("cta_button")}</span>
-            <div className="relative z-10 w-14 h-14 bg-blue-50 dark:bg-slate-800 rounded-full flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors duration-500">
-              <ArrowUpRight className="w-7 h-7" />
-            </div>
-          </motion.button>
-        </motion.div>
+      <section className="relative overflow-hidden py-24" id="cta">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.12),transparent_55%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(circle_at_50%_100%,rgba(0,0,0,0.12),transparent_65%)]" />
 
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2)_0,transparent_50%)]" />
-        <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_bottom_left,rgba(0,0,0,0.2)_0,transparent_50%)]" />
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
+          <div className="mx-auto mb-12 max-w-2xl text-center">
+            <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-blue-500">
+              {t("stats_badge")}
+            </p>
+
+            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+              {t("stats_title")}
+            </h2>
+
+            <p className="mt-4 text-base text-muted-foreground">
+              {t("stats_desc")}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+            <BlinkingStat targetValue="1500+" label={t("stats_jobs")} />
+
+            <BlinkingStat targetValue="50+" label={t("stats_companies")} />
+
+            <BlinkingStat targetValue="500+" label={t("stats_skills")} />
+
+            <BlinkingStat targetValue="4+" label={t("stats_portals")} />
+          </div>
+        </div>
       </section>
     </div>
   );

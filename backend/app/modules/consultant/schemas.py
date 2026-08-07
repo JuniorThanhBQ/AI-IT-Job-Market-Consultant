@@ -21,3 +21,8 @@ class ConsultantResponse(BaseModel):
     sequence: list[str]
     result: str
     tool_outputs: dict[str, Any] | None = None
+
+
+class ConsultantHistoryItem(BaseModel):
+    user_input: str
+    output: str

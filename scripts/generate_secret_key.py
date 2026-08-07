@@ -3,8 +3,8 @@ import secrets
 import sys
 
 
-def generate_secret_token(length: int = 32) -> str:
-    return secrets.token_urlsafe(length)
+def generate_secret_token(nbytes: int = 32) -> str:
+    return secrets.token_urlsafe(nbytes)
 
 
 if __name__ == "__main__":

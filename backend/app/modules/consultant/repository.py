@@ -1,6 +1,7 @@
 import uuid
 from typing import Any, cast
 
+from sqlalchemy import func
 from sqlmodel import Session, select, text
 
 from app.core.enums import ConsultantMode
@@ -12,7 +13,6 @@ from app.modules.job.models import Job, JobEmbedding
 def get_relevant_jobs_by_vector(
     *, session: Session, user_vector: list[float], limit: int = 5
 ) -> list[tuple[Job, Company, float]]:
-    """Query jobs, companies and their cosine distance sorted by similarity."""
     distance_expr = cast(Any, JobEmbedding.embedding).cosine_distance(user_vector)
     stmt = (
         select(Job, Company, distance_expr)
@@ -28,8 +28,6 @@ def get_relevant_jobs_by_vector(
 def get_hybrid_candidates(
     *, session: Session, user_query: str, user_vector: list[float], limit: int = 15
 ) -> list[tuple[Job, Company, float]]:
-    """Retrieve top candidates using Vector search + Lexical full-text search merged via RRF."""
-    # 1. Vector Search Query
     distance_expr = cast(Any, JobEmbedding.embedding).cosine_distance(user_vector)
     stmt_vector = (
         select(Job, Company, distance_expr)
@@ -39,9 +37,6 @@ def get_hybrid_candidates(
         .limit(limit * 2)
     )
     vector_results = session.exec(stmt_vector).all()
-
-    # 2. Lexical Search Query
-    from sqlalchemy import func
 
     tsquery = func.plainto_tsquery("english", user_query)
     tsvector = func.to_tsvector("english", Job.vector_context)
@@ -56,7 +51,6 @@ def get_hybrid_candidates(
     try:
         lexical_results = session.exec(stmt_lexical).all()
     except Exception:
-        # Fallback to simple ILIKE search if full-text search query fails or isn't indexed
         stmt_fallback = (
             select(Job, Company, text("1.0"))
             .join(Company)
@@ -65,7 +59,6 @@ def get_hybrid_candidates(
         )
         lexical_results = session.exec(stmt_fallback).all()
 
-    # 3. Reciprocal Rank Fusion (RRF)
     doc_map = {}
 
     vector_rank = {}
@@ -94,7 +87,6 @@ def get_hybrid_candidates(
 
 
 def get_latest_jobs(*, session: Session, limit: int = 20) -> list[tuple[Job, Company]]:
-    """Query recent jobs and companies for aggregation or statistics."""
     stmt = (
         select(Job, Company)
         .join(Company)
@@ -116,7 +108,6 @@ def create_history(
     response_log: str,
     input_embedding: list[float] | None = None,
 ) -> ConsultantHistory:
-    """Create a ConsultantHistory log entry."""
     history = ConsultantHistory(
         user_id=user_id,
         user_input=user_input,

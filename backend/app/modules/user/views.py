@@ -28,14 +28,8 @@ auth_router = APIRouter()
 router = APIRouter()
 
 
-# ──────────────────────────────────────────────
-# Auth endpoints
-# ──────────────────────────────────────────────
-
-
 @auth_router.post("/register", response_model=UserPublic, status_code=201)
 def register(*, session: SessionDep, user_in: UserRegister) -> Any:
-    """Register a new user account."""
     return user_service.register_user(session=session, user_in=user_in)
 
 
@@ -44,7 +38,6 @@ def login(
     session: SessionDep,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Any:
-    """Login and obtain an access token."""
     return user_service.login_user(
         session=session, email=form_data.username, password=form_data.password
     )
@@ -52,19 +45,16 @@ def login(
 
 @auth_router.post("/verify", response_model=MessageResponse)
 def verify_account(*, session: SessionDep, body: VerifyAccount) -> Any:
-    """Verify user account (temp mock)."""
     return user_service.verify_account(session=session, token=body.token)
 
 
 @auth_router.post("/password/forgot", response_model=MessageResponse)
 def forgot_password(*, session: SessionDep, body: ForgotPassword) -> Any:
-    """Request a password reset token."""
     return user_service.request_password_reset(session=session, email=body.email)
 
 
 @auth_router.post("/password/reset", response_model=MessageResponse)
 def reset_password(*, session: SessionDep, body: NewPassword) -> Any:
-    """Reset password using a token (requires verified account)."""
     return user_service.reset_password(
         session=session, token=body.token, new_password=body.new_password
     )
@@ -72,13 +62,7 @@ def reset_password(*, session: SessionDep, body: NewPassword) -> Any:
 
 @auth_router.get("/test-token", response_model=UserPublic)
 def test_token(current_user: CurrentUser) -> Any:
-    """Validate current access token."""
     return current_user
-
-
-# ──────────────────────────────────────────────
-# User CRUD endpoints
-# ──────────────────────────────────────────────
 
 
 @router.get("/", response_model=UsersPublic)
@@ -88,7 +72,6 @@ def list_users(
     skip: int = 0,
     limit: int = 100,
 ) -> Any:
-    """List all users (admin only)."""
     statement = select(User).offset(skip).limit(limit)
     users = session.exec(statement).all()
     count = session.exec(select(func.count()).select_from(User)).one()
@@ -102,7 +85,6 @@ def create_user(
     _current_user: Annotated[User, Depends(get_current_active_superuser)],
     user_in: UserCreate,
 ) -> Any:
-    """Create a new user (admin only). is_superuser always False."""
     existing = user_repo.get_user_by_email(session=session, email=user_in.email)
     if existing:
         raise HTTPException(
@@ -119,7 +101,6 @@ def create_user(
 
 @router.get("/me", response_model=UserPublic)
 def get_me(current_user: CurrentUser) -> Any:
-    """Get current authenticated user info."""
     return current_user
 
 
@@ -130,7 +111,6 @@ def update_me(
     user_in: UserUpdateMe,
     current_user: CurrentUser,
 ) -> Any:
-    """Update current user's email and/or username."""
     if user_in.email:
         existing = user_repo.get_user_by_email(session=session, email=user_in.email)
         if existing and existing.id != current_user.id:
@@ -154,7 +134,6 @@ def update_my_password(
     body: UpdatePassword,
     current_user: CurrentUser,
 ) -> Any:
-    """Change current user's password."""
     return user_service.update_my_password(
         session=session,
         user=current_user,
@@ -169,7 +148,6 @@ def get_user(
     session: SessionDep,
     _current_user: Annotated[User, Depends(get_current_active_superuser)],
 ) -> Any:
-    """Get a user by ID (admin only)."""
     user = session.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -184,7 +162,6 @@ def update_user(
     user_id: uuid.UUID,
     user_in: UserUpdate,
 ) -> Any:
-    """Update a user by ID (admin only)."""
     db_user = session.get(User, user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -209,7 +186,6 @@ def delete_user(
     current_user: Annotated[User, Depends(get_current_active_superuser)],
     user_id: uuid.UUID,
 ) -> Any:
-    """Delete a user by ID (admin only)."""
     user = session.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

@@ -40,8 +40,10 @@ def send_email(
     subject: str = "",
     html_content: str = "",
 ) -> None:
-    assert settings.smtp.emails_enabled, "no provided configuration for email variables"
-    assert settings.smtp.EMAILS_FROM_EMAIL
+    if not settings.smtp.emails_enabled:
+        raise ValueError("no provided configuration for email variables")
+    if not settings.smtp.EMAILS_FROM_EMAIL:
+        raise ValueError("emails_from_email is not configured")
     message = emails.message.Message(
         subject=subject,
         html=html_content,
@@ -185,20 +187,33 @@ def clean_field(val: str | None) -> str:
 
 def parse_seniority_level(title: str, raw_seniority: str = "") -> SeniorityLevel:
     combined = f"{title} {raw_seniority}".lower()
-    if "intern" in combined or "thực tập" in combined:
+    if re.search(r"\bintern(ship)?s?\b", combined) or re.search(
+        r"\bthực tập( sinh)?\b", combined
+    ):
         return SeniorityLevel.INTERN
-    elif "fresher" in combined:
+    elif re.search(r"\bfreshers?\b", combined):
         return SeniorityLevel.FRESHER
-    elif "junior" in combined:
+    elif re.search(r"\bjuniors?\b", combined):
         return SeniorityLevel.JUNIOR
-    elif "senior" in combined:
+    elif re.search(r"\bseniors?\b", combined):
         return SeniorityLevel.SENIOR
-    elif "lead" in combined:
+    elif re.search(r"\blead(er)?s?\b", combined):
         return SeniorityLevel.LEAD
-    elif "manager" in combined or "quản lý" in combined:
+    elif re.search(r"\bmanagers?\b", combined) or re.search(r"\bquản lý\b", combined):
         return SeniorityLevel.MANAGER
-    elif "director" in combined or "giám đốc" in combined:
+    elif re.search(r"\bdirectors?\b", combined) or re.search(r"\bgiám đốc\b", combined):
         return SeniorityLevel.DIRECTOR
-    elif "executive" in combined:
+    elif re.search(r"\bexecutives?\b", combined):
         return SeniorityLevel.EXECUTIVE
     return SeniorityLevel.MID
+
+
+def clean_json_string(s: str) -> str:
+    s = s.strip()
+    if s.startswith("```json"):
+        s = s[7:]
+    elif s.startswith("```"):
+        s = s[3:]
+    if s.endswith("```"):
+        s = s[:-3]
+    return s.strip()

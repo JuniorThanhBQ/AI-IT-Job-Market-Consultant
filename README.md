@@ -21,7 +21,7 @@ Note: Based on the research [An LLM-Powered Agent for Real-Time Analysis of the 
 | **Backend** | FastAPI (with SQLAlchemy and Pydantic) | FastAPI 0.116+, SQLAlchemy 2.x,Pydantic 2.x | Provides a lightweight, high-performance REST API for serving job data, semantic search, and AI assistant endpoints. FastAPI integrates naturally with LangChain and asynchronous Python applications. |
 | **Frontend** | React (Vite) | React 19 + Vite 7 | Builds a responsive Single-Page Application (SPA) for job search, dashboard visualization, and AI-assisted interaction while offering fast development and optimized build performance. |
 | **Database** | PostgreSQL (with pgvector) | PostgreSQL 17 + pgvector 0.8+ | Stores structured job information together with vector embeddings, enabling both traditional SQL queries and semantic similarity search within a single database engine. |
-| **Data Collector** | Playwright | 1.54+ | Automates crawling of job postings from TopDev and ITviec while handling JavaScript-rendered pages and modern anti-bot mechanisms. This follows the data collection approach described in the reference paper. |
+| **Data Collector** | Playwright and Adaptive HTTPs crawler | 1.54+ | Automates crawling of job postings from TopDev and ITviec while handling JavaScript-rendered pages and modern anti-bot mechanisms. This follows the data collection approach described in the reference paper. |
 | **RAG and Semantic Search** | LangChain + Gemini API | LangChain 0.3+ Gemini 2.5 | Builds Retrieval-Augmented Generation pipelines, semantic search, prompt orchestration, and AI tools. Gemini performs information extraction, career consultation, and reasoning over retrieved job postings. |
 |Embedding Model | Gemini Embedding | Gemini Embedding-001 | Converts job descriptions into dense vector representations for semantic similarity search, retrieval, and Retrieval-Augmented Generation (RAG). The generated embeddings are stored in PostgreSQL using pgvector |
 | Visualization | Chart.js | 4.x | Provides interactive visualizations of hiring trends, technology demand, salary distribution, and experience requirements to improve data interpretation for users. |
@@ -47,3 +47,4 @@ Will be available after the project is finished
 - [References](docs/references/)
 - [Weekly Report](docs/weekly-report/)
 - [Software Requirements Specification](docs/srs/)
+- [AIJMC Legal Aspect](celery/tools/adaptive_crawler/crawl_website_information/aijmc_legal_aspect.md)

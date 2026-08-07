@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import {
-  Info,
   TrendingDown,
   Target,
   Workflow,
@@ -86,7 +85,6 @@ export default function AIJMCInfo() {
               transition={{ duration: 0.8, ease: "easeOut" }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md mb-8 shadow-sm"
             >
-              <Info className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
               <span className="text-sm font-medium text-slate-900 dark:text-slate-200 uppercase tracking-widest">
                 {t("hero_badge")}
               </span>

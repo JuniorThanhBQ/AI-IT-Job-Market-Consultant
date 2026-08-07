@@ -48,15 +48,25 @@ services:
           reservations:
             memory: 256M
 
-  celery-worker:
+  celery-worker-default:
     restart: always
     deploy:
         resources:
           limits:
-            cpus: '1.5'
-            memory: 2G
+            cpus: '1.0'
+            memory: 1G
           reservations:
-            memory: 512M
+            memory: 256M
+
+  celery-worker-crawler:
+    restart: always
+    deploy:
+        resources:
+          limits:
+            cpus: '1.0'
+            memory: 1G
+          reservations:
+            memory: 256M
 
   celery-beat:
     restart: always

@@ -13,7 +13,6 @@ router = APIRouter()
 
 
 def get_job_service(session: SessionDep) -> JobService:
-    """Dependency injector for JobService."""
     return JobService(session)
 
 
@@ -37,7 +36,6 @@ def list_jobs_endpoint(
     limit: int = Query(default=20, ge=1, le=100),
     service: JobService = Depends(get_job_service),
 ):
-    """Retrieve filtered, paginated list of active job postings."""
     return service.list_jobs(
         title=title,
         seniority=seniority,
@@ -55,7 +53,6 @@ def get_job_endpoint(
     _current_user: CurrentUser,  # pylint: disable=unused-argument
     service: JobService = Depends(get_job_service),
 ):
-    """Retrieve detailed job posting card by database ID."""
     job = service.get_job(id)
     if not job:
         raise HTTPException(

@@ -9,9 +9,13 @@ repos:
         args:
           - --unsafe
       - id: check-added-large-files
+        exclude: ^notebooks/
       - id: check-merge-conflict
       - id: check-ast
       - id: check-case-conflict
+      - id: check-json
+      - id: check-executables-have-shebangs
+      - id: detect-private-key
 
   - repo: https://github.com/crate-ci/typos
     rev: bee27e3a4fd1ea2111cf90ab89cd076c870fce14 # frozen: v1.48.0

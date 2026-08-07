@@ -8,4 +8,8 @@ export const LOGO = {
   GITHUB: `${CLOUDINARY_HREF}/dfolk8pz2/image/upload/v1785219389/github_logo_icon_229278_zurvhq.webp`,
   LINKEDIN: `${CLOUDINARY_HREF}/dfolk8pz2/image/upload/v1785219434/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjk4Mi1kMS0xMC5wbmc_cywacx.webp`,
   FOUNDER_AVATAR: `${CLOUDINARY_HREF}/dfolk8pz2/image/upload/v1785220828/be084301-2928-417a-a441-0e9912b0d8ec_wbjxaw.jpg`,
+  AIJMC_LOGO: `${CLOUDINARY_HREF}/dfolk8pz2/image/upload/v1786037265/AIJ-removebg-preview_xk5pz1.png`,
+  VIETNAMWORKS: `${CLOUDINARY_HREF}/dfolk8pz2/image/upload/v1786037939/channels4_profile_ssje33.jpg`,
+  NETWORK_BACKGROUND: `${CLOUDINARY_HREF}/dfolk8pz2/image/upload/v1786039456/abstract-global-dot-network-connection-and-communication-futuristic-on-blue-background-vector_be0iwe.jpg`,
+  GMAIL_LOGO: `${CLOUDINARY_HREF}/dfolk8pz2/image/upload/v1786096296/images_arvdsp.png`,
 };

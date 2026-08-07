@@ -17,7 +17,6 @@ from app.utils.utils import generate_password_reset_token, verify_password_reset
 
 
 def register_user(*, session: Session, user_in: UserRegister) -> UserPublic:
-    """Register a new user with auto-created ConsulteeProfile + CurriculumVitae."""
     existing = user_repo.get_user_by_email(session=session, email=user_in.email)
     if existing:
         raise HTTPException(
@@ -34,7 +33,6 @@ def register_user(*, session: Session, user_in: UserRegister) -> UserPublic:
 
 
 def login_user(*, session: Session, email: str, password: str) -> Token:
-    """Authenticate user and return JWT token."""
     user = user_repo.authenticate(session=session, email=email, password=password)
     if not user:
         raise HTTPException(status_code=401, detail="Incorrect email or password")
@@ -52,8 +50,6 @@ def login_user(*, session: Session, email: str, password: str) -> Token:
 
 
 def verify_account(*, session: Session, token: str) -> MessageResponse:
-    """Temp mock: mark user as verified. Will be enhanced later."""
-    # TODO: Implement real token verification logic
     email = verify_password_reset_token(token=token)
     if not email:
         raise HTTPException(
@@ -71,7 +67,6 @@ def verify_account(*, session: Session, token: str) -> MessageResponse:
 
 
 def request_password_reset(*, session: Session, email: str) -> MessageResponse:
-    """Generate a password reset token (mock email send)."""
     user = user_repo.get_user_by_email(session=session, email=email)
     if not user:
         raise HTTPException(
@@ -79,7 +74,7 @@ def request_password_reset(*, session: Session, email: str) -> MessageResponse:
         )
 
     _token = generate_password_reset_token(email=email)
-    # TODO: Send email with reset token
+
     return MessageResponse(
         message="Password recovery email sent (mocked). Token generated."
     )
@@ -88,7 +83,6 @@ def request_password_reset(*, session: Session, email: str) -> MessageResponse:
 def reset_password(
     *, session: Session, token: str, new_password: str
 ) -> MessageResponse:
-    """Reset password using a token. Only allowed if user is_verified."""
     email = verify_password_reset_token(token=token)
     if not email:
         raise HTTPException(status_code=400, detail="Invalid or expired token")
@@ -113,7 +107,6 @@ def reset_password(
 def update_my_password(
     *, session: Session, user: User, current_password: str, new_password: str
 ) -> MessageResponse:
-    """Change password for authenticated user."""
     if not user.hashed_password:
         raise HTTPException(
             status_code=400,

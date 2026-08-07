@@ -10,8 +10,6 @@ from app.modules.company.schemas import CompanyRead
 
 
 class SkillRead(BaseModel):
-    """Schema for basic skill info."""
-
     id: int
     name: str
     category: str
@@ -20,8 +18,6 @@ class SkillRead(BaseModel):
 
 
 class JobRead(BaseModel):
-    """Schema for basic job details."""
-
     id: int
     company_id: int | None = None
     title: str
@@ -40,7 +36,5 @@ class JobRead(BaseModel):
 
 
 class JobDetail(JobRead):
-    """Schema for complete job details including company context and skills required."""
-
     company: CompanyRead | None = None
     skills: list[SkillRead] = []

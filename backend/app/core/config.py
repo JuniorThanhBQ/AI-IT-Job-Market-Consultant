@@ -19,25 +19,7 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
-from app.utils.utils_configs import FlatEnvSettingsSource
-
-
-def parse_cors(v: Any) -> list[str] | str:
-    if isinstance(v, str) and not v.startswith("["):
-        return [i.strip() for i in v.split(",") if i.strip()]
-    elif isinstance(v, list | str):
-        return v
-    raise ValueError(v)
-
-
-def get_secret(name: str, default: str = "") -> str:
-    for path in (
-        Path(f"/run/secrets/{name.lower()}"),
-        Path(f"/run/secrets/{name.upper()}"),
-    ):
-        if path.is_file():
-            return path.read_text().strip()
-    return default
+from app.utils.utils_configs import FlatEnvSettingsSource, get_secret, parse_cors
 
 
 class DatabaseSettings(BaseModel):
@@ -110,7 +92,7 @@ class RedisSettings(BaseModel):
 
 class CrawlerSettings(BaseModel):
     CRAWLER_MAX_CONCURRENCY: int = 1
-    SITE_CRAWL_TIMEOUT_SECONDS: int = 300
+    SITE_CRAWL_TIMEOUT_SECONDS: int = 6600
     CRAWLER_MAX_REQUESTS_PER_CRAWL: int = 1500
     CRAWLER_MAX_REQUEST_RETRIES: int = 2
     CRAWLER_REQUEST_HANDLER_TIMEOUT_SECONDS: int = 120
@@ -153,7 +135,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = ""
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     FRONTEND_HOST: str = "http://localhost:5173"
-    ENVIRONMENT: Literal["local", "staging", "production"] = "local"
+    ENVIRONMENT: Literal["local", "development", "staging", "production"] = "local"
 
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors)

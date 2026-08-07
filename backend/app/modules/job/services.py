@@ -10,13 +10,10 @@ from app.modules.job.models import Job
 
 
 class JobService:
-    """Service layer for coordinating Job database operations."""
-
     def __init__(self, db: Session):
         self.db = db
 
     def get_job(self, job_id: int) -> Job | None:
-        """Fetch a single job posting by ID."""
         return job_repo.get_job_by_id(session=self.db, job_id=job_id)
 
     def list_jobs(
@@ -29,7 +26,6 @@ class JobService:
         skip: int = 0,
         limit: int = 20,
     ) -> list[Job]:
-        """Fetch filtered job postings list."""
         return job_repo.list_jobs(
             session=self.db,
             title=title,

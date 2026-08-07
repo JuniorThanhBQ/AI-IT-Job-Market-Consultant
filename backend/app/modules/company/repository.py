@@ -9,7 +9,6 @@ from app.modules.company.models import Company
 
 
 def get_company_by_id(*, session: Session, company_id: int) -> Company | None:
-    """Retrieve a single company by its database ID."""
     return session.get(Company, company_id)
 
 
@@ -22,7 +21,6 @@ def list_companies(
     skip: int = 0,
     limit: int = 20,
 ) -> list[Company]:
-    """Retrieve a filtered, paginated list of companies."""
     stmt = select(Company)
 
     if name:

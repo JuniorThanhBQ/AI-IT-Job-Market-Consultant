@@ -29,7 +29,7 @@ COPY backend/scripts backend/scripts
 COPY backend/README.md backend/pyproject.toml backend/
 COPY backend/app backend/app
 COPY ./database backend/database
-COPY agents agents
+COPY backend/agents backend/agents
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
@@ -38,33 +38,35 @@ RUN --mount=type=cache,target=/root/.cache/uv \
         --frozen \
         --package backend \
         --no-editable \
-        --no-dev
+        --no-dev \
+    && chmod +x backend/scripts/start.sh
+
 
 # Stage 2: App runtime
 FROM python:${PYTHON_VERSION} AS runtime
 
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH="/app" \
     PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app
 
+# hadolint ignore=DL3008
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tini \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN groupadd -r -g 10001 app && useradd -r -u 10001 -g app app
 
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
 COPY --from=builder --chown=app:app /app/backend /app/backend
-COPY --from=builder --chown=app:app /app/agents /app/agents
-
-RUN chmod +x /app/backend/scripts/start.sh
 
 USER 10001
 
-WORKDIR /app/backend
-
 EXPOSE 8000
 
-HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
-  CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=4)"]
 
+ENTRYPOINT ["tini", "--"]
 CMD ["/app/backend/scripts/start.sh"]

@@ -1,7 +1,7 @@
 [project]
 name = "backend"
 version = "1.0.0"
-description = "Add your description here"
+description = "AI IT Jobs Market Consultant platform used UV to manage backend packages"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
@@ -24,6 +24,10 @@ dependencies = [
     "sqladmin[full]>=0.30.0",
     "sqlmodel>=0.0.22",
     "tenacity>=9.1.4",
+    "langchain>=1.3.14",
+    "docling>=2.115.0",
+    "sentence-transformers>=3.0.0",
+    "fastapi-debug-toolbar>=0.6.3",
 ]
 
 [dependency-groups]
@@ -37,6 +41,7 @@ dev = [
     "typos>=1.48.0",
     "pylint>=4.0.6",
     "radon>=6.0.1",
+    "bandit>=1.9.4",
 ]
 
 [build-system]
@@ -46,6 +51,19 @@ build-backend = "hatchling.build"
 [tool.mypy]
 strict = true
 exclude = ["venv", ".venv", "alembic"]
+
+[[tool.mypy.overrides]]
+module = [
+    "celery.*",
+    "crawl4ai.*",
+    "crawlee.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "celery_app"
+ignore_errors = true
+
 
 
 [tool.ruff]
@@ -76,7 +94,6 @@ ignore = [
 "scripts/*.py" = ["T201"]
 
 [tool.ruff.lint.pyupgrade]
-# Preserve types, even if a file imports `from __future__ import annotations`.
 keep-runtime-typing = true
 
 [tool.coverage.run]
@@ -94,20 +111,12 @@ show_contexts = true
 entrypoint = "app.main:app"
 
 [tool.hatch.build.targets.wheel]
-packages = ["app"]
+packages = ["app", "agents"]
 
 [tool.pytest.ini_options]
 pythonpath = ["..", "."]
 testpaths = ["tests"]
-filterwarnings = [
-    "ignore::ResourceWarning",
-    "ignore:The value of FIRST_SUPERUSER_PASSWORD:UserWarning",
-    "ignore:The value of POSTGRES_PASSWORD:UserWarning",
-    "ignore:.*_UnionGenericAlias.*:DeprecationWarning",
-]
 
-[tool.uv.sources]
-agents = { workspace = true }
 
 [tool.pylint.messages_control]
 disable = [
@@ -119,7 +128,7 @@ enable = [
 ]
 
 [tool.pylint.similar]
-min-similarity-lines = 10
+min-similarity-lines = 20
 ignore-comments = "yes"
 ignore-docstrings = "yes"
 ignore-imports = "yes"
@@ -131,3 +140,6 @@ show_complexity = true
 show_closures = true
 mi_min = "B"
 show_mi = true
+
+[tool.bandit]
+exclude_dirs = ["tests", "test"]

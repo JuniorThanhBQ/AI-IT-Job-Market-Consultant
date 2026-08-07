@@ -24,7 +24,6 @@ def create_user(
     password: str,
     username: str | None = None,
 ) -> User:
-    """Create a user (is_superuser=False), auto-create ConsulteeProfile + CurriculumVitae."""
     user = User(
         email=email,
         hashed_password=get_password_hash(password),

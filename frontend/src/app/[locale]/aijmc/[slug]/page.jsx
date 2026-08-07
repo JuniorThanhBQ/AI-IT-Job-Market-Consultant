@@ -3,6 +3,7 @@ import HomePage from "@/features/HomePage/HomePage";
 
 export default async function DynamicAijmcPage({ params }) {
   const { slug } = await params;
+  console.log("DynamicAijmcPage debug: slug =", slug, "params =", params);
 
   const validSlugs = {
     "founder-inspiration": "founder",

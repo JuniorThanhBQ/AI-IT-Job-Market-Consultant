@@ -60,11 +60,22 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "magnetometer=(),gyroscope=(),fullscreen=(self),payment=()"
         )
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        path = request.url.path
+
+        is_admin_or_docs = path.startswith(("/docs", "/redoc", "/admin"))
+        script_src = (
+            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com https://z.clarity.ms https://*.clarity.ms https://*.googlesyndication.com; "
+            if is_admin_or_docs
+            else "script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com https://z.clarity.ms https://*.clarity.ms https://*.googlesyndication.com; "
+        )
+
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; "
-            "script-src 'self' 'unsafe-inline' data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com https://z.clarity.ms https://*.clarity.ms https://*.googlesyndication.com; "
+            f"{script_src}"
+            "base-uri 'self'; "
+            "frame-ancestors 'none'; "
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
-            "img-src 'self' data: https://lh3.googleusercontent.com https://*.tiktokcdn-us.com image/ https://fastapi.tiangolo.com; "
+            "img-src 'self' data: https://lh3.googleusercontent.com https://*.tiktokcdn-us.com https://fastapi.tiangolo.com; "
             "font-src 'self' data: https://fonts.gstatic.com; "
             "object-src 'none'; "
             "form-action 'self'; "

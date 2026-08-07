@@ -2,7 +2,8 @@
 extend-exclude = [
     "database",
     "**/tests/**",
-    "**/messages/**"
+    "**/messages/**",
+    "notebooks"
 ]
 
 [default.extend-words]

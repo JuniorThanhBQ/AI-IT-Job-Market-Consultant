@@ -9,7 +9,6 @@ services:
     volumes:
       - ./backend:/app/backend
       - ./database:/app/backend/database
-      - ./agents:/app/agents
     command: >
       uvicorn app.main:app
       --host 0.0.0.0
@@ -24,6 +23,8 @@ services:
       - ./backend:/app/backend
       - ./database:/app/backend/database
       - ./database/alembic.ini:/app/backend/alembic.ini
+    command: >
+      sh -c "alembic -c database/alembic.ini upgrade head && python app/fixtures/initial_data.py"
 
   frontend:
     restart: "no"
@@ -41,6 +42,7 @@ services:
       - WATCHPACK_POLLING=true
       - NEXT_PUBLIC_API_URL=http://localhost:8081/api/v1
     volumes:
+      - frontend_next:/app/.next
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public
       - ./frontend/package.json:/app/package.json
@@ -80,21 +82,44 @@ services:
 
   rabbitmq:
     restart: "no"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
-  celery-worker:
+  celery-worker-default:
     restart: "no"
+    build:
+      context: .
+      dockerfile: celery/Dockerfile
     volumes:
-      - ./backend:/app/backend
-      - ./agents:/app/agents
+      - ./backend/app:/app/backend/app
+      - ./celery:/app/celery
+      - ./database:/app/backend/database
+      - ./scripts:/app/scripts
+
+  celery-worker-crawler:
+    restart: "no"
+    build:
+      context: .
+      dockerfile: celery/Dockerfile
+    volumes:
+      - ./backend/app:/app/backend/app
+      - ./celery:/app/celery
       - ./database:/app/backend/database
       - ./scripts:/app/scripts
 
   celery-beat:
     restart: "no"
+    build:
+      context: .
+      dockerfile: celery/Dockerfile
     volumes:
-      - ./backend:/app/backend
-      - ./agents:/app/agents
+      - ./backend/app:/app/backend/app
+      - ./celery:/app/celery
       - ./scripts:/app/scripts
 
   redis:
     restart: "no"
+
+volumes:
+  frontend_next:

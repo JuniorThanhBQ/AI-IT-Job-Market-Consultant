@@ -3,7 +3,6 @@
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { motion } from "motion/react";
-import { Bot } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { PROJECT_NAME, LINKS } from "@/utils/const";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
@@ -13,22 +12,18 @@ export default function Footer() {
 
   const footerLinks = {
     product: [
-      { name: t("link_jd_matching"), href: "#" },
-      { name: t("link_tech_trends"), href: "#" },
-      { name: t("link_career_roadmaps"), href: "#" },
-      { name: t("link_pricing"), href: "#" },
+      { name: t("link_jd_matching"), href: "/counselee/chatbot" },
+      { name: t("link_tech_trends"), href: "/counselee/overview" },
+      { name: t("link_career_roadmaps"), href: "/counselee/overview" },
+      { name: t("link_pricing"), href: "/aijmc" },
     ],
     company: [
-      { name: t("link_about_us"), href: "#" },
-      { name: t("link_careers"), href: "#" },
-      { name: t("link_blog"), href: "#" },
-      { name: t("link_contact"), href: "#" },
+      { name: t("link_about_us"), href: "/aijmc" },
+      { name: t("link_careers"), href: "/aijmc/founder-inspiration" },
+      { name: t("link_blog"), href: "/aijmc/faq" },
+      { name: t("link_contact"), href: "/aijmc/contact" },
     ],
-    legal: [
-      { name: t("link_privacy_policy"), href: "#" },
-      { name: t("link_terms_of_service"), href: "#" },
-      { name: t("link_cookie_policy"), href: "#" },
-    ],
+    legal: [{ name: t("link_terms_of_service"), href: "/tos" }],
   };
 
   const containerVariants = {
@@ -57,8 +52,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
           <motion.div variants={itemVariants} className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-6 group">
-              <div className="w-8 h-8 bg-blue-600 dark:bg-blue-500 rounded-lg flex items-center justify-center text-white transition-transform group-hover:scale-105">
-                <Bot className="w-5 h-5" />
+              <div className="w-12 h-12  rounded-lg flex items-center justify-center text-white transition-transform group-hover:scale-105">
+                <Image
+                  src={LOGO.AIJMC_LOGO}
+                  alt="AIJMC Logo"
+                  width={320}
+                  height={320}
+                  className="h-44 w-auto object-contain"
+                />
               </div>
               <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
                 {PROJECT_NAME.LONG}

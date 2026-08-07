@@ -11,8 +11,6 @@ if TYPE_CHECKING:
 
 
 class CompanyRead(BaseModel):
-    """Schema for basic company details."""
-
     id: int
     name: str
     industry: str
@@ -33,14 +31,10 @@ class CompanyRead(BaseModel):
 
 
 class CompanyDetail(CompanyRead):
-    """Schema for company details including associated jobs."""
-
     jobs: list[JobRead] = Field(default_factory=list)
 
 
 class CompanyQueryParams(BaseModel):
-    """Pydantic model for validating query parameters in view list endpoints."""
-
     name: str | None = None
     industry: str | None = None
     company_type: CompanyType | None = None
@@ -48,7 +42,6 @@ class CompanyQueryParams(BaseModel):
     limit: int = Field(default=20, ge=1, le=100)
 
 
-# ── Resolve Circular Reference at Runtime ───────────────────────
 from app.modules.job.schemas import JobRead  # noqa: E402  # pylint: disable=reimported
 
 CompanyDetail.model_rebuild()

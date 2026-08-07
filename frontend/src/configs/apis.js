@@ -100,7 +100,15 @@ export const profileApi = {
 export const cvApi = {
   getCV: () => fetchClient("/users/me/cv/"),
   updateCV: (data) =>
-    fetchClient("/users/me/cv/", { method: "PUT", body: data }),
+    fetchClient("/users/me/cv/", {
+      method: "PUT",
+      body: data,
+    }),
+  uploadCVAttachment: (filename) =>
+    fetchClient("/users/me/cv/attachment", {
+      method: "POST",
+      body: { filename },
+    }),
   uploadAttachment: (file) => {
     // If backend expects JSON/base64 mock or file upload, we implement accordingly.
     // For now we mock it as a service upload or direct json depending on schemas.py
@@ -150,6 +158,8 @@ export const consultantApi = {
       method: "POST",
       body: { intent, action_type: actionType },
     }),
+  getHistory: () => fetchClient("/consultant/history"),
+  clearHistory: () => fetchClient("/consultant/history", { method: "DELETE" }),
 };
 
 export const companyApi = {

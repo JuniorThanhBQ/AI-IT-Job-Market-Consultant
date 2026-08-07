@@ -1,9 +1,12 @@
+import logging
 import os
 from pathlib import Path
 from typing import Any
 
 from pydantic.fields import FieldInfo
 from pydantic_settings import PydanticBaseSettingsSource
+
+logger = logging.getLogger(__name__)
 
 
 class FlatEnvSettingsSource(PydanticBaseSettingsSource):
@@ -35,8 +38,26 @@ class FlatEnvSettingsSource(PydanticBaseSettingsSource):
                                 v = v.strip().strip("'\"")
                                 data[k] = v
                     except Exception:
-                        pass
+                        logger.warning(f"Could not read env file: {path}")
 
         for k, v in os.environ.items():
             data[k] = v
         return data
+
+
+def parse_cors(v: Any) -> list[str] | str:
+    if isinstance(v, str) and not v.startswith("["):
+        return [i.strip() for i in v.split(",") if i.strip()]
+    elif isinstance(v, list | str):
+        return v
+    raise ValueError(v)
+
+
+def get_secret(name: str, default: str = "") -> str:
+    for path in (
+        Path(f"/run/secrets/{name.lower()}"),
+        Path(f"/run/secrets/{name.upper()}"),
+    ):
+        if path.is_file():
+            return path.read_text().strip()
+    return default
