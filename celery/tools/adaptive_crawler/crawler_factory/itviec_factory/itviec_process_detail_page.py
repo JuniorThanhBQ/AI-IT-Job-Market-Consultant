@@ -7,7 +7,7 @@ from crawlee import Request
 from crawlee.crawlers import AdaptivePlaywrightCrawlingContext
 
 from app.core.enums import JobStatus
-from app.utils.itviec_utils import parse_skills_paragraph
+from utils.itviec_utils import parse_skills_paragraph
 from ...crawler_adapter import adapter_itviec
 from ...crawler_repository import JobRepository
 

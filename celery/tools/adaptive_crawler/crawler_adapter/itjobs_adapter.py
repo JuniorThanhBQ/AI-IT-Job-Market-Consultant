@@ -6,13 +6,13 @@ from app.core.enums import (
 )
 from app.modules.company.models import Company
 from app.modules.job.models import Job
-from app.utils.text_parser import (
+from utils.text_parser import (
     clean_html_text,
     parse_to_list,
     resolve_company_name,
     resolve_job_description,
 )
-from app.utils.itviec_utils import (
+from utils.itviec_utils import (
     map_company_type,
     map_currency,
     map_country,

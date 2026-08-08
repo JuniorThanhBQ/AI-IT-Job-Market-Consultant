@@ -4,7 +4,7 @@ from crawlee.crawlers import AdaptivePlaywrightCrawlingContext
 
 from ...crawler_repository import CompanyRepository
 from ...crawler_adapter.itviec_adapter import adapter_itviec_company
-from app.utils.text_parser import clean_html_text
+from utils.text_parser import clean_html_text
 
 logger = logging.getLogger(__name__)
 

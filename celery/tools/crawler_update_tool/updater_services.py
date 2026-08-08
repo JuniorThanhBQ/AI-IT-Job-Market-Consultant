@@ -21,7 +21,7 @@ HTTP_SEMAPHORE = asyncio.Semaphore(MAX_CONCURRENCY)
 async def check_url_status(session: aiohttp.ClientSession, url: str) -> int:
     try:
         async with HTTP_SEMAPHORE:
-            await asyncio.sleep(random.SystemRandom().uniform(1, 2))
+            await asyncio.sleep(random.SystemRandom().uniform(1, 1.5))
             async with session.get(
                 url, timeout=aiohttp.ClientTimeout(total=10), allow_redirects=True
             ) as response:

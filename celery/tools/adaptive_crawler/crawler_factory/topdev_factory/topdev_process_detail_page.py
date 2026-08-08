@@ -8,7 +8,7 @@ from crawlee import Request
 from crawlee.crawlers import AdaptivePlaywrightCrawlingContext
 
 from app.core.enums import JobStatus
-from app.utils.topdev_utils import extract_company_meta
+from utils.topdev_utils import extract_company_meta
 from ...crawler_repository import JobRepository
 from ...crawler_adapter import JobAdapter
 

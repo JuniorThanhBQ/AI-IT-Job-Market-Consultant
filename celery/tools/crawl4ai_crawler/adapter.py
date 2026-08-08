@@ -7,8 +7,8 @@ from app.core.enums import (
 from app.modules.company.models import Company
 from app.modules.job.models import Job
 from tools.adaptive_crawler.crawler_adapter.base_adapter import JobAdapterBase
-from app.utils.text_parser import clean_html_text, parse_to_list
-from app.utils.itviec_utils import (
+from utils.text_parser import clean_html_text, parse_to_list
+from utils.itviec_utils import (
     map_company_type,
     map_currency,
     map_country,
