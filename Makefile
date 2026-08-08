@@ -54,10 +54,10 @@ dev-app-down:
 	docker compose down -v
 
 prod-app-build:
-	docker compose -f docker-compose.prod.yml up -d --build
+	docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
 prod-app-down:
-	docker compose -f docker-compose.prod.yml down -v
+	docker compose -f docker-compose.yml -f docker-compose.prod.yml down -v
 
 db-migrate:
 	uv run --project backend alembic -c database/alembic.ini upgrade head
