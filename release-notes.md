@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump the github-actions group across 1 directory with 8 updates. PR [#40](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/40) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump h2 from 4.3.0 to 4.4.1. PR [#38](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/38) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump cryptography from 49.0.0 to 50.0.0. PR [#37](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/37) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the python-packages group across 1 directory with 2 updates. PR [#39](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/39) by [@dependabot[bot]](https://github.com/apps/dependabot).
