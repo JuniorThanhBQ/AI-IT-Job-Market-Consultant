@@ -127,6 +127,7 @@ services:
     command: ["/app/celery/scripts/start_worker.sh", "-Q", "celery"]
     networks:
       - backend
+      - frontend
     depends_on:
       db:
         condition: service_healthy
@@ -167,6 +168,7 @@ services:
     shm_size: '1gb'
     networks:
       - backend
+      - frontend
     depends_on:
       db:
         condition: service_healthy
