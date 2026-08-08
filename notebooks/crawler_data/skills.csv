@@ -1,0 +1,1308 @@
+id,name,category
+1,Tester,Technical
+2,Automation Test,Testing & QA
+130,Azure,Technical
+230,DevSecOps,Security
+5,Agile,Methodology
+6,Cloud,Cloud & DevOps
+7,Microservices,Methodology
+8,Stakeholder management,Soft Skills
+9,Team Management,Soft Skills
+10,Spring Boot,Technical
+11,Kubernetes,Technical
+12,Spring,Technical
+13,SQL,Technical
+14,Design,Technical
+964,Adobe Photoshop,Design & UX
+133,NextJS,Technical
+17,C#,Technical
+18,OOP,Methodology
+19,Python,Technical
+232,Application Security,Security
+135,Database,Database & Storage
+22,DevOps,Methodology
+23,Linux,Technical
+24,JavaScript,Technical
+25,HTML5,Technical
+26,ERP,Enterprise Systems
+136,IBM DB2,Database & Storage
+28,VueJS,Technical
+29,Git,Technical
+233,Mobile Apps,Embedded & Hardware
+560,AWS CloudFormation,Technical
+139,Middleware,Technical
+33,Data Engineer,Data & AI
+34,Data Warehousing,Data & AI
+35,Data Quality Tools,Data & AI
+36,ETL,Data & AI
+447,VBA,Technical
+236,Sharepoint,Enterprise Systems
+39,Rust,Technical
+40,Swift,Technical
+41,English,Language
+336,TensorFlow,Technical
+143,GitHub,Technical
+44,Kafka,Technical
+448,Big Data,Data & AI
+46,RPA,Technical
+1746,Kanban,Methodology
+240,ISO 27001,Security
+49,C++,Technical
+50,Microservices Architecture,Methodology
+51,SOLID Principles,Methodology
+52,Cloud Security,Security
+450,IT Governance,Security
+54,API,Technical
+2101,Metabase,Data & AI
+149,AWS Lambda,Technical
+2682,Japanese - N2,Language
+58,Data Analysis,Data & AI
+151,Kotlin,Technical
+60,AI,Data & AI
+152,Android,Technical
+62,NoSQL,Database & Storage
+453,Data Science,Data & AI
+64,Risk Assessment / BCP,Security
+65,Business Analysis,Product & Business Analysis
+2683,BSE Leader,Technical
+155,NodeJS,Technical
+1085,GraphQL,Methodology
+69,Tableau,Data & AI
+157,Generative AI,Data & AI
+158,Project Management,Soft Skills
+72,Angular,Technical
+73,.NET,Technical
+159,Hardware Troubleshooting,Embedded & Hardware
+75,Jenkins,Technical
+160,Bash Shell,Technical
+77,Embedded,Embedded & Hardware
+456,Trello,Technical
+79,Risk Management,Soft Skills
+80,Identity & Access Management,Soft Skills
+81,PCI DSS,Security
+162,CI/CD,Methodology
+83,Motion Design,Technical
+163,ReactJS,Technical
+566,Robot Framework,Testing & QA
+249,SIEM,Security
+87,QA QC,Testing & QA
+458,Redux,Technical
+865,Wordpress,Enterprise Systems
+90,Deep Learning,Data & AI
+168,ServiceNow,Enterprise Systems
+1299,Adobe Illustrator,Design & UX
+170,Leadership,Soft Skills
+94,CSS 3,Technical
+95,CSS,Technical
+350,BRD,Product & Business Analysis
+351,Scrum,Methodology
+173,Security,Technical
+174,Google Cloud,Technical
+867,Figma,Technical
+101,LLM,Data & AI
+769,Blazor,Technical
+177,PHP,Technical
+1522,.Net Core,Technical
+179,Cloud-native Architecture,Cloud & DevOps
+258,UI-UX,Design & UX
+1523,ASP.NET,Technical
+182,Jira,Technical
+2822,Automation Testing,Technical
+466,Web3.js,Technical
+111,Networking,Cloud & DevOps
+112,Java,Technical
+467,MobX,Technical
+2685,Security Engineer,Technical
+187,Playwright,Testing & QA
+116,TestRail,Technical
+360,ITIL Foundation,Methodology
+118,IT Support,Technical
+119,MySQL,Technical
+120,AWS,Technical
+189,Product Owner,Product & Business Analysis
+122,FastAPI,Technical
+123,Docker,Technical
+575,French,Language
+125,GitLab CI,Technical
+470,MariaDB,Technical
+2823,MS Virtualization Technologies,Technical
+1753,Algorithms,Technical
+194,Japanese,Language
+1754,Scala,Technical
+270,Golang,Technical
+271,Software Architecture,Methodology
+273,Design Systems,Design & UX
+274,PostgreSql,Technical
+201,Web API,Technical
+1756,Hyper-V,Cloud & DevOps
+203,TypeScript,Technical
+204,HTML,Technical
+276,SRS,Product & Business Analysis
+207,Chinese,Language
+210,Computer Vision,Data & AI
+277,BPMN,Product & Business Analysis
+278,Power BI,Data & AI
+213,Machine Learning,Data & AI
+214,NLP,Data & AI
+2687,Penetration Test,Technical
+2824,ChatGPT,Technical
+1427,CompTIA Security+,Security
+370,A/B testing,Testing & QA
+982,IT Audit,Security
+372,Product strategy,Product & Business Analysis
+373,Splunk,Cloud & DevOps
+374,IoT,Embedded & Hardware
+1205,ROS2,Embedded & Hardware
+288,Microsoft SQL Server,Technical
+682,WinForms,Technical
+984,Power Automate,Technical
+227,JSON,Technical
+1206,Robotics,Embedded & Hardware
+292,Postman,Testing & QA
+293,OWASP,Security
+685,Presale,Product & Business Analysis
+986,Container Security,Security
+1312,ASPICE,Embedded & Hardware
+382,Enterprise Architecture,Methodology
+383,System Architecture,Methodology
+688,MLOps,Data & AI
+300,Product canvas,Product & Business Analysis
+488,Spark,Technical
+1208,R,Data & AI
+1313,Korean,Language
+304,Amazon RDS,Database & Storage
+2825,Claude,Technical
+597,SOAR,Security
+2558,Cucumber,Testing & QA
+391,AUTOSAR,Embedded & Hardware
+309,Amazon Aurora,Database & Storage
+392,Objective C,Technical
+311,System Admin,Cloud & DevOps
+312,Solution Architecture,Methodology
+1430,Cisco,Cloud & DevOps
+394,React Native,Technical
+4854,Spring MVC,Technical
+316,MongoDB,Technical
+994,Entity Framework,Technical
+318,Oracle,Technical
+1883,NetSuite,Enterprise Systems
+320,Selenium,Testing & QA
+398,VMware,Cloud & DevOps
+498,Terraform,Technical
+2691,SaaS,Technical
+604,Prompt Engineering,Data & AI
+797,Waterfall Methodology,Methodology
+699,Dart,Technical
+700,Technical Writing,Product & Business Analysis
+2827,Statistics,Technical
+505,NestJS,Technical
+330,Product roadmap,Product & Business Analysis
+609,kotlinx.coroutines,Technical
+1217,Matlab,Data & AI
+409,Digital tokens,Technical
+1645,Integration test,Testing & QA
+2828,Looker Studio,Data & AI
+3365,Performance Testing,Technical
+803,Android studio,Technical
+2117,Data modeling,Data & AI
+2830,SQL Tuning,Technical
+514,Statistical Analysis,Data & AI
+4855,Software Deployment,Technical
+2832,Shell Script,Technical
+1118,Shopify,Enterprise Systems
+905,Product Design,Design & UX
+519,Games,Technical
+2833,MS SQL,Technical
+1008,CRM,Enterprise Systems
+908,GitLab,Technical
+2699,REST API,Methodology
+3367,ISTQB,Technical
+1122,Unit test,Testing & QA
+428,EDR,Security
+526,Business Intelligence,Data & AI
+430,Product Management,Soft Skills
+1012,Unity,Technical
+528,Adobe,Design & UX
+2014,vb.net,Technical
+2570,Unix,Technical
+531,Penetration Testing,Security
+436,Microsoft Dynamics 365,Enterprise Systems
+437,GitHub Actions,Technical
+3368,Test Design,Technical
+439,JUnit,Testing & QA
+2836,HA,Technical
+441,Incident Response,Security
+442,Encryption Key Management,Soft Skills
+1017,ELK,Technical
+725,Embedded C,Technical
+918,CANalyer,Embedded & Hardware
+2837,Performance tuning,Technical
+728,GCP,Technical
+824,Data mining,Data & AI
+3109,Multi-Threading,Technical
+1901,XML,Technical
+2839,AI (Artificial Intelligence),Data & AI
+2840,Design Patterns,Methodology
+2841,Architecture,Technical
+830,Flutter,Technical
+1133,PQA,Testing & QA
+1025,Japanese IT Communication,Language
+2356,JQuery,Technical
+1666,Cloud Migration Consulting,Cloud & DevOps
+1667,Databricks,Data & AI
+836,User story,Product & Business Analysis
+837,PyTorch,Technical
+2708,Core Banking,Technical
+652,Windows,Cloud & DevOps
+1030,Bridge Engineer,Technical
+1031,Information Security,Security
+746,Firmware,Embedded & Hardware
+841,Appium,Testing & QA
+3369,Security Testing,Technical
+1346,scikit-learn,Technical
+1244,Ansible,Technical
+2843,Ecommerce,Technical
+846,OCR,Data & AI
+937,Redis,Technical
+1142,Blockchain,Technical
+939,Django,Technical
+3111,Valgrind,Technical
+2845,RESTful API,Methodology
+1039,Web Application Firewall,Security
+3370,Non-Functional Testing,Technical
+2848,JSF,Technical
+856,MVVM,Technical
+1252,AWS Glue,Technical
+1045,Bugzilla,Testing & QA
+1678,Change Management,Soft Skills
+2367,HRM / HCM,Enterprise Systems
+2849,Maven,Technical
+4856,GRC,Technical
+2851,Gradle,Technical
+1050,C language,Technical
+1473,Laravel,Technical
+1359,UML,Product & Business Analysis
+1474,MVC,Technical
+2852,Mockito,Technical
+1263,Magento,Enterprise Systems
+1056,Windows Server,Cloud & DevOps
+2147,Perl,Technical
+2590,OutSystems,Enterprise Systems
+1161,IT Communication/Translation,Technical
+2721,Product Operation,Technical
+1163,Firewall,Security
+4857,Technology Advisory,Technical
+5344,SAP ERP,Enterprise Systems
+1269,Cybersecurity,Security
+5345,Success Factor,Technical
+2483,Data-driven,Data & AI
+1169,Digital Forensics,Security
+1068,DBT,Data & AI
+1069,Google BigQuery,Technical
+1780,Odoo,Enterprise Systems
+2856,SDLC,Technical
+3375,ES6,Technical
+2727,Tensorflow,Technical
+2157,SSO,Security
+1488,iOS,Technical
+1589,pytest,Testing & QA
+1696,SAP,Enterprise Systems
+4860,Hệ Thống System/Network,Technical
+3119,Data Modeling,Data & AI
+2160,RxJS,Technical
+1700,Neo4j,Technical
+1381,Ruby on Rails,Technical
+3120,Apache Kafka,Technical
+1184,RTOS,Embedded & Hardware
+1596,Market research,Product & Business Analysis
+3603,OCP,Technical
+2163,Apache Spark,Technical
+2732,flask,Technical
+2862,Hadoop,Technical
+2863,Hbase,Technical
+2864,Apache Hive,Technical
+3005,ASP.NET Core,Technical
+3378,CSS3,Technical
+2608,Solid,Methodology
+2609,ABAP,Technical
+3857,Domain,Technical
+3008,Business Process Model and Notation (BPMN),Technical
+2501,Mockups,Design & UX
+3124,SCADA,Technical
+3125,DDE,Technical
+3011,PSM,Technical
+2743,Automation Tester,Technical
+2616,Technical Leader,Technical
+2617,Business Analyst,Technical
+1721,Strategy planning,Product & Business Analysis
+2618,SFA/DMS,Technical
+2619,Restful Api,Methodology
+2074,J2EE,Technical
+1620,Visual Design,Design & UX
+2744,SAP Consultant,Enterprise Systems
+2745,Software Engineer,Technical
+3126,Modbus,Technical
+2407,Firebase,Technical
+3127,DCS,Technical
+2080,Pandas,Technical
+3858,SOA,Methodology
+1818,AngularJS,Technical
+3129,Cryptography,Technical
+3016,CUDA,Technical
+3017,Kaggle,Technical
+2518,Predictive Analytics,Data & AI
+4861,Kỹ năng giao tiêp,Technical
+3019,TensorRT,Technical
+3020,Image Processing,Technical
+2196,Elasticsearch,Technical
+3382,ChaiJS,Technical
+2632,Japanese - N3,Language
+2633,C/C++,Technical
+2634,Simulink,Technical
+3022,PRINCE2,Methodology
+3132,IPS,Technical
+3133,Fintech,Technical
+3383,Cloud Computing,Cloud & DevOps
+3135,OIDC,Technical
+2311,Clean Architecture,Methodology
+3027,REST,Technical
+3607,Pydantic,Technical
+1839,Competitive Analysis,Product & Business Analysis
+3608,Milvus,Technical
+2643,Network,Technical
+2644,IT Security,Technical
+3030,STEP,Technical
+1844,Sketch,Design & UX
+1987,Less,Technical
+2318,OpenCV,Technical
+3138,Cobol,Technical
+3032,OAUTH2,Technical
+4354,Kế Hoạch Kinh Doanh,Technical
+3034,Amazon Athena,Technical
+3035,Intra-mart,Technical
+4355,Scrum Master,Methodology
+4082,Intune,Technical
+2653,Agile & Scrum,Methodology
+2772,SQL Server,Technical
+3143,Profibus,Technical
+2657,Manual,Technical
+3040,CEH,Technical
+3144,HMI,Technical
+2660,Data Administrator,Technical
+3042,ISO,Technical
+2662,LAN,Technical
+3043,SoC,Technical
+2664,Data Analyst,Technical
+3613,ExpressJS,Technical
+4084,Product Development,Technical
+3046,IAM,Technical
+2668,UI/UX,Design & UX
+2669,Back-End,Technical
+3615,Monolithic,Technical
+3148,Distributed Systems,Technical
+3616,Apache,Technical
+2673,QC,Technical
+2785,Lifecycle (sdlc),Technical
+3050,Lucidchart,Technical
+4085,ADAS,Technical
+2677,Japanese ( N1 Or N2),Language
+3052,Mock-up,Technical
+2679,QA/QC,Technical
+2789,Illustrator,Design & UX
+2681,.NET Core,Technical
+2790,3D Artist,Technical
+2791,Game Design,Technical
+2792,Game Artist,Technical
+3152,Data Warehouse,Technical
+2795,QA,Technical
+2796,Unity3d,Technical
+3153,Dimensional Modeling,Technical
+3155,CCNA,Technical
+3620,Trino,Technical
+3397,Serverless,Technical
+3158,NAT,Technical
+2869,MS Azure,Technical
+2870,MS Dynamics NAV,Technical
+2807,Triển Khai Phần Mềm,Technical
+2808,Front-End,Technical
+2809,Openstack Development,Technical
+2871,ALM,Technical
+2811,Manual Tester,Testing & QA
+2872,C/AL,Technical
+3159,Router,Technical
+3160,SOLID,Methodology
+2815,Game,Technical
+2875,VPN,Technical
+2876,OSPF,Technical
+2877,Ubuntu,Technical
+2819,Giảng dạy,Technical
+3161,QoS,Technical
+3621,DAMA-DMBOK,Technical
+2880,TCP/IP,Technical
+2881,VLAN,Technical
+3163,SysOps,Technical
+2883,IDS,Technical
+2884,SAN,Technical
+2885,MS Hyper-V,Cloud & DevOps
+2886,Zabbix,Technical
+4862,Hệ Thống Ảo Hóa,Technical
+3623,System Administration,Technical
+3624,Active Directory,Technical
+3167,Data Mining,Data & AI
+2891,Nexus,Technical
+2892,OpenShift,Technical
+3168,C,Technical
+2894,PLC,Technical
+2895,Acceptance Testing,Technical
+2896,OPC,Technical
+3625,SMTP,Technical
+2898,MQTT,Technical
+3626,MS Exchange Server,Technical
+2900,CISM,Technical
+2901,SANS,Technical
+3868,BEAM,Technical
+2903,Cyber Security,Technical
+2904,Data Structure,Technical
+2905,MS Excel,Technical
+2906,Pivot table,Technical
+4863,Lập mô hình định giá,Technical
+4358,IT Risk Management,Soft Skills
+4090,CircleCI,Technical
+2910,Observability,Technical
+4359,IT Compliance,Technical
+4092,AKS,Technical
+2913,Cloudwatch,Technical
+2914,Bash,Technical
+3177,Apache Flink,Technical
+4093,ArgoCD,Technical
+2917,Amazon Sagemaker,Technical
+2918,Kubeflow,Technical
+2919,DataOps,Technical
+2920,Vertex AI,Data & AI
+3411,Telerik,Technical
+2922,Animation,Technical
+3412,OAUTH,Technical
+3181,DBMS,Technical
+2925,Test Case,Technical
+4360,Problem-Solving,Technical
+2927,Software testing,Technical
+3183,Github,Technical
+3635,Amazon EC2,Technical
+2930,API Testing,Technical
+2931,Dbeaver,Technical
+4361,Ai Development,Data & AI
+2933,System Integration,Technical
+2934,SCM,Technical
+2935,PowerShell,Technical
+4096,CentOS,Technical
+2937,Foundation,Technical
+3638,Chef,Technical
+3640,Amazon S3,Technical
+2941,MS Office 365,Technical
+3420,Azure Key Vault,Technical
+4363,Rpa,Technical
+2944,Server Administration,Technical
+3422,RBAC,Technical
+5348,Project Management Methodologies,Soft Skills
+3881,Confluence,Technical
+3425,Puppeteer,Technical
+2949,VMS,Technical
+3882,Slack,Technical
+2951,VMware vSphere,Cloud & DevOps
+2952,HAProxy,Technical
+2953,Amazon CloudFront,Technical
+2954,ESXi,Technical
+2955,VPC,Technical
+3645,Amazon EKS,Technical
+3198,Mobile App,Technical
+2958,GitlabCI,Technical
+4866,Software Management,Soft Skills
+2960,K3s,Technical
+2961,IPtables,Technical
+2962,Fortigate,Technical
+3429,eKYC,Technical
+3647,OpenTelemetry,Technical
+3202,Mobx,Technical
+3648,AWS CDK,Technical
+2967,PostgreSQL,Technical
+2968,System Design,Technical
+3884,DataDog,Technical
+3205,Cache,Technical
+2971,PMI-ACP,Technical
+3433,Flask,Technical
+3434,Gitlab,Technical
+3435,MLflow,Technical
+4867,React,Technical
+3437,Torchserve,Technical
+2977,Penetration testing,Security
+2978,OSCP,Technical
+2979,DAST,Technical
+2980,OSWE,Technical
+3886,gRPC,Technical
+3887,Cloudflare,Technical
+2983,RabbitMQ,Technical
+3888,Helm,Technical
+3214,Message Queue,Technical
+3889,Service Mesh,Technical
+2987,MCP,Technical
+2988,Cursor,Technical
+2989,Sass,Technical
+3655,WPF,Technical
+2991,Cadence,Technical
+2992,ASP.NET MVC,Technical
+2993,jQuery,Technical
+2994,Entity,Technical
+3217,Web3,Technical
+2996,Unit testing,Technical
+3218,Prometheus,Technical
+2998,Razor,Technical
+3219,Spring Security,Technical
+3220,SpringMVC,Technical
+3001,xUnit,Technical
+3221,Pub/Sub,Technical
+3443,Nginx,Technical
+3223,EFK,Technical
+3055,XSS,Technical
+3226,PCI,Technical
+3057,Red Team,Technical
+3446,Logstash,Technical
+3657,WebSocket,Technical
+4367,Electricity Background,Technical
+4368,Communication skills,Soft Skills
+3893,Auth0,Technical
+3894,Miro,Technical
+4369,IT Helpdesk,Technical
+5349,Project Support,Technical
+3236,Web Services,Technical
+5351,Máy Móc Thiết Bị,Technical
+3069,NIS2,Technical
+3070,CISSP,Technical
+3071,CRISC,Technical
+3456,Grafana,Cloud & DevOps
+4871,Kiểm thử thủ công,Technical
+3074,ITSM,Technical
+3075,CAD,Technical
+4872,Quy Trình & Công Cụ,Technical
+3668,MS Project,Technical
+3078,HRSD,Technical
+4375,Công Nghệ Thông Tin,Technical
+4376,Management Information System,Soft Skills
+3081,Microcontroller,Technical
+3462,Apache Airflow,Data & AI
+4377,Production Planning,Technical
+3084,FlexRay,Technical
+3085,CAN,Technical
+3086,FBL,Technical
+3904,Prisma,Technical
+3905,NAC,Technical
+4115,OpenAI,Technical
+4378,An Ninh Bảo Mật,Technical
+3468,CSSLP,Technical
+3092,MS Power BI,Data & AI
+4873,System Support,Technical
+3094,Data Visualization,Technical
+3095,Adobe Workfront,Design & UX
+3909,DDoS,Technical
+3471,Stride,Technical
+3910,PAM,Technical
+3473,ITIL,Technical
+3474,NIST CSF,Technical
+4118,RAG,Technical
+3102,Spring Cloud,Technical
+3103,A/B Testing,Testing & QA
+3680,DDD,Methodology
+3912,AutoSAR,Embedded & Hardware
+3260,GitHub Copilot,Technical
+3478,Algorithm,Technical
+3479,CVS,Technical
+4874,Maintenance Management,Soft Skills
+4120,n8n,Technical
+3915,Ethernet,Technical
+3266,Azure DevOps,Methodology
+3267,React Query,Technical
+3916,PWM,Technical
+3917,UDS,Technical
+3270,Visual Studio,Technical
+3271,Memcached,Technical
+4875,UAT,Technical
+4876,Phân Tích Tài Liệu,Technical
+4219,CHFI,Technical
+4877,Spring Core,Technical
+3276,Android SDK,Technical
+4384,Solution Architect,Technical
+4222,Redhat,Technical
+3279,Material Design,Technical
+3924,CSM,Technical
+3281,Jetpack,Technical
+3492,PL/SQL,Database & Storage
+3283,Core Java,Technical
+3284,Adobe InDesign,Design & UX
+4385,IoT Platforms (Blynk,Embedded & Hardware
+3286,SOAP,Technical
+4386,AI & Analytics Platform,Data & AI
+3495,OSS,Technical
+3496,AEM,Technical
+4225,IBM,Technical
+3291,Repository pattern,Technical
+4387,Mvc,Technical
+4388,.NET Development,Technical
+4389,Phân Tích Dữ Liệu,Technical
+3931,SSRS,Technical
+4390,Kỹ năng thuyết trình,Technical
+4230,CSDL,Technical
+4231,AIX,Technical
+3299,Stress Testing,Technical
+3935,AWS Redshift,Technical
+3936,Angular Material,Technical
+3302,GenAI,Technical
+4391,Khoa Học Dữ Liệu,Technical
+3938,Amazon SQS,Technical
+3305,Kibana,Technical
+4233,CCSP,Technical
+4392,Quản Trị Dữ Liệu,Technical
+3308,Beats,Technical
+3710,Domo,Technical
+4393,Linux Development,Technical
+4394,Python Programming,Technical
+3713,MIS,Technical
+3714,Software development,Technical
+3314,Hibernate,Technical
+4395,Khoa Học Máy Tính,Technical
+3316,KnockoutJS,Technical
+3317,ORM,Technical
+4397,IT Hardware,Technical
+3946,Mobile Development,Technical
+4398,IT Project Management,Soft Skills
+4879,IT Administration,Technical
+4400,IT Production,Technical
+3324,Spring Data,Technical
+3950,AppDynamics,Technical
+3326,IaC,Technical
+3723,Alpine,Technical
+3328,Copilot,Technical
+4401,LMS,Technical
+4244,Anti-Virus,Technical
+3331,CISA,Technical
+4402,Banking,Technical
+3727,2D,Technical
+3334,Redmine,Technical
+4403,Luật,Technical
+3336,SVN,Technical
+3729,DNS,Technical
+4404,Thẩm Định Hồ Sơ,Technical
+3731,TeamCity,Technical
+4880,IT System,Technical
+4406,Quản Lý Team,Technical
+3342,MS Access,Technical
+3960,TOGAF,Methodology
+4252,SentryOne,Technical
+3739,GPT,Technical
+3742,MS Entra ID,Technical
+3744,MS SharePoint,Enterprise Systems
+4258,MCSE,Technical
+4259,Cisco Switch,Cloud & DevOps
+3357,Prototype,Technical
+3749,DLP,Technical
+3750,MS 365,Technical
+4409,LINUX,Technical
+4410,Vmware,Cloud & DevOps
+4127,Zapier,Technical
+3508,Wi-Fi,Technical
+3509,Zigbee,Technical
+5356,Statistical Methods,Technical
+5357,Product Specifications,Technical
+3758,Refactoring,Technical
+4414,Digital transformation,Technical
+3976,Lora,Technical
+4415,PMO,Technical
+4416,Financial,Technical
+3979,BentoML,Technical
+5358,Data reporting,Technical
+3981,LlamaIndex,Technical
+4418,Telemetry Configuration,Technical
+4135,RESTful,Technical
+3522,ISTQB Foundation Level,Technical
+3523,Game Testing,Technical
+4419,IT Operations,Technical
+4420,Security Monitoring,Technical
+3770,Cookies,Technical
+5359,Phát Triển Phần Mềm Agile,Methodology
+5360,System Analyst,Technical
+3529,OOD,Technical
+3988,OpenStack,Technical
+3774,WCF,Technical
+3989,MPLS,Technical
+3533,Chatbot,Technical
+3777,Stored Procedure,Technical
+4424,ERPNext,Technical
+4425,SAP HANA,Enterprise Systems
+3780,Azure Service Bus,Technical
+4426,SAP Basis,Enterprise Systems
+3782,API Gateway,Technical
+5362,Test Cases,Technical
+3784,Vector,Technical
+3785,Automotive,Technical
+3544,Wireless,Technical
+4428,Quản trị Kinh doanh,Technical
+4429,KẾ TOÁN KIỂM TOÁN,Technical
+4430,Quality Assurance,Technical
+3548,UI,Technical
+3549,RPC,Technical
+3550,SPI,Technical
+3551,UART,Technical
+3552,I2C,Technical
+3553,IPC,Technical
+3554,BSP,Technical
+5363,Hệ Thống Mạng,Technical
+3556,SAFe,Technical
+4432,Stakeholder Management,Soft Skills
+4433,SQL & Power BI,Technical
+4434,BOM,Technical
+4435,Computer Engineering,Technical
+4436,Instrumentation Engineering,Technical
+3562,Schema Design,Technical
+4004,CCNP,Technical
+4437,Plc,Technical
+5364,Quản Lý CCTV,Technical
+4156,CDN,Technical
+4439,Erp,Enterprise Systems
+3800,Caching,Technical
+4158,WAF,Technical
+4159,CIS,Technical
+3571,Integration Testing,Technical
+4011,Apache cluster,Technical
+4440,An Toàn Thông Tin,Technical
+4014,NAS,Technical
+4442,Front End,Technical
+3808,CLI,Technical
+3578,Hosting,Technical
+4443,Rust Programming,Technical
+4895,Information System,Technical
+4896,Information security,Security
+4166,Zero Trust,Technical
+3583,SQL Optimization,Technical
+4020,Templates,Technical
+3585,Cloud Migration,Cloud & DevOps
+4167,T24,Technical
+4168,Kali Linux,Technical
+4446,Process Analysis,Technical
+3589,Azure AD B2C,Technical
+3590,Docker Compose,Technical
+4447,BPMN Process Analysis,Product & Business Analysis
+4448,Data analysis,Data & AI
+4172,KVM,Technical
+4449,Quản lý dự án ERP,Enterprise Systems
+3595,Web Testing,Technical
+4028,Digital Marketing,Technical
+4450,Hydraulic Systems,Technical
+4451,Heavy Machinery Maintenance,Technical
+4452,Databases,Technical
+3825,TDD,Methodology
+4453,Sql,Technical
+4454,Phân Tích Nghiệp Vụ,Technical
+4897,Incident Management,Soft Skills
+4456,Quản Lý- Tạo Động Lực,Technical
+4036,Ruby,Technical
+4457,Giải Quyết Vấn Đề,Technical
+4899,Quản Lý Dự Án,Technical
+4900,Quản Lý Nhân Sự,Technical
+5367,Trí Tuệ Nhân Tạo,Technical
+4902,Kiểm Thử Phần Mềm,Technical
+4903,problem-solving skills,Technical
+5368,IP Network Design,Technical
+4905,C Programming Language,Technical
+4046,Amazon ECS,Technical
+4466,Problem Solving,Soft Skills
+4467,Troubleshooting,Technical
+3843,PostGIS,Technical
+4192,JWT,Technical
+4468,Microsoft 365 administration,Technical
+4194,MuleSoft,Technical
+4469,System Maintenance,Technical
+3848,Cloud Infrastructure,Cloud & DevOps
+4906,Web Design,Technical
+4199,ManageEngine,Technical
+4200,Ruckus,Technical
+4473,It,Technical
+4475,It Audit,Security
+4476,Software Audit,Technical
+4477,Windows Security Management,Soft Skills
+4066,HTTP,Technical
+4213,SOAP API,Technical
+4215,Internet,Technical
+4216,WAN,Technical
+4478,problem-solving,Technical
+5369,Network Security,Technical
+5370,Service Delivery Management,Soft Skills
+4481,Cloud Platform,Cloud & DevOps
+4482,Root cause analysis,Technical
+4909,TechLead,Technical
+4910,CICD Management,Soft Skills
+4485,Budget Estimation,Technical
+4486,Customer Service,Technical
+4912,Electronic & Electrical,Technical
+4489,IT Management,Soft Skills
+4490,ERP Systems,Enterprise Systems
+4913,Lập Trình Backend,Technical
+4492,Pentest,Security
+4493,Black-box Testing,Technical
+4494,Hóa,Technical
+4495,Tiếng Anh,Language
+4914,State Management Libraries,Soft Skills
+4497,An Toàn Thông Tin Mạng,Technical
+5372,Macro,Technical
+4499,Switching System,Technical
+5373,Forwarding,Technical
+4284,ClickHouse,Technical
+4501,Flink,Technical
+4502,SRE,Technical
+4503,Database Operations,Database & Storage
+4504,Technology Assessment,Technical
+4505,Stakeholder Engagement,Technical
+4290,Azure Monitor,Technical
+4506,Cloud Architecture,Cloud & DevOps
+4507,Hạ Tầng Hệ Thống,Technical
+4508,Virtualization,Technical
+4917,Ai Application Development,Data & AI
+4918,LLMs,Technical
+4514,communication,Soft Skills
+4920,Product Operations,Technical
+4517,Cntt,Technical
+4519,Logical Thinking,Technical
+4303,GitOps,Technical
+4520,CTO,Technical
+5378,Banking Finance,Technical
+4926,Quản Lý Vận Hành,Technical
+4927,Kiểm Soát Chi Phí,Technical
+4526,Domain-Driven Design,Technical
+4527,Integration Patterns,Technical
+4528,Cloud Linux,Technical
+4313,Puppet,Technical
+4529,Cloud Integration,Cloud & DevOps
+4928,Application Architecture,Technical
+4531,Phát Triển Giải Pháp,Technical
+4930,Node.Js,Technical
+4931,Khắc Phục Sự Cố Mạng,Technical
+4535,Data Governance,Technical
+4536,Underwriting,Technical
+4537,Nghiên Cứu Thị Trường,Technical
+4538,Data Analytics,Technical
+4539,Product Growth,Technical
+4540,PowerBI,Technical
+5381,Information Security/ Cybersecurity,Security
+4542,Windows Os,Cloud & DevOps
+4933,computer,Technical
+4544,Phân Tích Kinh Doanh,Technical
+4545,Quản Lý Danh Mục Khách Hàng,Technical
+4546,PYTHON,Technical
+4547,Asp.net,Technical
+4934,System,Technical
+4549,Microservice ESB,Technical
+4550,Integration Platforms,Technical
+4935,Google Workspace,Technical
+5382,API RESTful,Technical
+4553,Mô Hình Hóa Dữ Liệu,Technical
+4554,Quản Lý Dữ Liệu,Technical
+4939,Lập Trình ABAP,Technical
+4559,Real-Time Systems,Technical
+4560,Api Deployment On Aws,Technical
+4561,IT Development,Technical
+4562,Site Reliability Engineering,Technical
+4941,Networking Principles,Cloud & DevOps
+4946,Kiểm Soát Quy Trình,Technical
+4949,Compliance Audits,Technical
+4573,Automation system test,Technical
+4951,Data Pipeline Management,Soft Skills
+4575,IT,Technical
+4577,Mysql,Technical
+4953,Bảo Mật Thông Tin,Technical
+4954,Monetization,Technical
+4955,Phân Tích Thị Trường,Technical
+4956,Network Management,Soft Skills
+4582,Test Management,Soft Skills
+4960,GIT tools,Technical
+4961,Magento 2,Enterprise Systems
+4588,Quản Trị Cơ Sở Dữ Liệu,Technical
+4589,Thiết Kế Hệ Thống,Technical
+4590,Design Pattern,Technical
+4591,Data Management,Soft Skills
+4963,Bảo Hành,Technical
+4594,Problem-solving,Technical
+4595,PMO Management,Soft Skills
+4596,IT Security Compliance,Technical
+4597,Kiến Thức Về Agile,Methodology
+4964,Sửa Chữa,Technical
+4599,Bảo Mật Hệ Thống,Technical
+4600,Routing,Technical
+4965,Analytics Skills,Technical
+4602,Communication and negotiation skills,Soft Skills
+4604,Testing,Technical
+4606,AMS,Technical
+4607,Learning Management System,Soft Skills
+4608,Automation,Technical
+4609,Artificial Intelligence,Technical
+4610,Giải Pháp Công Nghệ,Technical
+4611,Mobile Application Development,Technical
+4613,Google Cloud Platform,Technical
+4614,Contract Administration,Technical
+4615,Submittal Tracking Systems,Technical
+4616,Kỹ Năng Tổ Chức,Technical
+4617,PMP,Methodology
+4967,Electrical Engineering,Technical
+4968,Maintenance Engineering,Technical
+4620,Phân Tích Báo Cáo Tài Chính,Technical
+4621,Thẩm Định Dự Án Đầu Tư,Technical
+4623,Product Analytics,Technical
+4625,Application Development,Technical
+4626,Microsoft Power Platform,Technical
+4627,Dynamics 365,Technical
+4628,Quản Lý Rủi Ro,Technical
+4971,IT Solution Consulting,Technical
+4630,Sap,Enterprise Systems
+4631,English Language Proficiency,Language
+4632,MCN Partnership,Technical
+4633,Trải nghiệm khách hàng,Technical
+4634,User Research,Technical
+4972,SAP FI,Enterprise Systems
+4973,Customer Support,Technical
+4974,Đọc Tài Liệu Kỹ Thuật,Technical
+4638,AI tools,Data & AI
+4639,Banking Product,Technical
+4975,Sdlc,Technical
+4976,Api Testing,Technical
+4978,Service Management,Soft Skills
+4644,API Services,Technical
+4645,Ai/Ml,Technical
+4646,Agile Methodology,Methodology
+4648,Project management,Soft Skills
+4980,Digital Platforms,Technical
+4650,Cloud AWS,Technical
+4981,Information Systems,Technical
+4982,Management,Soft Skills
+4983,Debugging Skills,Technical
+4984,MCU,Technical
+4655,Web Service,Technical
+4656,Japanese N2,Language
+4657,Product Manager,Technical
+4659,Digital Product Development,Technical
+4987,Documentation,Technical
+4662,Presentation Design,Soft Skills
+4663,Time Management,Soft Skills
+4664,Video Production,Technical
+4665,BI TABLEAU,Data & AI
+4666,Netezza,Technical
+4667,Keras,Data & AI
+4669,performance marketing,Technical
+4670,Data Strategy,Technical
+4671,Data Masking,Technical
+4672,Data Policy,Technical
+4673,DWH,Technical
+4674,Oracle Database,Technical
+4675,Oracle/Postgresql,Technical
+4989,MES,Technical
+4990,Phát Triển Chiến Lược,Technical
+4991,Triển Khai Sản Phẩm,Technical
+4680,Devops,Methodology
+4681,SQL Server Management,Soft Skills
+5405,Banking Operations,Technical
+5406,English Proficiency,Language
+4684,SOC,Technical
+4685,Service Desk,Technical
+5410,Project magement,Technical
+5000,Telecommunications,Technical
+5003,Hệ Thống Quản Lý,Technical
+5004,Phần mềm nhúng,Technical
+5414,SAP-ERP,Technical
+5006,Backend Development,Technical
+5415,SAP CO,Enterprise Systems
+5416,Creative Design,Technical
+4700,Audit,Technical
+4701,Test Script,Technical
+5009,Spring Framework,Technical
+4703,Cải Tiến Dây Chuyền Sản Xuất,Technical
+4704,PLC Omron,Technical
+4705,Hỗ Trợ Kỹ Thuật,Technical
+4706,Phát Triển Phần Mềm,Technical
+4707,User Experience Development,Technical
+4708,Human-Centered Design,Technical
+5417,UI Design,Technical
+4710,AI Engineer,Data & AI
+5011,Computer Science,Technical
+4712,Thử Nghiệm Hệ Thống,Technical
+4713,It Support,Technical
+4714,Helpdesk,Technical
+4715,Agile/Scrum,Technical
+5012,Ecommerce Operations,Technical
+4717,Financial Services,Technical
+4719,Adaptive Planning,Technical
+4720,Learning Development,Technical
+5419,Airflow,Technical
+5420,Cloud System,Cloud & DevOps
+4723,Data Visualization & Analysis (Power BI; SQL – basic; Python – basic),Technical
+4724,Performance Analysis & Reporting,Technical
+4725,Business Process Analysis,Technical
+4726,KPI Dashboard & Reporting,Technical
+4728,English Communication,Language
+4729,Windows Operating Systems,Cloud & DevOps
+5018,Financial Data Management,Soft Skills
+4732,E-Commerce,Technical
+4734,Database Software,Database & Storage
+4737,Thiết Kế Phần Mềm,Technical
+4738,Phát Triển Hệ Thống,Technical
+5020,Ngân Hàng Số,Technical
+4741,MES Systems,Technical
+4742,MCSA,Technical
+4743,Active Directory Management,Soft Skills
+4744,Identity Management,Soft Skills
+4745,Application Solution,Technical
+4746,IT Phần Mềm,Technical
+4747,Competitor Analytics,Technical
+5021,Tài Chính Ngân Hàng,Technical
+4750,Security Design,Technical
+4752,Medical Device,Technical
+5428,Môi Trường,Technical
+5429,Điện,Technical
+4755,Banking Solution,Technical
+5026,Quality Assessment,Technical
+4757,Kiểm Thử,Technical
+4759,Japanese N1,Language
+4760,Stakeholders Engagement,Technical
+5431,SEO Marketing,Technical
+4762,Chính Sách Và Thủ Tục,Technical
+5029,Vpn,Technical
+5030,Hệ điều hành Windows,Cloud & DevOps
+4765,Microservice,Technical
+5031,Analytical Skills,Technical
+5032,Ecommerce Experience,Technical
+4769,Giám Sát Hệ Thống Mạng,Technical
+4770,Quản Trị Máy Chủ,Technical
+4772,Software Design Analysis,Technical
+5038,Project Ownership,Technical
+5039,Project management methodologies,Soft Skills
+5437,Risk Governance,Technical
+5438,Security Information,Technical
+5441,Salesforce Service Cloud,Cloud & DevOps
+5443,Sql Queries,Technical
+4785,English fluency,Language
+4786,Finance,Technical
+4788,IT Planning,Technical
+4789,C/C++ Programming,Technical
+5048,Quản Trị Công Nghệ,Technical
+4791,Optimizing Performance,Technical
+5049,Phát Triển Sản Phẩm,Technical
+4793,ERP Software,Enterprise Systems
+4794,Post-sales roles,Technical
+5050,AI Vision,Data & AI
+5445,Communication Skills,Soft Skills
+4797,Window Server,Technical
+5447,Fastapi,Technical
+4800,RESTful APIs,Technical
+5448,Engineering Leadership,Soft Skills
+4802,Xây Dựng Báo Cáo,Technical
+4803,Full Stack Development,Technical
+4804,Node.JS,Technical
+4805,CLV,Technical
+4806,Crm Platforms,Enterprise Systems
+5055,Tư Duy Logic,Technical
+5056,Data Engineering,Technical
+4809,Công nghệ thông tin,Technical
+5450,product owner,Product & Business Analysis
+5451,Ui/Ux Design,Design & UX
+5061,Phân Tích Rủi Ro,Technical
+5062,Security Solutions,Technical
+4816,Banking Experience,Technical
+4817,Agile Methodologies,Methodology
+4818,.Net Framework,Technical
+5063,Enterprise Networking,Cloud & DevOps
+4820,Lakehouse,Technical
+4821,Monitoring,Technical
+5064,Network Monitoring,Technical
+4823,FastApi,Technical
+5453,User Support,Technical
+5454,Accounting,Technical
+5456,AI/ML,Technical
+5457,Hệ Thống Haccp,Technical
+5071,Erp & Supply Chain,Enterprise Systems
+5072,Html,Technical
+5073,Javascript,Technical
+5074,it engineering,Technical
+4834,Python APIs,Technical
+5459,Tiếng Anh Giao Tiếp,Language
+5076,Vận hành Nghiệp Vụ,Technical
+4837,MES operation,Technical
+5077,Phân tích dữ liệu,Technical
+5460,SAP Functional,Enterprise Systems
+5080,Triển Khai Hệ Thống,Technical
+5081,Helpdesk Support,Technical
+5082,Microsoft Power BI,Data & AI
+5083,BI Dashboard,Technical
+5084,Power Bi,Data & AI
+5085,Advanced Sql Skills,Technical
+5463,Korean Language,Language
+5465,Uml,Product & Business Analysis
+5090,Growth Marketing,Technical
+5466,Red Hat Linux,Technical
+5467,Microsoft Sql Server,Technical
+5471,Incentive Systems,Technical
+5097,Vận Hành Hệ Thống Mạng,Technical
+5472,Performance Analysis,Technical
+5473,Performance Tracking,Technical
+5474,analytical skills,Technical
+5117,Giao Tiếp,Technical
+5119,PCB Design,Technical
+5120,Viễn Thông,Technical
+5121,Proactive Work Spirit,Technical
+5124,Security auditing,Technical
+5125,Cybersecurity Operations,Security
+5126,Effective Communication,Soft Skills
+5127,Mobile System Architecture,Methodology
+5128,Network Diagnostics,Technical
+5129,Technical Support,Technical
+5136,PowerBI Analysis,Technical
+5137,Quản Trị Phần Mềm,Technical
+5139,Software Programming,Technical
+5141,Software Project Management,Soft Skills
+5142,Quản Lý Dự Án Số Hóa,Technical
+5143,Lập Kế Hoạch,Technical
+5497,Cloud Vmware,Cloud & DevOps
+5498,English communication,Language
+5500,Access Control Management,Soft Skills
+5502,Finance Analyst,Technical
+5503,Vulnerability Assessment,Technical
+5505,Good English Reading,Language
+5154,Communication,Soft Skills
+5156,Large Language Models,Technical
+5508,Design for manufacturing,Technical
+5158,I2C protocol,Technical
+5161,Wpf Application Development,Technical
+5512,Project Analysis,Technical
+5165,Business Architecture Applications,Technical
+5166,Sql And Xml Basics,Technical
+5167,Cơ Khí,Technical
+5168,kỹ thuật vật liệu,Technical
+5169,.Net,Technical
+5170,Java programming,Technical
+5171,Product Owner Experience,Product & Business Analysis
+5172,Digital Banking,Technical
+5173,Spi Equipment Operation,Technical
+5174,Report Writing,Technical
+5175,Risk Analytics,Technical
+5176,Analytic Skills,Technical
+5177,Automation Frameworks,Technical
+5178,Mobile Testing,Technical
+5514,Bảo Mật Server,Technical
+5515,Quản Trị Hạ Tầng CNTT,Technical
+5181,Hris Management,Soft Skills
+5184,Agile Scrum,Methodology
+5185,Scada Knowledge,Technical
+5186,Plc Programming,Technical
+5519,Automated Unit Testing,Technical
+5189,Teamwork,Soft Skills
+5190,Technical consultancy,Technical
+5192,Database Administration,Database & Storage
+5193,Siem,Security
+5194,AI/LLM,Technical
+5195,Auto CAD,Technical
+5521,Data Pipeline,Technical
+5197,Security Operations,Technical
+5198,Chứng Chỉ Togaf,Methodology
+5199,Tư Duy Hệ Thống,Technical
+5522,Kiểm Soát Kiểm Toán,Technical
+5523,Vận Hành Hệ Thống,Technical
+5203,AI Governance,Data & AI
+5525,Thiết Kế API,Technical
+5205,Salesforce Development,Technical
+5526,Quản Lý Dự Án Công Nghệ,Technical
+5207,Quản Trị Hệ Thống Erp,Enterprise Systems
+5208,Quản trị Windows Server,Cloud & DevOps
+5209,Cybersecurity Expertise,Security
+5527,Lãnh đạo và quản lý,Technical
+5532,Ai/Ml Product Delivery,Technical
+5536,Servicenow Platform Administration,Enterprise Systems
+5537,Javascript Scripting,Technical
+5540,Tư Vấn Giải Pháp,Technical
+5238,Collaboration,Technical
+5239,QC Systems,Technical
+5541,Azure Devops,Methodology
+5241,Giám Sát Hoạt Động,Technical
+5542,Azure Databricks,Technical
+5244,Linux Proficiency,Technical
+5245,Iot Project Experience,Embedded & Hardware
+5544,ISO9001 standards,Technical
+5247,Manual Testing,Technical
+5248,Platform Management,Soft Skills
+5249,Business analysis,Product & Business Analysis
+5545,QMS,Technical
+5546,ISO 9001 & 14001,Methodology
+5252,Linux Environments,Technical
+5253,LTE,Technical
+5254,Kết Cấu Thép,Technical
+5547,Báo Cáo Thống Kê,Technical
+5256,ERP Implementation,Enterprise Systems
+5548,Điện Tử Viễn Thông,Technical
+5258,Business Process Management,Soft Skills
+5259,Software Development,Technical
+5549,Quản Trị Hệ Thống,Technical
+5262,Kinh Nghiệm Qe/Cqe/Ipqc,Technical
+5263,Quản Lý Chất Lượng,Technical
+5551,Quản Trị Dự Án,Technical
+5265,Powerbi,Technical
+5266,Pivot Table,Technical
+5552,Kiến trúc doanh nghiệp,Technical
+5553,Data Architecture,Technical
+5269,Quality Management Tools,Soft Skills
+5270,Structured Cabling Knowledge,Technical
+5554,AI application,Data & AI
+5272,Application Support,Technical
+5273,Database Management,Soft Skills
+5555,Quality,Technical
+5275,SQL Query Writing,Technical
+5276,SAP Business One,Enterprise Systems
+5277,Solution Design,Technical
+5557,Java Fundamentals,Technical
+5280,Iso 9002,Technical
+5558,Middleware Knowledge,Technical
+5282,Data Engineering Tools,Technical
+5283,Dimensional Data Modelling,Technical
+5559,Fintech Experience,Technical
+5561,Kinh Doanh Hàng Không,Technical
+5288,Nlp,Data & AI
+5289,Business Development,Technical
+5290,Erp Software,Enterprise Systems
+5291,Power Apps,Technical
+5563,Tiếng Anh thành thạo,Language
+5294,It Infrastructure Knowledge,Technical
+5295,Technical Documentation,Technical
+5566,Linux Server,Technical
+5567,An Ninh Mạng,Technical
+5568,Agile Delivery Management,Methodology
+5569,Digital Product Management,Soft Skills
+5301,Html5- Css3- Javascript,Technical
+5302,Ecommerce Technology,Technical
+5303,PHP Development,Technical
+5571,Kỹ Năng Đàm Phán Và Giao Tiếp,Technical
+5307,Financial Modelling,Technical
+5308,Strategic Thinking,Technical
+5309,Low-code Development,Technical
+5310,Sap S/4Hana,Enterprise Systems
+5311,Capacity Planning,Technical
+5313,ITGC,Technical
+5314,CCBA,Technical
+5576,Nlp & Gen Ai,Data & AI
+5577,GIT,Technical
+5579,Windows Setup,Cloud & DevOps
+5325,Khách sạn 4-5 sao,Technical
+5326,Giao diện người dùng,Technical
+5327,Giao tiếp tốt,Technical
+5328,Thiết Kế Game,Technical
+5329,Game Analysis,Technical
+5330,Security+,Technical
+5331,Security Compliance,Technical
+5586,Analytical Thinking,Soft Skills
+5588,Mlops Practices,Data & AI
+5590,Oracle BI,Technical
+5591,Vendor Management,Soft Skills
+5592,DevOps practices,Methodology
+5593,Information Risk Management,Soft Skills
+5594,Cyber Risk Management,Soft Skills
+5596,Data Structures,Technical

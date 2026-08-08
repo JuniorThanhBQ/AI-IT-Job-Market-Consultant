@@ -1,0 +1,11 @@
+User-agent: YandexBot
+User-agent: DotBot
+User-agent: AhrefsBot
+User-agent: Bytespider
+User-agent: SemrushBot
+User-agent: MJ12bot
+User-agent: coccocbot
+User-agent: coccocbot-web
+User-agent: ImagesiftBot
+User-agent: UptimeRobot
+Disallow: /

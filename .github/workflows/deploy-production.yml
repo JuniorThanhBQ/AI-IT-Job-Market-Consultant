@@ -31,6 +31,7 @@ jobs:
   deploy-production:
     name: Build & Push to Docker Hub
     needs: ci-pipeline
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

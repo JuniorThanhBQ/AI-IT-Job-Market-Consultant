@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI IT Job Market Consultant backend administration, health check, and orchestration engine dashboard.">
+    <meta name="frontend-host" content="{{ frontend_host }}">
+    <title>AI IT Job Market Consultant - Backend</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <main class="container">
+        <div class="card">
+            <h1>AI IT Job Market Consultant</h1>
+            <p>This is the admin panel for the backend services. If you got here by accident, please leave this page or go to our official website by clicking the "Go to App" button.</p>
+            <div class="button-group">
+                <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-frontend" id="btn-frontend">
+                    Go to App
+                </a>
+                <a href="/admin" target="_blank" class="btn btn-admin" id="btn-admin">
+                    Admin Panel
+                </a>
+            </div>
+            <footer class="footer">
+                <span>Powered by FastAPI and SQLAdmin</span>
+                <div>
+                    <a href="/docs" target="_blank">Swagger API Docs</a>
+                    <span>-</span>
+                    <a href="/redoc" target="_blank">ReDoc</a>
+                </div>
+            </footer>
+        </div>
+    </main>
+    <script>
+        (function() {
+            const meta = document.querySelector('meta[name="frontend-host"]');
+            const host = meta ? meta.getAttribute('content') : '';
+            if (host && (host.startsWith('http://') || host.startsWith('https://'))) {
+                const btn = document.getElementById('btn-frontend');
+                if (btn) {
+                    btn.href = host;
+                }
+            }
+        })();
+    </script>
+</body>
+</html>

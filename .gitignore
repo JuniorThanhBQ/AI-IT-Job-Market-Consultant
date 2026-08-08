@@ -15,6 +15,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!frontend/src/lib/
 lib64/
 parts/
 sdist/
@@ -44,7 +45,6 @@ htmlcov/
 .coverage.*
 .cache
 nosetests.xml
-coverage.xml
 *.cover
 *.py.cover
 .hypothesis/
@@ -240,3 +240,15 @@ pnpm-debug.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+AGENTS.md
+AGENTS-HISTORY.md
+.agents/
+
+**/crawl_website_information/**/*.html
+
+test-results/
+
+# Rclone config credentials
+rclone.conf
+celery/rclone.conf

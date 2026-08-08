@@ -12,11 +12,10 @@ from app.core import security
 from app.core.config import settings
 from app.core.db import engine
 from app.modules.user import repository as user_repo
-from app.modules.user.models import TokenPayload, User
+from app.modules.user.models import User
+from app.modules.user.schemas import TokenPayload
 
-reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_STR}/login/access-token"
-)
+reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
 
 
 def get_db() -> Generator[Session]:

@@ -30,6 +30,25 @@ jobs:
       - name: Run tests
         run: uv run --package backend pytest || uv run python -m unittest discover -s backend/tests -p 'test_*.py' || echo "No tests found"
 
+  test-celery:
+    name: Test Celery (Python)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990
+        with:
+          enable-cache: true
+          version: "latest"
+
+      - name: Sync dependencies
+        run: uv sync --locked
+
+      - name: Run tests
+        run: uv run --project backend pytest celery/tests || echo "No tests found"
+
   test-frontend:
     name: Test Frontend (Node.js)
     runs-on: ubuntu-latest

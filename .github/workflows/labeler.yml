@@ -6,7 +6,7 @@ on:
       - opened
       - synchronize
       - reopened
-      # For label-checker
+
       - labeled
       - unlabeled
 
