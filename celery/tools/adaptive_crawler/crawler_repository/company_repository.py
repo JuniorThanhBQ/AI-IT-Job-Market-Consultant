@@ -30,7 +30,7 @@ class CompanyRepository:
             logger.debug(f"Advisory lock skipped or unavailable for '{lock_key}': {e}")
 
     async def get_by_name(self, name: str) -> Company | None:
-        if not name:
+        if not name or not name.strip():
             return None
         cleaned = name.strip().lower()
         statement = (

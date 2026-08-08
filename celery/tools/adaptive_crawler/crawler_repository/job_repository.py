@@ -31,7 +31,7 @@ class JobRepository:
             logger.debug(f"Advisory lock skipped or unavailable for '{lock_key}': {e}")
 
     async def get_by_url(self, url: str) -> Job | None:
-        if not url:
+        if not url or not url.strip():
             return None
         cleaned = url.strip()
         statement = (
@@ -43,7 +43,7 @@ class JobRepository:
         return result.first()
 
     async def get_by_content_hash(self, content_hash: str) -> Job | None:
-        if not content_hash:
+        if not content_hash or not content_hash.strip():
             return None
         statement = (
             select(Job)
@@ -66,6 +66,15 @@ class JobRepository:
             .offset(offset)
             .limit(limit)
         )
+        result = await self.session.exec(statement)
+        return list(result.all())
+
+    async def drop(self, job: Job) -> None:
+        await self.session.delete(job)
+        await self.session.flush()
+
+    async def get_all_urls(self) -> list[str]:
+        statement = select(Job.url)
         result = await self.session.exec(statement)
         return list(result.all())
 
@@ -269,12 +278,3 @@ class JobRepository:
 
         if source.skills:
             target.skills = source.skills
-
-    async def drop(self, job: Job) -> None:
-        await self.session.delete(job)
-        await self.session.flush()
-
-    async def get_all_urls(self) -> list[str]:
-        statement = select(Job.url)
-        result = await self.session.exec(statement)
-        return list(result.all())
