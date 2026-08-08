@@ -12,10 +12,10 @@
 - [ ] **Breaking Change** (fix or feature that would cause existing functionality to not work as expected)
 - [ ] **Documentation** (updates/additions to documentation only)
 - [ ] **Maintenance / Refactoring** (code cleanup, library updates, or code review changes)
-- [ ] **CI/CD / Devops** (changes related to GitHub workflows, deploy scripts, or environment configs)
+- [ ] **CI/CD / DevOps** (changes related to GitHub workflows, deploy scripts, or environment configs)
 
 ## How Has This Been Tested?
-*Please describe the tests that you ran to verify your changes. Provide instructions which can reproduce. Please also list any relevant details for your test configuration.*
+*Please describe the tests that you ran to verify your changes. Provide instructions that can reproduce. Please also list any relevant details for your test configuration.*
 - **Test cases executed:** [e.g., API endpoint integration test, manual validation of UI, unit tests]
 - **Verification steps / Commands:**
   ```bash

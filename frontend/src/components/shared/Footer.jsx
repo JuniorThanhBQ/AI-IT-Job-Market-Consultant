@@ -130,8 +130,7 @@ export default function Footer() {
           className="pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4"
         >
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            © {new Date().getFullYear()} {PROJECT_NAME.LONG}. {t("since")}{" "}
-            2026.
+            © {new Date().getFullYear()} {PROJECT_NAME.LONG}. {t("since")} 2026.
           </p>
           <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
             <span>{t("graduation_project")}</span>

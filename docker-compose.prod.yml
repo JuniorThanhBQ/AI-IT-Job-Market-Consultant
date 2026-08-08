@@ -7,83 +7,151 @@ services:
       - /app/backend/logs:uid=1000,gid=1000
     security_opt:
       - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     deploy:
-        resources:
-          limits:
-            cpus: '1.0'
-            memory: 1G
-          reservations:
-            memory: 256M
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          memory: 256M
 
+  nginx:
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          memory: 64M
 
   frontend:
     restart: always
-    ports:
-      - "3000:3000"
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     deploy:
-        resources:
-          limits:
-            cpus: '1.0'
-            memory: 1G
-          reservations:
-            memory: 256M
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          memory: 256M
 
   db:
     restart: always
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     deploy:
-        resources:
-          limits:
-            cpus: '1.0'
-            memory: 2G
-          reservations:
-            memory: 512M
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          memory: 512M
 
   rabbitmq:
     restart: always
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     deploy:
-        resources:
-          limits:
-            cpus: '0.5'
-            memory: 512M
-          reservations:
-            memory: 256M
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          memory: 256M
 
   celery-worker-default:
     restart: always
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     deploy:
-        resources:
-          limits:
-            cpus: '1.0'
-            memory: 1G
-          reservations:
-            memory: 256M
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          memory: 256M
 
   celery-worker-crawler:
     restart: always
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     deploy:
-        resources:
-          limits:
-            cpus: '1.0'
-            memory: 1G
-          reservations:
-            memory: 256M
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 2G
+        reservations:
+          memory: 512M
 
   celery-beat:
     restart: always
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     deploy:
-        resources:
-          limits:
-            cpus: '0.5'
-            memory: 512M
-          reservations:
-            memory: 128M
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          memory: 128M
 
   redis:
     restart: always
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     deploy:
-        resources:
-          limits:
-            cpus: '0.5'
-            memory: 512M
-          reservations:
-            memory: 256M
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          memory: 256M

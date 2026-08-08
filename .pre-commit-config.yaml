@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -18,23 +18,23 @@ repos:
       - id: detect-private-key
 
   - repo: https://github.com/crate-ci/typos
-    rev: bee27e3a4fd1ea2111cf90ab89cd076c870fce14 # frozen: v1.48.0
+    rev: v1.48.0  # frozen: v1.48.0
     hooks:
       - id: typos
         args: [--force-exclude]
 
   - repo: https://github.com/hadolint/hadolint
-    rev: v2.12.0
+    rev: v2.15.1
     hooks:
       - id: hadolint-docker
 
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.2
+    rev: v8.30.0
     hooks:
       - id: gitleaks
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.1.0
+    rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
         files: ^frontend/.*\.(js|jsx|ts|tsx|css|json)$
@@ -83,14 +83,24 @@ repos:
         pass_filenames: false
         always_run: true
 
+  - repo: https://github.com/bridgecrewio/checkov
+    rev: 3.3.9
+    hooks:
+      - id: checkov
+        name: Checkov Docker Compose Lint
+        files: ^(docker-)?compose(\..+)?\.ya?ml$
+        args:
+          - --framework
+          - yaml
+
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.26.1
+    rev: v1.29.0
     hooks:
       - id: zizmor
         args: ["--min-severity", "high"]
 
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: v9.16.0
+    rev: v9.26.0
     hooks:
       - id: commitlint
         stages: [commit-msg]

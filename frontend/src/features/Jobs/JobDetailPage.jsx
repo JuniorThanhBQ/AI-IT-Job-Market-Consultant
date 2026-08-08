@@ -22,6 +22,7 @@ import {
 } from "@/utils/enumMapper";
 import { useRouter } from "@/i18n/routing";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
+import Image from "next/image";
 
 export default function JobDetailPage({ params }) {
   const { id } = use(params);
@@ -115,9 +116,11 @@ export default function JobDetailPage({ params }) {
                     const logoUrl =
                       LOGO[source.toUpperCase()] || LOGO.AIJMC_LOGO;
                     return (
-                      <img
+                      <Image
                         src={logoUrl}
                         alt={source}
+                        width={64}
+                        height={64}
                         className="w-full h-full object-contain"
                       />
                     );

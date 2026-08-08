@@ -16,21 +16,16 @@ services:
     environment:
       - DOMAIN=${DOMAIN}
       - FRONTEND_HOST=${FRONTEND_HOST?Variable not set}
-      - ENVIRONMENT=${ENVIRONMENT}
-      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
+      - ENVIRONMENT=${ENVIRONMENT?Variable not set}
+      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS?Variable not set}
       - FIRST_SUPERUSER=${FIRST_SUPERUSER?Variable not set}
       - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD?Variable not set}
-      - SMTP_HOST=${SMTP_HOST}
-      - SMTP_USER=${SMTP_USER}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
       - POSTGRES_SERVER=db
-      - POSTGRES_PORT=${POSTGRES_PORT}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PORT=${POSTGRES_PORT?Variable not set}
+      - POSTGRES_DB=${POSTGRES_DB?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - SECRET_KEY=${SECRET_KEY?Variable not set}
-      - SENTRY_DSN=${SENTRY_DSN}
       - PYTHONPATH=/app/backend
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=4)"]
@@ -57,17 +52,12 @@ services:
       - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
       - FIRST_SUPERUSER=${FIRST_SUPERUSER?Variable not set}
       - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD?Variable not set}
-      - SMTP_HOST=${SMTP_HOST}
-      - SMTP_USER=${SMTP_USER}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - SECRET_KEY=${SECRET_KEY?Variable not set}
-      - SENTRY_DSN=${SENTRY_DSN}
       - PYTHONPATH=/app/backend
     command: alembic -c database/alembic.ini upgrade head
 
@@ -153,8 +143,8 @@ services:
     environment:
       - PYTHONPATH=/app/backend:/app/celery
       - POSTGRES_SERVER=db
-      - POSTGRES_PORT=${POSTGRES_PORT}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PORT=${POSTGRES_PORT?Variable not set}
+      - POSTGRES_DB=${POSTGRES_DB?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - SECRET_KEY=${SECRET_KEY?Variable not set}
@@ -164,17 +154,18 @@ services:
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD?Variable not set}
       - RCLONE_CONFIG=/app/celery/rclone.conf
       - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
-      - SMTP_HOST=${SMTP_HOST}
-      - SMTP_USER=${SMTP_USER}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
-      - SMTP_PORT=${SMTP_PORT}
-      - SMTP_TLS=${SMTP_TLS}
+      - SMTP_HOST=${SMTP_HOST?Variable not set}
+      - SMTP_USER=${SMTP_USER?Variable not set}
+      - SMTP_PASSWORD=${SMTP_PASSWORD?Variable not set}
+      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL?Variable not set}
+      - SMTP_PORT=${SMTP_PORT?Variable not set}
+      - SMTP_TLS=${SMTP_TLS?Variable not set}
 
   celery-worker-crawler:
     image: '${DOCKER_IMAGE_CELERY?Variable not set}:${TAG-latest}'
     container_name: app-celery-worker-crawler
     command: ["/app/celery/scripts/start_worker.sh", "-Q", "crawler"]
+    shm_size: '1gb'
     networks:
       - backend
       - frontend
@@ -232,8 +223,8 @@ services:
     environment:
       - PYTHONPATH=/app/backend:/app/celery
       - POSTGRES_SERVER=db
-      - POSTGRES_PORT=${POSTGRES_PORT}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PORT=${POSTGRES_PORT?Variable not set}
+      - POSTGRES_DB=${POSTGRES_DB?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - SECRET_KEY=${SECRET_KEY?Variable not set}
@@ -243,9 +234,11 @@ services:
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD?Variable not set}
       - RCLONE_CONFIG=/app/celery/rclone.conf
       - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
+    volumes:
+      - celery-beat-data:/var/run/celery
     healthcheck:
       disable: true
-    command: ["celery", "-A", "celery_app", "beat", "--loglevel=info", "-s", "/tmp/celerybeat-schedule"]
+    command: ["celery", "-A", "celery_app", "beat", "--loglevel=info", "-s", "/var/run/celery/celerybeat-schedule"]
 
   redis:
     image: redis:8.8.0-alpine@sha256:9d317178eceac8454a2284a9e6df2466b93c745529947f0cd42a0fa9609d7005
@@ -264,6 +257,7 @@ services:
 volumes:
   app-db-data:
   redis-data:
+  celery-beat-data:
 
 networks:
   frontend:

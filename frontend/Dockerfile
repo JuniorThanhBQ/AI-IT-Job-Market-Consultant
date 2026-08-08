@@ -59,7 +59,8 @@ RUN mkdir .next && chown node:node .next
 COPY --from=builder --chown=node:node /app/.next/standalone ./
 COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 
-USER 1000
+# hadolint ignore=DL3066
+USER node
 
 EXPOSE 3000
 CMD ["node", "server.js"]

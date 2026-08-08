@@ -8,7 +8,6 @@ from pydantic import (
     BaseModel,
     BeforeValidator,
     EmailStr,
-    HttpUrl,
     PostgresDsn,
     computed_field,
     model_validator,
@@ -223,7 +222,6 @@ class Settings(BaseSettings):
         ]
 
     PROJECT_NAME: str = "AI IT Job Market Consultant"
-    SENTRY_DSN: HttpUrl | None = None
     CELERY_WORKER_MAX_TASKS_PER_CHILD: int = 50
     GEMINI_API_KEY: list[str] | str = []
 

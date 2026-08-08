@@ -51,6 +51,8 @@ WORKDIR /app
 
 RUN groupadd -r -g 10001 app && useradd -r -u 10001 -g app app && chown app:app /app
 
+COPY --from=builder --chown=app:app /app/.venv /app/.venv
+
 # hadolint ignore=DL3008,DL4006
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update && apt-get install -y --no-install-recommends \
@@ -66,16 +68,11 @@ RUN DEBIAN_FRONTEND=noninteractive \
     && . /etc/os-release && echo "deb [signed-by=/etc/apt/keyrings/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt/ ${VERSION_CODENAME}-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
     && apt-get update && apt-get install -y --no-install-recommends \
         postgresql-client-18 \
-    && python -m venv /tmp/pw-venv \
-    && /tmp/pw-venv/bin/pip install --no-cache-dir playwright \
-    && /tmp/pw-venv/bin/python -m playwright install-deps chromium \
-    && rm -rf /tmp/pw-venv \
+    && /app/.venv/bin/python -m playwright install-deps chromium \
     && apt-get purge -y --auto-remove gnupg2 curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder --chown=app:app /app/.venv /app/.venv
-
-RUN mkdir -p /app/.cache/ms-playwright && chown -R app:app /app/.cache
+RUN mkdir -p /var/run/celery /app/.cache/ms-playwright && chown -R app:app /var/run/celery /app/.cache
 
 RUN --mount=type=cache,target=/root/.cache/ms-playwright \
     PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright python -m playwright install chromium \
@@ -87,7 +84,7 @@ COPY --from=builder --chown=app:app /app/celery /app/celery
 COPY --from=builder --chown=app:app /app/scripts /app/scripts
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
-    CMD ["CMD-SHELL", "celery -A celery_app inspect ping -d \"celery@$HOSTNAME\" | grep -q pong || exit 1"]
+    CMD ["sh", "-c", "celery -A celery_app inspect ping -d celery@$HOSTNAME | grep -q pong || exit 1"]
 
 USER 10001
 
