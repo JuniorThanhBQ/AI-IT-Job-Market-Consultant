@@ -1,33 +1,57 @@
 import argparse
-from pathlib import Path
 import shutil
+from pathlib import Path
+
+CACHE_DIRS: set[str] = {
+    "__pycache__",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".mypy_cache",
+    "agents.egg-info",
+}
+
+DIST_DIRS: set[str] = {
+    "node_modules",
+    "dist",
+}
+
+FIXED_PATHS: list[str] = [
+    "frontend/.next",
+]
+
+DIST_FIXED_PATHS: list[str] = [
+    ".venv",
+    "frontend/node_modules",
+    "frontend/dist",
+]
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Clean temporary build and cache files."
-    )
-    parser.add_argument(
-        "--dist",
-        action="store_true",
-        help="Perform a full clean including node_modules and virtual environments.",
-    )
+def _remove(path: Path, dry_run: bool) -> None:
+    if dry_run:
+        print(f"would remove: {path}")
+    else:
+        shutil.rmtree(path, ignore_errors=True)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dist", action="store_true")
+    parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
+    target_names = CACHE_DIRS | (DIST_DIRS if args.dist else set())
 
-    for name in ("__pycache__", ".pytest_cache", ".ruff_cache", ".mypy_cache"):
-        for p in Path(".").rglob(name):
-            shutil.rmtree(p, ignore_errors=True)
+    seen: set[Path] = set()
+    for p in sorted(Path(".").rglob("*")):
+        if p.name in target_names and p.is_dir():
+            if not any(parent in seen for parent in p.parents):
+                seen.add(p)
+                _remove(p, args.dry_run)
 
-    shutil.rmtree("frontend/.next", ignore_errors=True)
-
-    if args.dist:
-        shutil.rmtree(".venv", ignore_errors=True)
-        shutil.rmtree("frontend/node_modules", ignore_errors=True)
-        shutil.rmtree("frontend/dist", ignore_errors=True)
-        for p in Path(".").rglob("node_modules"):
-            shutil.rmtree(p, ignore_errors=True)
-        for p in Path(".").rglob("dist"):
-            shutil.rmtree(p, ignore_errors=True)
+    fixed = FIXED_PATHS + (DIST_FIXED_PATHS if args.dist else [])
+    for path_str in fixed:
+        p = Path(path_str)
+        if p.exists():
+            _remove(p, args.dry_run)
 
 
 if __name__ == "__main__":

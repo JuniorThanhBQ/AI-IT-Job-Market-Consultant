@@ -1,0 +1,23 @@
+{
+  "rules": {
+    "detail": {
+      "labels": ["detail", "updater_detail"],
+      "url_contains": ["/job/"],
+      "url_not_contains": ["/search"],
+      "special_rules": []
+    },
+    "company": {
+      "labels": ["company"],
+      "url_contains": ["/company/"],
+      "url_not_contains": [],
+      "special_rules": []
+    }
+  },
+  "selectors": {
+    "job_link": "a.jp_job_post_link, a.top-jobs__item",
+    "show_more_button": "#btnShowMoreJob"
+  },
+  "settings": {
+    "wait_for_networkidle": false
+  }
+}

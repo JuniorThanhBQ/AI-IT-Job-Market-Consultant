@@ -1,7 +1,7 @@
 services:
-
   backend:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    working_dir: /app/backend
     networks:
       - frontend
       - backend
@@ -19,28 +19,29 @@ services:
       - ENVIRONMENT=${ENVIRONMENT}
       - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
       - FIRST_SUPERUSER=${FIRST_SUPERUSER?Variable not set}
+      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD?Variable not set}
       - SMTP_HOST=${SMTP_HOST}
       - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
       - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+      - SECRET_KEY=${SECRET_KEY?Variable not set}
       - SENTRY_DSN=${SENTRY_DSN}
       - PYTHONPATH=/app/backend
-    secrets:
-      - postgres_password
-      - secret_key
-      - first_superuser_password
-      - smtp_password
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=4)"]
       interval: 10s
+      start_period: 10s
       timeout: 5s
       retries: 5
 
   backend-init:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    working_dir: /app/backend
     networks:
       - backend
     depends_on:
@@ -55,22 +56,20 @@ services:
       - ENVIRONMENT=${ENVIRONMENT}
       - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
       - FIRST_SUPERUSER=${FIRST_SUPERUSER?Variable not set}
+      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD?Variable not set}
       - SMTP_HOST=${SMTP_HOST}
       - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
       - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+      - SECRET_KEY=${SECRET_KEY?Variable not set}
       - SENTRY_DSN=${SENTRY_DSN}
       - PYTHONPATH=/app/backend
-    secrets:
-      - postgres_password
-      - secret_key
-      - first_superuser_password
-      - smtp_password
-    command: >
-      sh -c "alembic -c database/alembic.ini upgrade head && python app/fixtures/initial_data.py"
+    command: alembic -c database/alembic.ini upgrade head
 
   nginx:
     image: nginx:stable-alpine3.24-slim@sha256:ddde39c6e51f02fde7410c2e9c234cf2d0a4c7bdbbe176aeb37d8ad7ab4eb58c
@@ -92,6 +91,7 @@ services:
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3000/').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
       interval: 30s
+      start_period: 10s
       timeout: 5s
       retries: 3
     networks:
@@ -99,6 +99,7 @@ services:
 
   db:
     image: pgvector/pgvector:0.8.5-pg18@sha256:12a379b47ad65289572ea0756efc11b7c241a6662833e8af7038cd3b73d647e0
+    container_name: app-db
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -111,33 +112,29 @@ services:
       - backend
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
-    secrets:
-      - postgres_password
 
   rabbitmq:
-    image: rabbitmq:3.13-management
+    image: rabbitmq:3.13-management@sha256:e582c0bc7766f3342496d8485efb5a1df782b5ce3886ad017e2eaae442311f69
     container_name: app-rabbitmq
     networks:
       - backend
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
+      start_period: 5s
       timeout: 5s
       retries: 5
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER?Variable not set}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD?Variable not set}
 
-  celery-worker:
+  celery-worker-default:
     image: '${DOCKER_IMAGE_CELERY?Variable not set}:${TAG-latest}'
-    build:
-      context: .
-      dockerfile: agents/Dockerfile
-    container_name: app-celery-worker
-    command: ["/app/agents/tools/adaptive_crawler/scripts/start_worker.sh"]
+    container_name: app-celery-worker-default
+    command: ["/app/celery/scripts/start_worker.sh", "-Q", "celery"]
     networks:
       - backend
       - frontend
@@ -154,25 +151,70 @@ services:
     env_file:
       - .env
     environment:
-      - PYTHONPATH=/app/backend:/app
+      - PYTHONPATH=/app/backend:/app/celery
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672//
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+      - SECRET_KEY=${SECRET_KEY?Variable not set}
+      - RABBITMQ_SERVER=${RABBITMQ_SERVER?Variable not set}
+      - RABBITMQ_PORT=${RABBITMQ_PORT?Variable not set}
+      - RABBITMQ_USER=${RABBITMQ_USER?Variable not set}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD?Variable not set}
+      - RCLONE_CONFIG=/app/celery/rclone.conf
       - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
-    secrets:
-      - postgres_password
-      - secret_key
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_TLS=${SMTP_TLS}
+
+  celery-worker-crawler:
+    image: '${DOCKER_IMAGE_CELERY?Variable not set}:${TAG-latest}'
+    container_name: app-celery-worker-crawler
+    command: ["/app/celery/scripts/start_worker.sh", "-Q", "crawler"]
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      rabbitmq:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app/backend:/app/celery
+      - POSTGRES_SERVER=db
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+      - SECRET_KEY=${SECRET_KEY?Variable not set}
+      - RABBITMQ_SERVER=${RABBITMQ_SERVER?Variable not set}
+      - RABBITMQ_PORT=${RABBITMQ_PORT?Variable not set}
+      - RABBITMQ_USER=${RABBITMQ_USER?Variable not set}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD?Variable not set}
+      - RCLONE_CONFIG=/app/celery/rclone.conf
+      - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
+      - CELERY_WORKER_CONCURRENCY=1
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_TLS=${SMTP_TLS}
 
   celery-beat:
     image: '${DOCKER_IMAGE_CELERY?Variable not set}:${TAG-latest}'
-    build:
-      context: .
-      dockerfile: agents/Dockerfile
     container_name: app-celery-beat
-    command: ["celery", "-A", "agents.celery_app", "beat", "--loglevel=info", "-s", "/tmp/celerybeat-schedule"]
     networks:
       - backend
     depends_on:
@@ -188,20 +230,26 @@ services:
     env_file:
       - .env
     environment:
-      - PYTHONPATH=/app/backend:/app
+      - PYTHONPATH=/app/backend:/app/celery
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672//
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+      - SECRET_KEY=${SECRET_KEY?Variable not set}
+      - RABBITMQ_SERVER=${RABBITMQ_SERVER?Variable not set}
+      - RABBITMQ_PORT=${RABBITMQ_PORT?Variable not set}
+      - RABBITMQ_USER=${RABBITMQ_USER?Variable not set}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD?Variable not set}
+      - RCLONE_CONFIG=/app/celery/rclone.conf
       - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
-    secrets:
-      - postgres_password
-      - secret_key
+    healthcheck:
+      disable: true
+    command: ["celery", "-A", "celery_app", "beat", "--loglevel=info", "-s", "/tmp/celerybeat-schedule"]
 
   redis:
     image: redis:8.8.0-alpine@sha256:9d317178eceac8454a2284a9e6df2466b93c745529947f0cd42a0fa9609d7005
+    container_name: app-redis
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -210,7 +258,6 @@ services:
       start_period: 10s
     networks:
       - backend
-
     volumes:
       - redis-data:/data
 
@@ -226,13 +273,3 @@ networks:
     name: app-internal-network
     driver: bridge
     internal: true
-
-secrets:
-  postgres_password:
-    environment: POSTGRES_PASSWORD
-  secret_key:
-    environment: SECRET_KEY
-  first_superuser_password:
-    environment: FIRST_SUPERUSER_PASSWORD
-  smtp_password:
-    environment: SMTP_PASSWORD

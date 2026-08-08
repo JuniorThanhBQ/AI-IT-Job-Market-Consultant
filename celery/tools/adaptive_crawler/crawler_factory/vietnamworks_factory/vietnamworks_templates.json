@@ -1,0 +1,22 @@
+{
+  "rules": {
+    "detail": {
+      "labels": ["detail"],
+      "url_contains": ["/job/", "/viec-lam/"],
+      "url_not_contains": [],
+      "special_rules": []
+    },
+    "company": {
+      "labels": ["company"],
+      "url_contains": ["/company/", "/cong-ty/"],
+      "url_not_contains": [],
+      "special_rules": []
+    }
+  },
+  "selectors": {
+    "job_link": "a[href*='/job/'], a[href*='/viec-lam/'], a[href*='jobs/'], a[href$='-jv'], a[href*='-jv?']"
+  },
+  "settings": {
+    "wait_for_networkidle": true
+  }
+}

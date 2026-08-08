@@ -15,6 +15,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!frontend/src/lib/
 lib64/
 parts/
 sdist/
@@ -241,9 +242,13 @@ pnpm-debug.log*
 next-env.d.ts
 
 AGENTS.md
+AGENTS-HISTORY.md
 .agents/
 
 **/crawl_website_information/**/*.html
 
 test-results/
-tmp/
+
+# Rclone config credentials
+rclone.conf
+celery/rclone.conf

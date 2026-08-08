@@ -1,6 +1,5 @@
+from backend.tests.test_base import TestBase
 from fastapi.testclient import TestClient
-
-from tests.test_base import TestBase
 
 
 class TestHealth(TestBase):

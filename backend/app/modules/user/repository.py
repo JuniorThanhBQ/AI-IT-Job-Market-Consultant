@@ -1,7 +1,11 @@
+import uuid
+from datetime import UTC, datetime
+
 from sqlmodel import Session, select
 
 from app.core.security import get_password_hash, verify_password
-from app.modules.user.models import User, UserCreate, UserUpdate
+from app.modules.consultee_profile.models import ConsulteeProfile, CurriculumVitae
+from app.modules.user.models import User
 
 
 def get_user_by_email(*, session: Session, email: str) -> User | None:
@@ -9,29 +13,44 @@ def get_user_by_email(*, session: Session, email: str) -> User | None:
     return session.exec(statement).first()
 
 
-def create_user(*, session: Session, user_create: UserCreate) -> User:
-    db_obj = User(
-        email=user_create.email,
-        hashed_password=get_password_hash(user_create.password),
-        full_name=user_create.full_name,
-        is_superuser=user_create.is_superuser,
-        is_active=user_create.is_active,
+def get_user_by_id(*, session: Session, user_id: uuid.UUID) -> User | None:
+    return session.get(User, user_id)
+
+
+def create_user(
+    *,
+    session: Session,
+    email: str,
+    password: str,
+    username: str | None = None,
+) -> User:
+    user = User(
+        email=email,
+        hashed_password=get_password_hash(password),
+        username=username,
+        is_superuser=False,
     )
-    session.add(db_obj)
+    session.add(user)
+    session.flush()
+
+    profile = ConsulteeProfile(user_id=user.id)
+    session.add(profile)
+    session.flush()
+
+    cv = CurriculumVitae(profile_id=profile.id)
+    session.add(cv)
+
     session.commit()
-    session.refresh(db_obj)
-    return db_obj
+    session.refresh(user)
+    return user
 
 
-def update_user(*, session: Session, db_user: User, user_in: UserUpdate) -> User:
-    user_data = user_in.model_dump(exclude_unset=True)
-    extra_data = {}
+def update_user(*, session: Session, db_user: User, user_data: dict) -> User:
+    extra_data: dict = {}
     if "password" in user_data:
-        password = user_data["password"]
+        password = user_data.pop("password")
         if password:
-            hashed_password = get_password_hash(password)
-            extra_data["hashed_password"] = hashed_password
-        del user_data["password"]
+            extra_data["hashed_password"] = get_password_hash(password)
     db_user.sqlmodel_update(user_data, update=extra_data)
     session.add(db_user)
     session.commit()
@@ -39,9 +58,15 @@ def update_user(*, session: Session, db_user: User, user_in: UserUpdate) -> User
     return db_user
 
 
+def update_last_login(*, session: Session, user: User) -> None:
+    user.last_login = datetime.now(UTC)
+    session.add(user)
+    session.commit()
+
+
 def authenticate(*, session: Session, email: str, password: str) -> User | None:
     db_user = get_user_by_email(session=session, email=email)
-    if not db_user:
+    if not db_user or not db_user.hashed_password:
         return None
     is_valid, _ = verify_password(password, db_user.hashed_password)
     if not is_valid:

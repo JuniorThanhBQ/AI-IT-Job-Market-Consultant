@@ -1,0 +1,27 @@
+{
+  "rules": {
+    "detail": {
+      "labels": ["detail"],
+      "url_contains": ["/it-jobs/"],
+      "url_not_contains": [],
+      "special_rules": ["itviec_detail_slug_digits"]
+    },
+    "company": {
+      "labels": ["company"],
+      "url_contains": ["/companies/"],
+      "url_not_contains": [],
+      "special_rules": []
+    }
+  },
+  "selectors": {
+    "job_link": "h3[data-search--job-selection-target='jobTitle'] a, h3.imt-3 a",
+    "pagination_page_link": "nav.ipagination div.page a",
+    "main_container": "div.row.im-0.ip-0",
+    "company_link": "a.text-it-black.text-hover-red.cursor-pointer",
+    "company_info_row": "div.row.ipy-2, div.row.border-bottom-dashed",
+    "paragraph": "div.imy-5.paragraph"
+  },
+  "settings": {
+    "wait_for_networkidle": false
+  }
+}

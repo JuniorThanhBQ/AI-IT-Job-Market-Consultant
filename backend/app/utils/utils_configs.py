@@ -1,0 +1,71 @@
+import logging
+import os
+from pathlib import Path
+from typing import Any
+
+from pydantic.fields import FieldInfo
+from pydantic_settings import PydanticBaseSettingsSource
+
+logger = logging.getLogger(__name__)
+
+
+def _normalize_env_files(env_files: Any) -> list[str | Path]:
+    if not env_files:
+        return []
+    if isinstance(env_files, (str, Path)):
+        return [env_files]
+    return list(env_files)
+
+
+def _parse_env_file(path: Path) -> dict[str, str]:
+    if not path.is_file():
+        return {}
+    results: dict[str, str] = {}
+    try:
+        for raw_line in path.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                results[k.strip()] = v.strip().strip("'\"")
+    except Exception:
+        logger.warning(f"Could not read env file: {path}")
+    return results
+
+
+class FlatEnvSettingsSource(PydanticBaseSettingsSource):
+    def get_field_value(
+        self, field: FieldInfo, field_name: str
+    ) -> tuple[Any, str, bool]:
+        return None, field_name, False
+
+    def __call__(self) -> dict[str, Any]:
+        data: dict[str, Any] = {}
+        env_files = _normalize_env_files(
+            self.settings_cls.model_config.get("env_file", [])
+        )
+        search_roots = [Path("."), Path(__file__).resolve().parent.parent.parent]
+
+        for env_file in env_files:
+            for base_path in search_roots:
+                data.update(_parse_env_file(base_path / env_file))
+
+        data.update(os.environ)
+        return data
+
+
+def parse_cors(v: Any) -> list[str] | str:
+    if isinstance(v, str) and not v.startswith("["):
+        return [i.strip() for i in v.split(",") if i.strip()]
+    elif isinstance(v, list | str):
+        return v
+    raise ValueError(v)
+
+
+def get_secret(name: str, default: str = "") -> str:
+    for path in (
+        Path(f"/run/secrets/{name.lower()}"),
+        Path(f"/run/secrets/{name.upper()}"),
+    ):
+        if path.is_file():
+            return path.read_text().strip()
+    return default
