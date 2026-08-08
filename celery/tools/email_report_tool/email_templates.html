@@ -13,9 +13,13 @@
     <p><strong>Start Time:</strong> {{ time_start }}</p>
     <p><strong>End Time:</strong> {{ time_end }}</p>
     <p><strong>Run Duration:</strong> {{ run_duration }}</p>
+    {% if result_info %}
+    <h3>Task Result Summary:</h3>
+    <pre style="background: #f4f8fa; border-left: 4px solid #00bcd4; padding: 10px; font-family: monospace; white-space: pre-wrap;">{{ result_info }}</pre>
+    {% endif %}
     {% if error_info %}
-    <h3>Error Exception Details:</h3>
-    <pre style="background: #fff0f0; border-left: 4px solid #f44336; padding: 10px; font-family: monospace;">{{ error_info }}</pre>
+    <h3>Error Details:</h3>
+    <pre style="background: #fff0f0; border-left: 4px solid #f44336; padding: 10px; font-family: monospace; white-space: pre-wrap;">{{ error_info }}</pre>
     {% endif %}
 </body>
 </html>

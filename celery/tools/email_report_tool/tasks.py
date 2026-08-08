@@ -1,3 +1,4 @@
+import json
 import logging
 import threading
 from datetime import datetime
@@ -46,7 +47,45 @@ def on_task_postrun(
     time_end_str = end_time.strftime("%d-%m-%Y %H:%M:%S")
 
     task_name = task.name if task else str(sender)
-    subject = f"Celery Task Report: {task_name} - {state}"
+
+    is_failure = (
+        state == "FAILURE"
+        or retval is False
+        or (
+            isinstance(retval, dict)
+            and (
+                retval.get("success") is False
+                or retval.get("status") in {"failed", "error", "FAILURE"}
+            )
+        )
+    )
+    effective_state = "FAILURE" if is_failure else (state or "SUCCESS")
+    status_color = "green" if effective_state == "SUCCESS" else "red"
+    subject = f"Celery Task Report: {task_name} - {effective_state}"
+
+    result_info = None
+    error_info = None
+
+    if is_failure:
+        if state == "FAILURE":
+            error_info = str(retval)
+        elif retval is False:
+            error_info = "Task returned False indicating operation failure or unverified health checks."
+        elif isinstance(retval, dict) and "error" in retval:
+            error_info = str(retval.get("error"))
+        elif isinstance(retval, dict):
+            error_info = json.dumps(retval, indent=2, default=str)
+        else:
+            error_info = str(retval)
+    else:
+        if retval is not None:
+            if isinstance(retval, (dict, list)):
+                try:
+                    result_info = json.dumps(retval, indent=2, default=str)
+                except Exception:
+                    result_info = str(retval)
+            else:
+                result_info = str(retval)
 
     template_path = Path(__file__).parent / "email_templates.html"
     if not template_path.exists():
@@ -59,10 +98,11 @@ def on_task_postrun(
         html_content = template.render(
             task_name=task_name,
             task_id=task_id,
-            status_color="green" if state == "SUCCESS" else "red",
-            state=state,
+            status_color=status_color,
+            state=effective_state,
             args=args,
-            error_info=str(retval) if state == "FAILURE" else None,
+            result_info=result_info,
+            error_info=error_info,
             time_start=time_start_str,
             time_end=time_end_str,
             run_duration=duration_str,

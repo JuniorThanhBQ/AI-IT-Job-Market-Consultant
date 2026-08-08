@@ -42,6 +42,17 @@ class JobRepository:
         result = await self.session.exec(statement)
         return result.first()
 
+    async def get_by_content_hash(self, content_hash: str) -> Job | None:
+        if not content_hash:
+            return None
+        statement = (
+            select(Job)
+            .where(Job.content_hash == content_hash)
+            .options(selectinload(cast(Any, Job.embedding)))
+        )
+        result = await self.session.exec(statement)
+        return result.first()
+
     async def get_open_jobs_batch(self, limit: int = 100, offset: int = 0) -> list[Job]:
         statement = (
             select(Job)
@@ -114,6 +125,17 @@ class JobRepository:
                         persisted_skills.append(existing_skill)
 
         existing = await self.get_by_url(job_url_clean)
+        if not existing and job.content_hash:
+            existing_by_hash = await self.get_by_content_hash(job.content_hash)
+            if existing_by_hash:
+                if (
+                    existing_by_hash.source == job.source
+                    and existing_by_hash.status == JobStatus.CLOSED
+                ):
+                    existing = existing_by_hash
+                    job.status = job.status or JobStatus.OPEN
+                else:
+                    return existing_by_hash
 
         needs_embedding = True
         if existing and existing.embedding:
@@ -178,6 +200,18 @@ class JobRepository:
                 return job
         except IntegrityError:
             existing = await self.get_by_url(job_url_clean)
+            if not existing and job.content_hash:
+                existing_by_hash = await self.get_by_content_hash(job.content_hash)
+                if existing_by_hash:
+                    if (
+                        existing_by_hash.source == job.source
+                        and existing_by_hash.status == JobStatus.CLOSED
+                    ):
+                        existing = existing_by_hash
+                        job.status = job.status or JobStatus.OPEN
+                    else:
+                        return existing_by_hash
+
             if existing:
                 if persisted_company:
                     existing.company = persisted_company
@@ -207,6 +241,7 @@ class JobRepository:
 
     @staticmethod
     def _update_job_fields(target: Job, source: Job) -> None:
+        target.url = source.url or target.url
         target.title = source.title or target.title
         target.job_description = source.job_description or target.job_description
         target.expired_date = source.expired_date or target.expired_date

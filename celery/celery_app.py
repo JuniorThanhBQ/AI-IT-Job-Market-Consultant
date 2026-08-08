@@ -56,19 +56,19 @@ app.conf.beat_schedule = {
 
 @app.task(time_limit=28800, soft_time_limit=28000)
 def run_crawler_task():
-    asyncio.run(run_crawler_main())
+    return asyncio.run(run_crawler_main())
 
 
 @app.task
 def run_crawl4ai_task():
-    asyncio.run(run_crawl4ai_main())
+    return asyncio.run(run_crawl4ai_main())
 
 
 @app.task
 def run_jobs_update_task():
-    asyncio.run(update_jobs_workflow())
+    return asyncio.run(update_jobs_workflow())
 
 
 @app.task
 def run_database_backup_task():
-    asyncio.run(run_backup_pipeline())
+    return asyncio.run(run_backup_pipeline())

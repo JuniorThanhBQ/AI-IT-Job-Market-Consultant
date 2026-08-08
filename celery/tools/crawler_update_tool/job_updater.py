@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from typing import Any
 import aiohttp
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -12,7 +13,7 @@ from .updater_services import process_job
 logger = logging.getLogger(__name__)
 
 
-async def update_jobs_workflow() -> None:
+async def update_jobs_workflow() -> dict[str, Any]:
     engine = create_async_engine(DATABASE_URL, echo=False)
     session_factory = async_sessionmaker(
         engine, class_=AsyncSession, expire_on_commit=False
@@ -70,7 +71,14 @@ async def update_jobs_workflow() -> None:
                             await db_session.rollback()
 
                     offset += batch_size
+
+            return {
+                "status": "success",
+                "modified_jobs_count": len(all_modified_job_ids),
+                "modified_job_ids": all_modified_job_ids,
+            }
     except Exception as e:
         logger.error(f"Error found in Job Updater: {e}")
+        raise
     finally:
         await engine.dispose()
