@@ -46,7 +46,7 @@ def track_genai_metrics(operation_name: str):
                 return result
             except Exception as e:
                 latency = time.perf_counter() - start_time
-                logger.error(
+                logger.exception(
                     f"[GenAI Metrics] Failed operation: {operation_name} | "
                     f"Model: {model_name} | Latency: {latency:.4f}s | Error: {str(e)}"
                 )

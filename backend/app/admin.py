@@ -35,10 +35,11 @@ class AdminAuth(AuthenticationBackend):
                 user
                 and user.hashed_password
                 and verify_password(password, user.hashed_password)
+                and user.is_superuser
+                and user.is_active
             ):
-                if user.is_superuser and user.is_active:
-                    request.session.update({"token": str(user.id)})
-                    return True
+                request.session.update({"token": str(user.id)})
+                return True
         return False
 
     async def logout(self, request: Request) -> bool:

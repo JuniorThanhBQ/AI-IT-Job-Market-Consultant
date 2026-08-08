@@ -91,7 +91,7 @@ class ExceptionHandlerMiddleware(BaseHTTPMiddleware):
         try:
             return await call_next(request)
         except Exception as e:
-            logger.error(f"Unhandled exception: {e}", exc_info=True)
+            logger.exception(f"Unhandled exception: {e}")
             return JSONResponse(
                 status_code=500,
                 content={"message": "An internal server error occurred."},

@@ -11,6 +11,34 @@ from app.core.enums import (
 from app.utils.utils import parse_seniority_level
 
 
+def _classify_skill_header(elem_txt: str) -> str | None:
+    if "nice to have" in elem_txt or "preferred" in elem_txt:
+        return "nice"
+    if any(
+        k in elem_txt for k in ("qualifications", "requirements", "must have", "skills")
+    ):
+        return "req"
+    return None
+
+
+def _extract_list_items(elem) -> list[str]:
+    return [
+        li.get_text(strip=True) for li in elem.find_all("li") if li.get_text(strip=True)
+    ]
+
+
+def _extract_fallback_skills(div_elem) -> list[str]:
+    lis = [
+        li.get_text(strip=True)
+        for li in div_elem.select("li")
+        if li.get_text(strip=True)
+    ]
+    if lis:
+        return lis
+    c_txt = div_elem.get_text(separator="\n", strip=True)
+    return [c_txt] if c_txt else []
+
+
 def parse_skills_paragraph(div_elem):
     reqs_list = []
     nice_list = []
@@ -21,42 +49,23 @@ def parse_skills_paragraph(div_elem):
             continue
         elem_txt = elem.get_text(strip=True).lower()
         if elem.name in ["p", "div", "strong", "h4", "h5"]:
-            if "nice to have" in elem_txt or "preferred" in elem_txt:
+            header_type = _classify_skill_header(elem_txt)
+            if header_type == "nice":
                 target = nice_list
                 continue
-            elif (
-                "qualifications" in elem_txt
-                or "requirements" in elem_txt
-                or "must have" in elem_txt
-                or "skills" in elem_txt
-            ):
+            if header_type == "req":
                 target = reqs_list
                 continue
 
         if elem.name in ["ul", "ol"]:
-            lis = [
-                li.get_text(strip=True)
-                for li in elem.find_all("li")
-                if li.get_text(strip=True)
-            ]
-            target.extend(lis)
+            target.extend(_extract_list_items(elem))
         elif elem.name == "p" and not elem.find("strong"):
             ptxt = elem.get_text(strip=True)
             if ptxt:
                 target.append(ptxt)
 
     if not reqs_list and not nice_list:
-        lis = [
-            li.get_text(strip=True)
-            for li in div_elem.select("li")
-            if li.get_text(strip=True)
-        ]
-        if lis:
-            reqs_list = lis
-        else:
-            c_txt = div_elem.get_text(separator="\n", strip=True)
-            if c_txt:
-                reqs_list = [c_txt]
+        reqs_list = _extract_fallback_skills(div_elem)
 
     return reqs_list, nice_list
 

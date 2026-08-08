@@ -19,6 +19,9 @@ from app.modules.consultee_profile.schemas import (
 )
 from app.modules.user.schemas import MessageResponse
 
+PROFILE_ID_MISSING_MSG = "Profile ID is missing"
+CV_ID_MISSING_MSG = "CV ID is missing"
+
 
 def _get_profile_or_404(session: Session, user_id: uuid.UUID) -> ConsulteeProfile:
     profile = profile_repo.get_profile_by_user_id(session=session, user_id=user_id)
@@ -52,7 +55,7 @@ def update_my_profile(
 def get_my_cv(*, session: Session, user_id: uuid.UUID) -> CurriculumVitaeRead:
     profile = _get_profile_or_404(session, user_id)
     if profile.id is None:
-        raise ValueError("Profile ID is missing")
+        raise ValueError(PROFILE_ID_MISSING_MSG)
     cv = _get_cv_or_404(session, profile.id)
     return CurriculumVitaeRead.model_validate(cv)
 
@@ -62,7 +65,7 @@ def update_my_cv(
 ) -> CurriculumVitaeRead:
     profile = _get_profile_or_404(session, user_id)
     if profile.id is None:
-        raise ValueError("Profile ID is missing")
+        raise ValueError(PROFILE_ID_MISSING_MSG)
     cv = _get_cv_or_404(session, profile.id)
     updated = profile_repo.update_cv(session=session, cv=cv, data=data)
     return CurriculumVitaeRead.model_validate(updated)
@@ -73,7 +76,7 @@ def upload_cv_attachment(
 ) -> MessageResponse:
     profile = _get_profile_or_404(session, user_id)
     if profile.id is None:
-        raise ValueError("Profile ID is missing")
+        raise ValueError(PROFILE_ID_MISSING_MSG)
     cv = _get_cv_or_404(session, profile.id)
 
     profile_repo.update_cv(
@@ -91,10 +94,10 @@ def create_cv_project(
 ) -> CurriculumVitaeProjectRead:
     profile = _get_profile_or_404(session, user_id)
     if profile.id is None:
-        raise ValueError("Profile ID is missing")
+        raise ValueError(PROFILE_ID_MISSING_MSG)
     cv = _get_cv_or_404(session, profile.id)
     if cv.id is None:
-        raise ValueError("CV ID is missing")
+        raise ValueError(CV_ID_MISSING_MSG)
     project = profile_repo.create_cv_project(
         session=session, cv_id=cv.id, data=data.model_dump()
     )
@@ -110,10 +113,10 @@ def update_cv_project(
 ) -> CurriculumVitaeProjectRead:
     profile = _get_profile_or_404(session, user_id)
     if profile.id is None:
-        raise ValueError("Profile ID is missing")
+        raise ValueError(PROFILE_ID_MISSING_MSG)
     cv = _get_cv_or_404(session, profile.id)
     if cv.id is None:
-        raise ValueError("CV ID is missing")
+        raise ValueError(CV_ID_MISSING_MSG)
     project = profile_repo.get_cv_project(session=session, project_id=project_id)
     if not project or project.cv_id != cv.id:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -128,10 +131,10 @@ def delete_cv_project(
 ) -> MessageResponse:
     profile = _get_profile_or_404(session, user_id)
     if profile.id is None:
-        raise ValueError("Profile ID is missing")
+        raise ValueError(PROFILE_ID_MISSING_MSG)
     cv = _get_cv_or_404(session, profile.id)
     if cv.id is None:
-        raise ValueError("CV ID is missing")
+        raise ValueError(CV_ID_MISSING_MSG)
     project = profile_repo.get_cv_project(session=session, project_id=project_id)
     if not project or project.cv_id != cv.id:
         raise HTTPException(status_code=404, detail="Project not found")

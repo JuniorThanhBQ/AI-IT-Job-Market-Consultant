@@ -1,6 +1,7 @@
 import json
 import uuid
 from collections.abc import AsyncGenerator
+from typing import Any
 
 from sqlmodel import Session
 
@@ -17,10 +18,140 @@ from app.modules.consultant import repository as consultant_repo
 from app.modules.consultant.models import ConsultantHistory
 from app.utils.embeddings import generate_embedding_async
 
+ALL_HYBRID_CANDIDATES_HEADER = "All Hybrid Candidates & Retrieval Quality:\n"
+SELECTED_FOR_RAG_TAG = " [SELECTED FOR RAG]"
+
 
 class ConsultantService:
     def __init__(self, db: Session):
         self.db = db
+
+    def _save_chatbot_history(
+        self,
+        *,
+        user_id: uuid.UUID,
+        intent: ConsultantMode,
+        user_input: str,
+        user_vector: list[float],
+        candidates: list[Any],
+        top_documents: list[Any],
+        final_text: str,
+    ) -> None:
+        request_log = f"User query: {user_input}\nIntent: {intent.value}"
+        docs_log = []
+        for idx, doc in enumerate(candidates, start=1):
+            job, company, distance = doc
+            similarity = 1.0 - distance
+            docs_log.append(
+                f"Candidate {idx}: Job ID: {job.id}, Title: {job.title}, Company: {company.name}, Distance: {distance:.6f}, Similarity: {similarity:.6f}"
+            )
+
+        final_ids = {doc[0].id for doc in top_documents}
+        response_log = ALL_HYBRID_CANDIDATES_HEADER
+        for entry, doc in zip(docs_log, candidates, strict=True):
+            is_selected = SELECTED_FOR_RAG_TAG if doc[0].id in final_ids else ""
+            response_log += f"{entry}{is_selected}\n"
+
+        response_log += f"\nAgent Output:\n{final_text}"
+
+        consultant_repo.create_history(
+            session=self.db,
+            user_id=user_id,
+            user_input=user_input,
+            output=final_text,
+            consultant_mode=intent,
+            request_log=request_log,
+            response_log=response_log,
+            input_embedding=user_vector,
+        )
+
+    async def _stream_market_analysis(
+        self,
+        *,
+        user_id: uuid.UUID,
+        intent: ConsultantMode,
+        user_input: str,
+        user_vector: list[float],
+        candidates: list[Any],
+        top_documents: list[Any],
+        rag_context: str,
+    ) -> AsyncGenerator[str]:
+        final_text = ""
+        async for chunk in execute_market_consultant_stream(
+            query=user_input, rag_context=rag_context
+        ):
+            final_text += chunk
+            yield json.dumps({"type": "chunk", "text": chunk}) + "\n"
+
+        self._save_chatbot_history(
+            user_id=user_id,
+            intent=intent,
+            user_input=user_input,
+            user_vector=user_vector,
+            candidates=candidates,
+            top_documents=top_documents,
+            final_text=final_text,
+        )
+
+        yield (
+            json.dumps(
+                {
+                    "type": "metadata",
+                    "intent": intent.value,
+                    "execution_order": ["market_analysis"],
+                    "tool_outputs": {},
+                    "final_result": final_text,
+                }
+            )
+            + "\n"
+        )
+
+    async def _stream_agent_flow(
+        self,
+        *,
+        user_id: uuid.UUID,
+        intent: ConsultantMode,
+        user_input: str,
+        user_vector: list[float],
+        candidates: list[Any],
+        top_documents: list[Any],
+        rag_context: str,
+        user_profile: Any,
+    ) -> AsyncGenerator[str]:
+        agent_intent = Intent(intent.value)
+        final_state = await execute_agent_flow(
+            intent=agent_intent,
+            user_input=user_input,
+            rag_context=rag_context,
+            action_type="DEFAULT",
+            user_profile=user_profile,
+        )
+
+        final_text = final_state.get("final_result", "")
+        yield json.dumps({"type": "chunk", "text": final_text}) + "\n"
+
+        self._save_chatbot_history(
+            user_id=user_id,
+            intent=intent,
+            user_input=user_input,
+            user_vector=user_vector,
+            candidates=candidates,
+            top_documents=top_documents,
+            final_text=final_text,
+        )
+
+        yield (
+            json.dumps(
+                {
+                    "type": "metadata",
+                    "intent": intent.value,
+                    "execution_order": final_state.get("execution_order", []),
+                    "tool_outputs": final_state.get("tool_outputs"),
+                    "final_result": final_text,
+                }
+            )
+            + "\n"
+        )
 
     async def process_chatbot_intent(
         self, user_id: uuid.UUID, intent: ConsultantMode, user_input: str
@@ -53,32 +184,15 @@ class ConsultantService:
             user_profile=user_profile,
         )
 
-        request_log = f"User query: {user_input}\nIntent: {intent.value}"
-        docs_log = []
-        for idx, doc in enumerate(candidates, start=1):
-            job, company, distance = doc
-            similarity = 1.0 - distance
-            docs_log.append(
-                f"Candidate {idx}: Job ID: {job.id}, Title: {job.title}, Company: {company.name}, Distance: {distance:.6f}, Similarity: {similarity:.6f}"
-            )
-
-        final_ids = {doc[0].id for doc in top_documents}
-        response_log = "All Hybrid Candidates & Retrieval Quality:\n"
-        for entry, doc in zip(docs_log, candidates, strict=True):
-            is_selected = " [SELECTED FOR RAG]" if doc[0].id in final_ids else ""
-            response_log += f"{entry}{is_selected}\n"
-
-        response_log += f"\nAgent Output:\n{final_state.get('final_result', '')}"
-
-        consultant_repo.create_history(
-            session=self.db,
+        final_text = final_state.get("final_result", "")
+        self._save_chatbot_history(
             user_id=user_id,
+            intent=intent,
             user_input=user_input,
-            output=final_state.get("final_result", ""),
-            consultant_mode=intent,
-            request_log=request_log,
-            response_log=response_log,
-            input_embedding=user_vector,
+            user_vector=user_vector,
+            candidates=candidates,
+            top_documents=top_documents,
+            final_text=final_text,
         )
 
         return final_state
@@ -106,107 +220,29 @@ class ConsultantService:
             user_profile = build_user_profile(self.db, user_id)
 
         if intent != ConsultantMode.DEEP_ANALYSIS_EVALUATION:
-            final_text = ""
-            async for chunk in execute_market_consultant_stream(
-                query=user_input, rag_context=rag_context
-            ):
-                final_text += chunk
-                yield json.dumps({"type": "chunk", "text": chunk}) + "\n"
-
-            request_log = f"User query: {user_input}\nIntent: {intent.value}"
-            docs_log = []
-            for idx, doc in enumerate(candidates, start=1):
-                job, company, distance = doc
-                similarity = 1.0 - distance
-                docs_log.append(
-                    f"Candidate {idx}: Job ID: {job.id}, Title: {job.title}, Company: {company.name}, Distance: {distance:.6f}, Similarity: {similarity:.6f}"
-                )
-
-            final_ids = {doc[0].id for doc in top_documents}
-            response_log = "All Hybrid Candidates & Retrieval Quality:\n"
-            for entry, doc in zip(docs_log, candidates, strict=True):
-                is_selected = " [SELECTED FOR RAG]" if doc[0].id in final_ids else ""
-                response_log += f"{entry}{is_selected}\n"
-
-            response_log += f"\nAgent Output:\n{final_text}"
-
-            consultant_repo.create_history(
-                session=self.db,
+            generator = self._stream_market_analysis(
                 user_id=user_id,
+                intent=intent,
                 user_input=user_input,
-                output=final_text,
-                consultant_mode=intent,
-                request_log=request_log,
-                response_log=response_log,
-                input_embedding=user_vector,
+                user_vector=user_vector,
+                candidates=candidates,
+                top_documents=top_documents,
+                rag_context=rag_context,
+            )
+        else:
+            generator = self._stream_agent_flow(
+                user_id=user_id,
+                intent=intent,
+                user_input=user_input,
+                user_vector=user_vector,
+                candidates=candidates,
+                top_documents=top_documents,
+                rag_context=rag_context,
+                user_profile=user_profile,
             )
 
-            yield (
-                json.dumps(
-                    {
-                        "type": "metadata",
-                        "intent": intent.value,
-                        "execution_order": ["market_analysis"],
-                        "tool_outputs": {},
-                        "final_result": final_text,
-                    }
-                )
-                + "\n"
-            )
-            return
-
-        agent_intent = Intent(intent.value)
-        final_state = await execute_agent_flow(
-            intent=agent_intent,
-            user_input=user_input,
-            rag_context=rag_context,
-            action_type="DEFAULT",
-            user_profile=user_profile,
-        )
-
-        final_text = final_state.get("final_result", "")
-        yield json.dumps({"type": "chunk", "text": final_text}) + "\n"
-
-        request_log = f"User query: {user_input}\nIntent: {intent.value}"
-        docs_log = []
-        for idx, doc in enumerate(candidates, start=1):
-            job, company, distance = doc
-            similarity = 1.0 - distance
-            docs_log.append(
-                f"Candidate {idx}: Job ID: {job.id}, Title: {job.title}, Company: {company.name}, Distance: {distance:.6f}, Similarity: {similarity:.6f}"
-            )
-
-        final_ids = {doc[0].id for doc in top_documents}
-        response_log = "All Hybrid Candidates & Retrieval Quality:\n"
-        for entry, doc in zip(docs_log, candidates, strict=True):
-            is_selected = " [SELECTED FOR RAG]" if doc[0].id in final_ids else ""
-            response_log += f"{entry}{is_selected}\n"
-
-        response_log += f"\nAgent Output:\n{final_text}"
-
-        consultant_repo.create_history(
-            session=self.db,
-            user_id=user_id,
-            user_input=user_input,
-            output=final_text,
-            consultant_mode=intent,
-            request_log=request_log,
-            response_log=response_log,
-            input_embedding=user_vector,
-        )
-
-        yield (
-            json.dumps(
-                {
-                    "type": "metadata",
-                    "intent": intent.value,
-                    "execution_order": final_state.get("execution_order", []),
-                    "tool_outputs": final_state.get("tool_outputs"),
-                    "final_result": final_text,
-                }
-            )
-            + "\n"
-        )
+        async for chunk in generator:
+            yield chunk
 
     async def process_agent_intent(
         self, user_id: uuid.UUID, intent: ConsultantMode, action_type: ActionType

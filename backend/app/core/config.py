@@ -124,6 +124,69 @@ class BackupSettings(BaseModel):
     BACKUP_MAX_STACKS: int = 30
 
 
+NESTED_SETTINGS_MAP: dict[str, tuple[type[BaseModel], list[str]]] = {
+    "database": (
+        DatabaseSettings,
+        [
+            "POSTGRES_SERVER",
+            "POSTGRES_PORT",
+            "POSTGRES_USER",
+            "POSTGRES_PASSWORD",
+            "POSTGRES_DB",
+        ],
+    ),
+    "rabbitmq": (
+        RabbitMQSettings,
+        [
+            "RABBITMQ_SERVER",
+            "RABBITMQ_PORT",
+            "RABBITMQ_USER",
+            "RABBITMQ_PASSWORD",
+            "CUSTOM_RABBITMQ_URL",
+        ],
+    ),
+    "redis": (
+        RedisSettings,
+        ["REDIS_SERVER", "REDIS_PORT", "CUSTOM_REDIS_URL"],
+    ),
+    "crawler": (
+        CrawlerSettings,
+        [
+            "CRAWLER_MAX_CONCURRENCY",
+            "SITE_CRAWL_TIMEOUT_SECONDS",
+            "CRAWLER_MAX_REQUESTS_PER_CRAWL",
+            "CRAWLER_MAX_REQUEST_RETRIES",
+            "CRAWLER_REQUEST_HANDLER_TIMEOUT_SECONDS",
+            "CRAWLER_MIN_DELAY_SECONDS",
+            "CRAWLER_MAX_DELAY_SECONDS",
+            "CRAWLER_BROWSER_TYPE",
+            "CRAWLER_HEADLESS",
+        ],
+    ),
+    "smtp": (
+        SMTPSettings,
+        [
+            "SMTP_TLS",
+            "SMTP_SSL",
+            "SMTP_PORT",
+            "SMTP_HOST",
+            "SMTP_USER",
+            "SMTP_PASSWORD",
+            "EMAILS_FROM_EMAIL",
+            "EMAILS_FROM_NAME",
+        ],
+    ),
+    "backup": (
+        BackupSettings,
+        [
+            "BACKUP_RESTORE_ADMIN_PASSWORD",
+            "RCLONE_REMOTE_PATH",
+            "BACKUP_MAX_STACKS",
+        ],
+    ),
+}
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=(".env", "../.env"),
@@ -176,93 +239,28 @@ class Settings(BaseSettings):
     smtp: SMTPSettings = None  # type: ignore
     backup: BackupSettings = None  # type: ignore
 
+    @staticmethod
+    def _build_nested_model(
+        data: dict[str, Any],
+        setting_cls: type[BaseModel],
+        keys: list[str],
+        existing: Any,
+    ) -> BaseModel:
+        extracted = {k: data[k] for k in keys if k in data}
+        if isinstance(existing, dict):
+            return setting_cls(**{**extracted, **existing})
+        if existing:
+            return existing
+        return setting_cls(**extracted)
+
     @model_validator(mode="before")
     @classmethod
     def _parse_nested_settings(cls, data: Any) -> Any:
         if not isinstance(data, dict):
             return data
 
-        def extract(keys: list[str]) -> dict[str, Any]:
-            return {k: data[k] for k in keys if k in data}
-
-        db_keys = [
-            "POSTGRES_SERVER",
-            "POSTGRES_PORT",
-            "POSTGRES_USER",
-            "POSTGRES_PASSWORD",
-            "POSTGRES_DB",
-        ]
-        rabbitmq_keys = [
-            "RABBITMQ_SERVER",
-            "RABBITMQ_PORT",
-            "RABBITMQ_USER",
-            "RABBITMQ_PASSWORD",
-            "CUSTOM_RABBITMQ_URL",
-        ]
-        redis_keys = ["REDIS_SERVER", "REDIS_PORT", "CUSTOM_REDIS_URL"]
-        crawler_keys = [
-            "CRAWLER_MAX_CONCURRENCY",
-            "SITE_CRAWL_TIMEOUT_SECONDS",
-            "CRAWLER_MAX_REQUESTS_PER_CRAWL",
-            "CRAWLER_MAX_REQUEST_RETRIES",
-            "CRAWLER_REQUEST_HANDLER_TIMEOUT_SECONDS",
-            "CRAWLER_MIN_DELAY_SECONDS",
-            "CRAWLER_MAX_DELAY_SECONDS",
-            "CRAWLER_BROWSER_TYPE",
-            "CRAWLER_HEADLESS",
-        ]
-        smtp_keys = [
-            "SMTP_TLS",
-            "SMTP_SSL",
-            "SMTP_PORT",
-            "SMTP_HOST",
-            "SMTP_USER",
-            "SMTP_PASSWORD",
-            "EMAILS_FROM_EMAIL",
-            "EMAILS_FROM_NAME",
-        ]
-        backup_keys = [
-            "BACKUP_RESTORE_ADMIN_PASSWORD",
-            "RCLONE_REMOTE_PATH",
-            "BACKUP_MAX_STACKS",
-        ]
-
-        db_data = extract(db_keys)
-        rmq_data = extract(rabbitmq_keys)
-        red_data = extract(redis_keys)
-        crw_data = extract(crawler_keys)
-        smp_data = extract(smtp_keys)
-        bkp_data = extract(backup_keys)
-
-        if "database" not in data or not data["database"]:
-            data["database"] = DatabaseSettings(**db_data)
-        elif isinstance(data["database"], dict):
-            data["database"] = DatabaseSettings(**{**db_data, **data["database"]})
-
-        if "rabbitmq" not in data or not data["rabbitmq"]:
-            data["rabbitmq"] = RabbitMQSettings(**rmq_data)
-        elif isinstance(data["rabbitmq"], dict):
-            data["rabbitmq"] = RabbitMQSettings(**{**rmq_data, **data["rabbitmq"]})
-
-        if "redis" not in data or not data["redis"]:
-            data["redis"] = RedisSettings(**red_data)
-        elif isinstance(data["redis"], dict):
-            data["redis"] = RedisSettings(**{**red_data, **data["redis"]})
-
-        if "crawler" not in data or not data["crawler"]:
-            data["crawler"] = CrawlerSettings(**crw_data)
-        elif isinstance(data["crawler"], dict):
-            data["crawler"] = CrawlerSettings(**{**crw_data, **data["crawler"]})
-
-        if "smtp" not in data or not data["smtp"]:
-            data["smtp"] = SMTPSettings(**smp_data)
-        elif isinstance(data["smtp"], dict):
-            data["smtp"] = SMTPSettings(**{**smp_data, **data["smtp"]})
-
-        if "backup" not in data or not data["backup"]:
-            data["backup"] = BackupSettings(**bkp_data)
-        elif isinstance(data["backup"], dict):
-            data["backup"] = BackupSettings(**{**bkp_data, **data["backup"]})
+        for key, (setting_cls, keys) in NESTED_SETTINGS_MAP.items():
+            data[key] = cls._build_nested_model(data, setting_cls, keys, data.get(key))
 
         return data
 
