@@ -8,7 +8,7 @@ from typing import cast, Any
 import sys
 
 from bs4 import BeautifulSoup
-from crawlee import ConcurrencySettings, Request
+from crawlee import ConcurrencySettings
 from crawlee.crawlers import (
     AdaptivePlaywrightCrawler,
     AdaptivePlaywrightCrawlingContext,
@@ -138,7 +138,7 @@ class BaseCrawlerFactory(ABC):
             rules = config.get("rules", {})
             settings = config.get("settings", {})
 
-            is_detail = context.request.label == "update" or self._matches_rules(
+            is_detail = self._matches_rules(
                 url, context.request.label or "", rules.get("detail", {})
             )
             is_company = self._matches_rules(
@@ -159,12 +159,6 @@ class BaseCrawlerFactory(ABC):
                     )
 
             if is_detail:
-                if context.request.label == "detail" and url in self.existing_urls:
-                    context.log.info(f"URL already exists, deferring update: {url}")
-                    await context.add_requests(
-                        [Request.from_url(url=url, label="update")]
-                    )
-                    return
                 await self.process_detail(context, soup, url, session_factory)
                 self.existing_urls.add(url)
             elif is_company:

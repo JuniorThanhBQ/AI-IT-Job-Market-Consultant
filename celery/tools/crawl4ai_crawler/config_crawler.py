@@ -50,7 +50,7 @@ LLM_CONFIG = LLMConfig(
 LIST_RUN_CONFIG = CrawlerRunConfig(
     cache_mode=CacheMode.BYPASS,
     magic=True,
-    page_timeout=120000,
+    page_timeout=80000,
     extraction_strategy=LLMExtractionStrategy(
         llm_config=LLM_CONFIG,
         schema=JobLinkSchema.model_json_schema(),
@@ -66,8 +66,8 @@ DETAIL_RUN_CONFIG = CrawlerRunConfig(
     extraction_strategy=LLMExtractionStrategy(
         llm_config=LLM_CONFIG,
         schema=JobSchema.model_json_schema(),
-        instruction="Extract all detailed information about this specific job posting.",
+        instruction="Extract all detailed information about this specific job posting",
     ),
 )
 
-MAX_JOBS_TO_CRAWL = 3  # Gemini API has a limit of 5 requests per minute!
+MAX_JOBS_TO_CRAWL = 3

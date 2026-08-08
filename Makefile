@@ -1,4 +1,4 @@
-.PHONY: app-check backup-restore backup-restore-docker clean coverage-xml db-migrate db-migrate-docker db-migration db-migration-docker dev-app-build dev-app-down dev-backend dev-frontend docker-lint generate-secret help install lint pre-commit-autoupdate pre-commit-check prod-app-build prod-app-down radon-check run-crawlfourai-celery run-crawler-celery run-crawler-update test
+.PHONY: app-check backup-restore backup-restore-docker clean coverage-xml db-migrate db-migrate-docker db-migration db-migration-docker dev-app-build dev-app-down dev-backend dev-frontend docker-lint generate-secret help install lint pre-commit-autoupdate pre-commit-check prod-app-build prod-app-down radon-check run-crawlfourai-celery run-crawler-celery run-crawler-update test test-backend test-celery test-frontend
 .DEFAULT_GOAL := help
 
 help:
@@ -29,7 +29,10 @@ help:
 	@echo "  make pre-commit-autoupdate      - Auto-update pre-commit hook versions"
 	@echo "  make radon-check                - Run radon complexity and maintainability index checks"
 	@echo "  make coverage-xml               - Generate XML coverage report"
-	@echo "  make test                       - Run tests"
+	@echo "  make test                       - Run all tests (bandit, backend, celery, frontend)"
+	@echo "  make test-backend               - Run backend unit and integration tests"
+	@echo "  make test-celery                - Run celery unit and integration tests"
+	@echo "  make test-frontend              - Run frontend audit and e2e tests"
 
 clean:
 	python scripts/clean_temporary_files.py ${CLEAN_TYPE}
@@ -97,7 +100,7 @@ lint:
 	uv run --project backend ruff check backend celery
 	uv run --project backend mypy backend/app celery
 	uv run --project backend typos
-	uv run --project backend pylint --rcfile=backend/pyproject.toml backend celery/tools celery/scripts
+	uv run --project backend pylint --rcfile=backend/pyproject.toml backend celery/tools celery/scripts celery/utils
 	npm --prefix frontend run lint
 	docker run --rm -i hadolint/hadolint < backend/Dockerfile
 	docker run --rm -i hadolint/hadolint < frontend/Dockerfile
@@ -116,9 +119,19 @@ radon-check:
 coverage-xml:
 	uv run --project backend pytest --cov=app --cov-report=xml:coverage.xml
 
+test-backend:
+	uv run --project backend pytest backend/tests --cov=app --cov-report=term-missing
+
+test-celery:
+	uv run --project backend pytest celery/tests --cov=celery/tools --cov=celery/utils --cov-report=term-missing
+
+test-frontend:
+	npm --prefix frontend audit --audit-level=critical
+	npm --prefix frontend run test:e2e
+
 test:
 	uv run --project backend bandit -c backend/pyproject.toml -r backend celery -ll
-	uv run --project backend pytest --cov=app --cov-report=term-missing
-	uv run --project backend pytest celery/tests/adaptive_crawler --cov=celery/tools/adaptive_crawler --cov-report=term-missing
+	uv run --project backend pytest backend/tests --cov=app --cov-report=term-missing
+	uv run --project backend pytest celery/tests --cov=celery/tools --cov=celery/utils --cov-report=term-missing
 	npm --prefix frontend audit --audit-level=critical
 	npm --prefix frontend run test:e2e

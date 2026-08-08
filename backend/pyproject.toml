@@ -60,7 +60,10 @@ module = [
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = "celery_app"
+module = [
+    "celery_app",
+    "celery.tests.*",
+]
 ignore_errors = true
 
 

@@ -53,13 +53,11 @@ class TestCustomRenderingTypePredictor:
     def test_predict_known_domains(self):
         predictor = CustomRenderingTypePredictor()
 
-        # Dynamic
         req_topdev = MagicMock()
         req_topdev.url = "https://topdev.vn/jobs"
         pred = predictor.predict(req_topdev)
         assert pred.rendering_type == "client only"
 
-        # Static
         req_itviec = MagicMock()
         req_itviec.url = "https://itviec.com/jobs"
         pred = predictor.predict(req_itviec)
@@ -77,13 +75,10 @@ class TestCustomRenderingTypePredictor:
         req = MagicMock()
         req.url = "https://new-site.com/list"
 
-        # Default prediction
         assert predictor.predict(req).rendering_type == "static"
 
-        # Store "client only" result
         predictor.store_result(req, "client only")
         assert predictor.predict(req).rendering_type == "client only"
 
-        # Store "static" result
         predictor.store_result(req, "static")
         assert predictor.predict(req).rendering_type == "static"

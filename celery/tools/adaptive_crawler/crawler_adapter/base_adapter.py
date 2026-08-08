@@ -86,7 +86,7 @@ class JobAdapterBase:
 
     @staticmethod
     def process_skills(raw_skills: list[str]) -> list[Any]:
-        from app.utils.text_parser import clean_html_text
+        from utils.text_parser import clean_html_text
         from app.modules.job.models import Skills
 
         seen = set()
