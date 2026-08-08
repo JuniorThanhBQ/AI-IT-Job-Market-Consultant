@@ -1,0 +1,97 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.container {
+    max-width: 600px;
+    width: 100%;
+    padding: 20px;
+}
+.card {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+h1 {
+    font-size: 28px;
+    color: #212529;
+    margin-bottom: 10px;
+}
+.badge {
+    display: inline-block;
+    background-color: #d1e7dd;
+    color: #0f5132;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+p {
+    font-size: 16px;
+    color: #495057;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+.btn {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    display: inline-block;
+}
+.btn-frontend {
+    background-color: #0d6efd;
+    color: #ffffff;
+    border: 1px solid #0d6efd;
+}
+.btn-frontend:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+.btn-admin {
+    background-color: #6c757d;
+    color: #ffffff;
+    border: 1px solid #6c757d;
+}
+.btn-admin:hover {
+    background-color: #5c636a;
+    border-color: #565e64;
+}
+.footer {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #6c757d;
+    text-align: center;
+    margin-right: 10px;
+}
+.footer a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer div {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 0.5em;
+}
