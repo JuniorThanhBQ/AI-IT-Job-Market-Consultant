@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="AI IT Job Market Consultant backend administration, health check, and orchestration engine dashboard.">
+    <meta name="frontend-host" content="{{ frontend_host }}">
     <title>AI IT Job Market Consultant - Backend</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
@@ -32,9 +33,10 @@
     </main>
     <script>
         (function() {
-            const host = {{ frontend_host | tojson }};
-            if (host && (host.startsWith("http://") || host.startsWith("https://"))) {
-                const btn = document.getElementById("btn-frontend");
+            const meta = document.querySelector('meta[name="frontend-host"]');
+            const host = meta ? meta.getAttribute('content') : '';
+            if (host && (host.startsWith('http://') || host.startsWith('https://'))) {
+                const btn = document.getElementById('btn-frontend');
                 if (btn) {
                     btn.href = host;
                 }

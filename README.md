@@ -138,7 +138,7 @@ More showcase here: [The showcase folder](docs/showcase/)
 ## VI. How to use it
 There are two main ways to use this system.
 
-1. First, you can use the web version that is already deployed. In this case, you only need to accept the terms and conditions, then register and log in. After that, you can access most features, such as job search, CV analysis, and the smart chatbot. Please note that you should not share sensitive personal information.
+1. First, you can use the web that is already deployed. In this case, you only need to accept the terms and conditions, then register and log in. After that, you can access most features, such as job search, CV analysis, and the AIJMC chatbot. Please note that you should not share sensitive personal information.
 
 2. Second, if you want to run the project locally, you need to prepare the environment files first. Create a .env file based on the .env.example template, and create a .rclone.conf file based on the .rclone.conf.example template in the celery folder. After that, you can start the project locally and use the same features. Note: Knowledge about Docker and system understanding are required.
 
