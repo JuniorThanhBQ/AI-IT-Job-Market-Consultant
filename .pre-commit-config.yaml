@@ -18,7 +18,7 @@ repos:
       - id: detect-private-key
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.48.0
+    rev: v1.48.0  # frozen: v1.48.0
     hooks:
       - id: typos
         args: [--force-exclude]
@@ -82,6 +82,16 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+
+  - repo: https://github.com/bridgecrewio/checkov
+    rev: 3.3.9
+    hooks:
+      - id: checkov
+        name: Checkov Docker Compose Lint
+        files: ^(docker-)?compose(\..+)?\.ya?ml$
+        args:
+          - --framework
+          - yaml
 
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
     rev: v1.29.0

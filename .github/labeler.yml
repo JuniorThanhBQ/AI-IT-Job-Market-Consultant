@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://json.schemastore.org/pull-request-labeler-5.json
-changed-files-labels-limit: 3 # Incorrect type. Expected "array" ===> False positive
+changed-files-labels-limit: 3
 
 "Type: Documentation":
   - all:

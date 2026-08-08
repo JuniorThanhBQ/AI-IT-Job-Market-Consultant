@@ -60,25 +60,15 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
 
-      - name: Detect Docker Compose files
-        id: detect-compose
-        run: bash scripts/compose/detect-compose.sh
-
       - name: Validate Docker Compose Syntax
-        if: steps.detect-compose.outputs.has_compose == 'true'
-        env:
-          COMPOSE_FILES: ${{ steps.detect-compose.outputs.compose_files }}
-        run: bash scripts/compose/validate-compose.sh
+        run: |
+          cp -n .env.example .env
+          docker compose config --quiet
+          docker compose -f docker-compose.prod.yml config --quiet
 
-      - name: Setup Python for Compose Lint
-        if: steps.detect-compose.outputs.has_compose == 'true'
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      - name: Checkov Compose Security Scan
+        uses: bridgecrewio/checkov-action@99bb2caf247dfd9f03cf984373bc6043d4e32ebf
         with:
-          python-version: '3.14'
-          cache: 'pip'
-
-      - name: Compose Lint (Security & Best Practices)
-        if: steps.detect-compose.outputs.has_compose == 'true'
-        env:
-          COMPOSE_FILES: ${{ steps.detect-compose.outputs.compose_files }}
-        run: bash scripts/compose/compose-lint.sh || true
+          file: docker-compose.yml,docker-compose.prod.yml
+          framework: yaml
+          output_format: cli

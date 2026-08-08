@@ -36,9 +36,10 @@ updates:
       python-packages:
         patterns:
           - "*"
-  # bun
-  - package-ecosystem: bun
-    directory: /
+
+  # npm
+  - package-ecosystem: npm
+    directory: /frontend
     schedule:
       interval: "weekly"
       day: monday
@@ -46,8 +47,10 @@ updates:
     cooldown:
       default-days: 7
     commit-message:
-      prefix: ⬆
-    labels: [dependencies, internal]
+      prefix: "⬆"
+    labels:
+      - dependencies
+      - internal
     groups:
       npm-packages:
         patterns:

@@ -52,7 +52,6 @@ jobs:
 
       - name: Run Bandit
         run: |
-          # Run Bandit directly to console and fail on findings
           uvx bandit -r backend -ll -ii --exclude '**/tests/**,**/.venv/**,**/migrations/**'
 
           # (Commented out for future public repository use)
@@ -132,7 +131,6 @@ jobs:
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
         run: |
-          # Run Semgrep with console output and fail on findings
           semgrep scan \
             --config p/security-audit \
             --config p/secrets \
@@ -170,10 +168,6 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
         with:
           fetch-depth: 1
-
-      - name: Detect Dockerfiles
-        id: detect-dockerfiles
-        run: bash scripts/security/detect-dockerfiles.sh
 
       # (Commented out for future public repository use)
       # - name: Run Trivy vulnerability scanner (SARIF generator)
