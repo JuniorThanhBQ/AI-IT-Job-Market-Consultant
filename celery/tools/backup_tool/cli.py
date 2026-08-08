@@ -1,8 +1,8 @@
+import os
+import sys
 import argparse
 import asyncio
 import logging
-import os
-import sys
 import tempfile
 from pathlib import Path
 
@@ -15,6 +15,7 @@ from tools.backup_tool.service import (
     run_backup_pipeline,
     verify_latest_backup,
 )
+from utils.backup_utils import format_utc_modtime
 
 logger = logging.getLogger(__name__)
 PASSWORD_ENV_VAR = "BACKUP_RESTORE_ADMIN_" + "PASSWORD"
@@ -31,7 +32,6 @@ def _confirm(prompt: str) -> bool:
     if _non_interactive():
         logger.error(
             f"Confirmation required ('{prompt.strip()}') but no interactive "
-            f"terminal is attached. Refusing to proceed automatically. "
             f"Re-run with --yes if you intend to skip confirmation."
         )
         return False
@@ -40,18 +40,19 @@ def _confirm(prompt: str) -> bool:
 
 
 async def list_backups_cli():
-    logger.info("Fetching backup list from Google Drive...")
+    logger.info("Fetching backup list from Google Drive")
     try:
         backups = await list_remote_backups()
         if not backups:
             logger.info("No backups found.")
             return
-        print(f"{'Filename':<50} | {'Size (Bytes)':<12} | {'Modified Time':<25}")
+
+        print(f"{'Filename':<50} | {'Size (MB)':<12} | {'Modified Time':<25}")
         print("-" * 93)
         for b in backups:
-            print(
-                f"{b.get('Name', ''):<50} | {b.get('Size', 0):<12} | {b.get('ModTime', ''):<25}"
-            )
+            mod_time = format_utc_modtime(b.get("ModTime", ""))
+            size_mb = b.get("Size", 0) / (1024 * 1024)
+            print(f"{b.get('Name', ''):<50} | {size_mb:<12.2f} | {mod_time:<25}")
     except Exception:
         logger.error("Failed to fetch backups.")
         sys.exit(1)
@@ -64,6 +65,7 @@ async def run_backup_cli():
     except RuntimeError:
         logger.error("Database backup pipeline failed.")
         sys.exit(1)
+
     if success:
         logger.info("Database backup pipeline completed successfully!")
     else:
@@ -129,24 +131,35 @@ async def run_restore_override_cli(configured_pwd: str):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="AI IT Job Market Consultant - Backup Restore CLI"
-    )
-    parser.add_argument(
+    parent_parser = argparse.ArgumentParser(add_help=False)
+    parent_parser.add_argument(
         "--password",
         default=None,
-        help=("Admin password required to run backup/restore operations. "),
+        help="Admin password required to run backup/restore operations.",
+    )
+
+    parser = argparse.ArgumentParser(
+        parents=[parent_parser],
+        description="AI IT Job Market Consultant - Backup Restore CLI",
     )
 
     subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("list", help="Get the list of backup files")
-    subparsers.add_parser("backup", help="Trigger a database backup and upload it")
+    subparsers.add_parser(
+        "list", parents=[parent_parser], help="Get the list of backup files"
+    )
+    subparsers.add_parser(
+        "backup",
+        parents=[parent_parser],
+        help="Trigger a database backup and upload it",
+    )
     subparsers.add_parser(
         "restore",
+        parents=[parent_parser],
         help="Restore and verify the latest backup on a temporary DB",
     )
     subparsers.add_parser(
         "restore-override",
+        parents=[parent_parser],
         help="Download and restore the latest backup, overwriting the main database",
     )
 

@@ -1,4 +1,5 @@
 import asyncio
+from datetime import UTC, datetime
 import hashlib
 import logging
 import os
@@ -96,3 +97,14 @@ async def run_cmd(
         stdout.decode().strip(),
         stderr.decode().strip(),
     )
+
+
+def format_utc_modtime(modtime_str: str) -> str:
+    if not modtime_str:
+        return ""
+    try:
+        dt = datetime.fromisoformat(modtime_str.replace("Z", "+00:00"))
+        dt_utc = dt.astimezone(UTC)
+        return dt_utc.strftime("%Y-%m-%d %H:%M:%S UTC")
+    except Exception:
+        return modtime_str

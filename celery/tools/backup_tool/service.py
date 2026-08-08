@@ -8,7 +8,7 @@ import tempfile
 from pathlib import Path
 
 from app.core.config import settings
-from app.utils.backup_utils import (
+from utils.backup_utils import (
     pipeline_lock,
     calculate_sha256,
     run_cmd,
@@ -189,7 +189,6 @@ async def _download_and_decompress_backup(temp_dir: Path) -> Path | None:
         return None
 
     logger.info("Checksum validation passed.")
-
     decompressed_dump = temp_dir / latest_filename.replace(".gz", "")
     with gzip.open(local_dump, "rb") as f_in:
         with open(decompressed_dump, "wb") as f_out:
@@ -215,6 +214,18 @@ async def restore_override(temp_dir: Path) -> bool:
     decompressed_dump = await _download_and_decompress_backup(temp_dir)
     if not decompressed_dump:
         return False
+
+    logger.info("Verifying backup integrity on temporary database before override.")
+    verified = await db_verify_backup(decompressed_dump)
+    if not verified:
+        logger.error(
+            "Pre-restore backup verification failed. Aborting restore override."
+        )
+        return False
+
+    logger.info(
+        "Pre-restore verification passed. Proceeding with database restore override."
+    )
     return await db_restore_override(decompressed_dump)
 
 
@@ -227,15 +238,13 @@ async def run_backup_pipeline() -> bool:
                 dump_path, sha_path = await backup_db(temp_dir)
                 await upload_to_gdrive(dump_path, sha_path)
                 await enforce_retention_policy()
-                success = await _verify_latest_backup_impl(temp_dir)
 
+                success = await _verify_latest_backup_impl(temp_dir)
                 if success:
                     logger.info("Backup pipeline healthcheck status: SUCCESS")
                     return True
                 else:
-                    logger.error(
-                        "Backup pipeline healthcheck status: FAILED (Restore Check failed)"
-                    )
+                    logger.error("Backup pipeline healthcheck status: FAILED")
                     return False
             except Exception:
                 logger.exception("Backup pipeline failed")
