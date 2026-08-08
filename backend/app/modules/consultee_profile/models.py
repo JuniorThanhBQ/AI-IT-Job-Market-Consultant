@@ -11,7 +11,7 @@ from sqlalchemy.orm import relationship
 from sqlmodel import Field, Relationship
 
 from app.db.base_model import BaseModel, EmbeddingModel
-from app.utils.utils import name_validator, validate_birthday, validate_date_range
+from app.utils.validators import name_validator, validate_birthday, validate_date_range
 
 if TYPE_CHECKING:
     from app.modules.user.models import User

@@ -18,7 +18,7 @@ from app.core.enums import (
 )
 from app.db.base_model import BaseModel, EmbeddingModel
 from app.modules.company.models import Company
-from app.utils.utils import validate_salary_range
+from app.utils.validators import validate_salary_range
 
 
 class JobSkill(SQLModel, table=True):

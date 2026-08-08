@@ -22,6 +22,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.requests import Request
 
 from app.admin import init_admin
+from app.core.auth import authenticate_admin
 from app.core.config import settings
 from app.core.middlewares import (
     ExceptionHandlerMiddleware,
@@ -29,7 +30,6 @@ from app.core.middlewares import (
     SecurityHeadersMiddleware,
     StructuredLoggingMiddleware,
 )
-from app.core.security import authenticate_admin
 from app.db import base as _db_base  # noqa: F401
 from app.modules.routers import api_router
 from app.modules.user.models import User

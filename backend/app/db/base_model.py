@@ -6,7 +6,7 @@ from pydantic import field_validator, model_validator
 from sqlalchemy import JSON, DateTime
 from sqlmodel import Field, SQLModel
 
-from app.utils.utils import validate_timestamps
+from app.utils.validators import validate_timestamps
 
 
 class BaseModel(SQLModel):
