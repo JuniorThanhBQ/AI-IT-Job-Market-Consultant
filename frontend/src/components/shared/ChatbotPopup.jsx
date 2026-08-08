@@ -16,6 +16,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { consultantApi } from "@/configs/apis";
 import { cn } from "@/lib/utils";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
+import Image from "next/image";
 
 export default function ChatbotPopup() {
   const { isAuthenticated } = useAuth();
@@ -177,9 +178,11 @@ export default function ChatbotPopup() {
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-150 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl overflow-hidden bg-white border border-[#285872]/20 flex items-center justify-center shrink-0">
-                  <img
+                  <Image
                     src={LOGO.AIJMC_LOGO}
                     alt="AIJMC Logo"
+                    width={32}
+                    height={32}
                     className="w-8 h-8 object-contain"
                   />
                 </div>
@@ -258,9 +261,11 @@ export default function ChatbotPopup() {
               {messages.length === 0 && !streamingMessage && !loading && (
                 <div className="flex-1 flex flex-col items-center justify-center text-center p-6 select-none opacity-80 mt-12">
                   <div className="w-14 h-14 rounded-full overflow-hidden bg-white border border-[#285872]/20 flex items-center justify-center mb-4">
-                    <img
+                    <Image
                       src={LOGO.AIJMC_LOGO}
                       alt="AIJMC Logo"
+                      width={40}
+                      height={40}
                       className="w-10 h-10 object-contain"
                     />
                   </div>
@@ -285,9 +290,11 @@ export default function ChatbotPopup() {
                 >
                   {msg.role === "bot" && (
                     <div className="w-8 h-8 rounded-lg overflow-hidden bg-white border border-[#285872]/20 flex items-center justify-center shrink-0">
-                      <img
+                      <Image
                         src={LOGO.AIJMC_LOGO}
                         alt="AIJMC Logo"
+                        width={24}
+                        height={24}
                         className="w-6 h-6 object-contain"
                       />
                     </div>
@@ -308,9 +315,11 @@ export default function ChatbotPopup() {
               {(streamingMessage || loading) && (
                 <div className="flex gap-3 max-w-[85%] mr-auto">
                   <div className="w-8 h-8 rounded-lg overflow-hidden bg-white border border-[#285872]/20 flex items-center justify-center shrink-0">
-                    <img
+                    <Image
                       src={LOGO.AIJMC_LOGO}
                       alt="AIJMC Logo"
+                      width={24}
+                      height={24}
                       className="w-6 h-6 object-contain"
                     />
                   </div>

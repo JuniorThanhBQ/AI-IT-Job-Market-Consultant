@@ -29,6 +29,7 @@ import {
 } from "@/utils/enumMapper";
 import Header from "@/components/shared/Header";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
+import Image from "next/image";
 
 export default function JobExplorerPage() {
   const { user, logout, loading: authLoading } = useAuth();
@@ -414,9 +415,11 @@ export default function JobExplorerPage() {
                           const logoUrl =
                             LOGO[source.toUpperCase()] || LOGO.AIJMC_LOGO;
                           return (
-                            <img
+                            <Image
                               src={logoUrl}
                               alt={source}
+                              width={56}
+                              height={56}
                               className="w-full h-full object-contain"
                             />
                           );

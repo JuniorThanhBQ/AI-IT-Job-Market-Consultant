@@ -1,4 +1,4 @@
-.PHONY: app-check backup-restore backup-restore-docker clean coverage-xml db-migrate db-migrate-docker db-migration db-migration-docker dev-app-build dev-app-down dev-backend dev-frontend docker-lint generate-secret help install lint pre-commit-check prod-app-build prod-app-down radon-check run-crawlfourai-celery run-crawler-celery run-crawler-update test
+.PHONY: app-check backup-restore backup-restore-docker clean coverage-xml db-migrate db-migrate-docker db-migration db-migration-docker dev-app-build dev-app-down dev-backend dev-frontend docker-lint generate-secret help install lint pre-commit-autoupdate pre-commit-check prod-app-build prod-app-down radon-check run-crawlfourai-celery run-crawler-celery run-crawler-update test
 .DEFAULT_GOAL := help
 
 help:
@@ -26,6 +26,7 @@ help:
 	@echo "  make docker-lint                - Lint Dockerfiles using hadolint"
 	@echo "  make lint                       - Run all linters (ruff, mypy, typos, eslint, hadolint)"
 	@echo "  make pre-commit-check           - Run pre-commit hooks on all files"
+	@echo "  make pre-commit-autoupdate      - Auto-update pre-commit hook versions"
 	@echo "  make radon-check                - Run radon complexity and maintainability index checks"
 	@echo "  make coverage-xml               - Generate XML coverage report"
 	@echo "  make test                       - Run tests"
@@ -104,6 +105,9 @@ lint:
 
 pre-commit-check:
 	uv run pre-commit run --all-files
+
+pre-commit-autoupdate:
+	uv run pre-commit autoupdate
 
 radon-check:
 	uv run --project backend radon cc backend celery

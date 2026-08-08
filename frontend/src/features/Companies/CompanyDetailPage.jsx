@@ -21,6 +21,7 @@ import {
   formatSalaryRange,
 } from "@/utils/enumMapper";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
+import Image from "next/image";
 
 export default function CompanyDetailPage({ params }) {
   const { id } = use(params);
@@ -115,9 +116,11 @@ export default function CompanyDetailPage({ params }) {
                   const source = company.jobs?.[0]?.source || "ITViec";
                   const logoUrl = LOGO[source.toUpperCase()] || LOGO.AIJMC_LOGO;
                   return (
-                    <img
+                    <Image
                       src={logoUrl}
                       alt={source}
+                      width={64}
+                      height={64}
                       className="w-full h-full object-contain"
                     />
                   );

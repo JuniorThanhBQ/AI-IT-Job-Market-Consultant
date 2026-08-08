@@ -14,17 +14,21 @@ With a 10-week implementation period, the specific objectives include:
 5. Objective 5: Deploy the platform to a VPS to conduct acceptance testing and document the results to finalize the report during weeks 9–10.
 
 ## II. Technologies
-Note: Based on the research [An LLM-Powered Agent for Real-Time Analysis of the Vietnamese IT Job Market](https://arxiv.org/pdf/2511.14767), this project proposes using some technologies in the table below. The official technologies will be announced in the near future.
+The project uses a modern stack for the backend, frontend, AI services, and data collection.
 
-| Core structure | Technology | Version | Reason for Use |
+| Core structure | Technology | Version / Stack | Reason for use |
 | :--- | :--- | :--- | :--- |
-| **Backend** | FastAPI (with SQLAlchemy and Pydantic) | FastAPI 0.116+, SQLAlchemy 2.x,Pydantic 2.x | Provides a lightweight, high-performance REST API for serving job data, semantic search, and AI assistant endpoints. FastAPI integrates naturally with LangChain and asynchronous Python applications. |
-| **Frontend** | React (Vite) | React 19 + Vite 7 | Builds a responsive Single-Page Application (SPA) for job search, dashboard visualization, and AI-assisted interaction while offering fast development and optimized build performance. |
-| **Database** | PostgreSQL (with pgvector) | PostgreSQL 17 + pgvector 0.8+ | Stores structured job information together with vector embeddings, enabling both traditional SQL queries and semantic similarity search within a single database engine. |
-| **Data Collector** | Playwright and Adaptive HTTPs crawler | 1.54+ | Automates crawling of job postings from TopDev and ITviec while handling JavaScript-rendered pages and modern anti-bot mechanisms. This follows the data collection approach described in the reference paper. |
-| **RAG and Semantic Search** | LangChain + Gemini API | LangChain 0.3+ Gemini 2.5 | Builds Retrieval-Augmented Generation pipelines, semantic search, prompt orchestration, and AI tools. Gemini performs information extraction, career consultation, and reasoning over retrieved job postings. |
-|Embedding Model | Gemini Embedding | Gemini Embedding-001 | Converts job descriptions into dense vector representations for semantic similarity search, retrieval, and Retrieval-Augmented Generation (RAG). The generated embeddings are stored in PostgreSQL using pgvector |
-| Visualization | Chart.js | 4.x | Provides interactive visualizations of hiring trends, technology demand, salary distribution, and experience requirements to improve data interpretation for users. |
+| **Backend API** | FastAPI | FastAPI 0.139+ | Provides a fast, modern, and asynchronous API layer for job search, CV analysis, and chatbot services with low latency and clean request handling. |
+| **Backend models** | SQLModel + Pydantic | SQLModel 0.0.22+, Pydantic 2.13+ | Supports strongly typed data models, validation, and easy integration with the database for reliable backend development. |
+| **Database** | PostgreSQL + pgvector | PostgreSQL + pgvector 0.5+ | Stores structured job data and vector embeddings together, which is useful for semantic search, recommendation, and RAG workflows. |
+| **Authentication** | JWT + pwdlib | PyJWT 2.10+, pwdlib 0.3+ | Secures user login, password management, and access control with modern authentication practices. |
+| **AI / RAG** | LangChain + Google GenAI + sentence-transformers | LangChain 1.3+, Google GenAI 2.14+, sentence-transformers 3.0+ | Enables LLM orchestration, embedding generation, and retrieval-based AI features for intelligent job and CV assistance. |
+| **Data collection** | Crawl4AI + Crawlee + Playwright | Crawl4AI 0.9+, Crawlee 1.8+, Playwright 1.62+ | Allows the system to collect job information from websites, including dynamic pages that require browser rendering. |
+| **Background jobs** | Celery + Redis | Celery 5.4+, Redis 5.0+ | Handles asynchronous crawlers, scheduled tasks, and background processing without blocking the main application. |
+| **Frontend** | Next.js + React | Next.js 16.2+, React 19.2+ | Builds a responsive and interactive web interface for job discovery, dashboards, and user experience. |
+| **UI styling** | Tailwind CSS + shadcn/ui | Tailwind 4.3+, shadcn 4.16+ | Speeds up UI development with reusable components and a modern, consistent design system. |
+| **DevOps / deployment** | Docker Compose | Docker-based | Simplifies local development, service orchestration, and deployment setup for the whole platform. |
+| **Testing / quality** | pytest + Vitest + Playwright + Ruff | pytest 9.1+, Vitest 4.1+, Playwright 1.62+, Ruff 0.15+ | Supports automated testing, code quality checks, and reliable maintenance across the project. |
 
 ## III. System Architecture
 The planned architecture will be client-server. The backend will be organized using a layered architecture. The system will prioritize two key criteria: performance and availability. In addition, design patterns will be applied to ensure the maintainability of the source code.
