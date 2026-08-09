@@ -1,9 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthProvider";
+import { useRouter } from "@/i18n/routing";
 
 export default function useAuthForm() {
   const [isLogin, setIsLogin] = useState(true);
-  const { login, register } = useAuth();
+  const { user, authLoading, login, register } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace("/counselee/overview");
+    }
+  }, [user, authLoading, router]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

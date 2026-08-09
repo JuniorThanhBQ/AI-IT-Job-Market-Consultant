@@ -97,7 +97,7 @@ TOOL_DECLARATIONS = [
 
 class MarketAnalysisAgent(BaseAgent):
     name = "market_analysis"
-    MAX_TOOL_ITERATIONS = 3
+    MAX_TOOL_ITERATIONS = 2
 
     async def execute(self, state: AgentState) -> dict[str, Any]:
         user_input = state["user_input"]
@@ -164,14 +164,23 @@ class MarketAnalysisAgent(BaseAgent):
                 self.MAX_TOOL_ITERATIONS,
             )
 
-            response = await client.aio.models.generate_content(
-                model=config.default_flash_model,
-                contents=cast(Any, contents),
-                config=generation_config,
-            )
+            response = None
+            for m in config.flash_models:
+                try:
+                    response = await client.aio.models.generate_content(
+                        model=m,
+                        contents=cast(Any, contents),
+                        config=generation_config,
+                    )
+                    if response.candidates:
+                        break
+                except Exception as e:
+                    logger.warning("Flash model %s failed in ReAct loop: %s", m, e)
 
-            if not response.candidates:
-                raise ValueError("Gemini returned empty candidates list.")
+            if not response or not response.candidates:
+                raise ValueError(
+                    "Gemini returned empty candidates list from all Flash models."
+                )
 
             candidate = response.candidates[0]
             model_content = candidate.content

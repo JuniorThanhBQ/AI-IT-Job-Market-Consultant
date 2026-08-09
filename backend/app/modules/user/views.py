@@ -99,12 +99,12 @@ def create_user(
     )
 
 
-@router.get("/me", response_model=UserPublic)
+@router.get("/my-profile", response_model=UserPublic)
 def get_me(current_user: CurrentUser) -> Any:
     return current_user
 
 
-@router.patch("/me", response_model=UserPublic)
+@router.patch("/my-profile", response_model=UserPublic)
 def update_me(
     *,
     session: SessionDep,
@@ -127,7 +127,7 @@ def update_me(
     return current_user
 
 
-@router.patch("/me/password", response_model=MessageResponse)
+@router.patch("/my/password", response_model=MessageResponse)
 def update_my_password(
     *,
     session: SessionDep,

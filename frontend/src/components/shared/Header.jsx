@@ -54,15 +54,15 @@ export default function Header() {
         href: "/counselee/overview",
       };
     }
-    if (pathname.includes("/counselee/overview")) {
+    if (pathname.includes("/counselee/jobs")) {
       return {
         label: t("cta_dashboard"),
-        href: "/counselee/jobs",
+        href: "/counselee/overview",
       };
     }
     return {
       label: t("cta_dashboard"),
-      href: "/counselee/overview",
+      href: "/counselee/jobs",
     };
   };
 
@@ -91,6 +91,7 @@ export default function Header() {
               width={320}
               height={320}
               className="h-44 w-auto object-contain"
+              loading="eager"
             />
           </Link>
 

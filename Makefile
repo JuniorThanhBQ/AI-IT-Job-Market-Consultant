@@ -81,10 +81,10 @@ backup-restore-docker:
 	docker compose exec celery-worker-default python celery/scripts/backup_restore_runner.py "$(CMD)"
 
 run-crawlfourai-celery:
-	docker compose exec celery-worker-default celery -A celery_app call celery_app.run_crawl4ai_task
+	docker compose exec celery-worker-crawler celery -A celery_app call celery_app.run_crawl4ai_task
 
 run-crawler-celery:
-	docker compose exec celery-worker-default celery -A celery_app call celery_app.run_crawler_task
+	docker compose exec celery-worker-crawler celery -A celery_app call celery_app.run_crawler_task
 
 run-crawler-update:
 	docker compose exec celery-worker-default celery -A celery_app call celery_app.run_jobs_update_task

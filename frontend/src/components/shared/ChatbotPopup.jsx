@@ -10,6 +10,7 @@ import {
   Trash2,
   Loader2,
   Trash,
+  Maximize2,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import { useLocale, useTranslations } from "next-intl";
@@ -17,10 +18,13 @@ import { consultantApi } from "@/configs/apis";
 import { cn } from "@/lib/utils";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
 import Image from "next/image";
+import { useRouter } from "@/i18n/routing";
+import MarkdownRenderer from "./MarkdownRenderer";
 
 export default function ChatbotPopup() {
   const { isAuthenticated } = useAuth();
   const locale = useLocale();
+  const router = useRouter();
   const t = useTranslations("Counselee.Chat");
 
   const [isOpen, setIsOpen] = useState(false);
@@ -90,7 +94,7 @@ export default function ChatbotPopup() {
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081/api/v1"
-        }/consultant/chatbot/process-intent`,
+        }/consultants/chatbot/process-intent`,
         {
           method: "POST",
           headers: {
@@ -184,6 +188,7 @@ export default function ChatbotPopup() {
                     width={32}
                     height={32}
                     className="w-8 h-8 object-contain"
+                    loading="eager"
                   />
                 </div>
                 <div>
@@ -220,6 +225,17 @@ export default function ChatbotPopup() {
                     <Trash2 className="w-4.5 h-4.5" />
                   </button>
                 )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    router.push("/counselee/chatbot");
+                  }}
+                  title="Open Full Chat Experience"
+                  className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-[#285872] dark:hover:text-[#58a0c9] transition-colors cursor-pointer"
+                >
+                  <Maximize2 className="w-4.5 h-4.5" />
+                </button>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-650 transition-colors cursor-pointer"
@@ -267,6 +283,7 @@ export default function ChatbotPopup() {
                       width={40}
                       height={40}
                       className="w-10 h-10 object-contain"
+                      loading="eager"
                     />
                   </div>
                   <h4 className="text-sm font-extrabold text-slate-800 dark:text-slate-200">
@@ -296,18 +313,23 @@ export default function ChatbotPopup() {
                         width={24}
                         height={24}
                         className="w-6 h-6 object-contain"
+                        loading="eager"
                       />
                     </div>
                   )}
                   <div
                     className={cn(
-                      "px-4 py-2.5 rounded-[1.25rem] text-sm leading-relaxed whitespace-pre-line font-medium",
+                      "px-4 py-2.5 rounded-[1.25rem] text-xs leading-relaxed font-medium",
                       msg.role === "user"
-                        ? "bg-[#285872] text-white rounded-tr-none"
+                        ? "bg-[#285872] text-white rounded-tr-none whitespace-pre-line"
                         : "bg-slate-100 dark:bg-slate-800 text-slate-850 dark:text-slate-200 rounded-tl-none border border-slate-200/50 dark:border-slate-700/50",
                     )}
                   >
-                    {msg.text}
+                    {msg.role === "bot" ? (
+                      <MarkdownRenderer content={msg.text} />
+                    ) : (
+                      msg.text
+                    )}
                   </div>
                 </div>
               ))}
@@ -321,11 +343,12 @@ export default function ChatbotPopup() {
                       width={24}
                       height={24}
                       className="w-6 h-6 object-contain"
+                      loading="eager"
                     />
                   </div>
-                  <div className="px-4 py-2.5 rounded-[1.25rem] rounded-tl-none text-sm leading-relaxed whitespace-pre-line bg-slate-100 dark:bg-slate-800 text-slate-850 dark:text-slate-200 border border-slate-200/50 dark:border-slate-700/50 min-h-[40px] flex items-center">
+                  <div className="px-4 py-2.5 rounded-[1.25rem] rounded-tl-none text-xs leading-relaxed bg-slate-100 dark:bg-slate-800 text-slate-850 dark:text-slate-200 border border-slate-200/50 dark:border-slate-700/50 min-h-[40px] flex items-center">
                     {streamingMessage ? (
-                      streamingMessage
+                      <MarkdownRenderer content={streamingMessage} />
                     ) : (
                       <Loader2 className="w-4 h-4 animate-spin text-[#285872]" />
                     )}

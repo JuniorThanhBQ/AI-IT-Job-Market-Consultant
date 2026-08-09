@@ -9,9 +9,12 @@ from app.modules.user.views import router as user_router
 
 api_router = APIRouter()
 api_router.include_router(auth_router, prefix="/auth", tags=["auth"])
-api_router.include_router(profile_router, prefix="/users/me/profile", tags=["profile"])
-api_router.include_router(cv_router, prefix="/users/me/cv", tags=["cv"])
+api_router.include_router(profile_router, prefix="/users/my-profile", tags=["profile"])
+api_router.include_router(cv_router, prefix="/users/my-cv", tags=["cv"])
 api_router.include_router(user_router, prefix="/users", tags=["users"])
-api_router.include_router(consultant_router, prefix="/consultant", tags=["consultant"])
+api_router.include_router(consultant_router, prefix="/consultants", tags=["consultant"])
+api_router.include_router(
+    consultant_router, prefix="/consultant", include_in_schema=False
+)
 api_router.include_router(company_router, prefix="/companies", tags=["companies"])
 api_router.include_router(job_router, prefix="/jobs", tags=["jobs"])

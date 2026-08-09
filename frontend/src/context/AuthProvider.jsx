@@ -86,6 +86,7 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     loading,
+    authLoading: loading,
     login,
     register,
     logout,

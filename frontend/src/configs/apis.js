@@ -31,7 +31,6 @@ async function fetchClient(
       config.headers["Content-Type"] = "application/x-www-form-urlencoded";
       config.body = body.toString();
     } else if (body instanceof FormData) {
-      // Fetch will automatically set boundary for FormData, don't set Content-Type manually
       config.body = body;
     } else {
       config.headers["Content-Type"] = "application/json";
@@ -79,54 +78,75 @@ export const authApi = {
       method: "POST",
       body: { email, username, password },
     }),
+  verifyAccount: (token) =>
+    fetchClient("/auth/verify", {
+      method: "POST",
+      body: { token },
+    }),
+  forgotPassword: (email) =>
+    fetchClient("/auth/password/forgot", {
+      method: "POST",
+      body: { email },
+    }),
+  resetPassword: (token, newPassword) =>
+    fetchClient("/auth/password/reset", {
+      method: "POST",
+      body: { token, new_password: newPassword },
+    }),
+  testToken: () => fetchClient("/auth/test-token"),
 };
 
 export const userApi = {
-  getMe: () => fetchClient("/users/me"),
-  updateMe: (data) => fetchClient("/users/me", { method: "PATCH", body: data }),
+  getMe: () => fetchClient("/users/my-profile"),
+  updateMe: (data) =>
+    fetchClient("/users/my-profile", { method: "PATCH", body: data }),
   updatePassword: (currentPassword, newPassword) =>
-    fetchClient("/users/me/password", {
+    fetchClient("/users/my/password", {
       method: "PATCH",
       body: { current_password: currentPassword, new_password: newPassword },
     }),
+  listUsers: (skip = 0, limit = 100) =>
+    fetchClient(`/users/?skip=${skip}&limit=${limit}`),
+  createUser: (data) => fetchClient("/users/", { method: "POST", body: data }),
+  getUser: (userId) => fetchClient(`/users/${userId}`),
+  updateUser: (userId, data) =>
+    fetchClient(`/users/${userId}`, { method: "PATCH", body: data }),
+  deleteUser: (userId) => fetchClient(`/users/${userId}`, { method: "DELETE" }),
 };
 
 export const profileApi = {
-  getProfile: () => fetchClient("/users/me/profile/"),
+  getProfile: () => fetchClient("/users/my-profile/"),
   updateProfile: (data) =>
-    fetchClient("/users/me/profile/", { method: "PATCH", body: data }),
+    fetchClient("/users/my-profile/", { method: "PATCH", body: data }),
 };
 
 export const cvApi = {
-  getCV: () => fetchClient("/users/me/cv/"),
+  getCV: () => fetchClient("/users/my-cv/"),
   updateCV: (data) =>
-    fetchClient("/users/me/cv/", {
+    fetchClient("/users/my-cv/", {
       method: "PUT",
       body: data,
     }),
   uploadCVAttachment: (filename) =>
-    fetchClient("/users/me/cv/attachment", {
+    fetchClient("/users/my-cv/attachment", {
       method: "POST",
       body: { filename },
     }),
   uploadAttachment: (file) => {
-    // If backend expects JSON/base64 mock or file upload, we implement accordingly.
-    // For now we mock it as a service upload or direct json depending on schemas.py
-    // Let's assume it accepts CvAttachmentUpload schema which has fields
-    return fetchClient("/users/me/cv/attachment", {
+    return fetchClient("/users/my-cv/attachment", {
       method: "POST",
-      body: { file_name: file.name, content_type: file.type },
+      body: { filename: typeof file === "string" ? file : file.name },
     });
   },
   createProject: (project) =>
-    fetchClient("/users/me/cv/projects", { method: "POST", body: project }),
+    fetchClient("/users/my-cv/projects", { method: "POST", body: project }),
   updateProject: (projectId, project) =>
-    fetchClient(`/users/me/cv/projects/${projectId}`, {
+    fetchClient(`/users/my-cv/projects/${projectId}`, {
       method: "PATCH",
       body: project,
     }),
   deleteProject: (projectId) =>
-    fetchClient(`/users/me/cv/projects/${projectId}`, { method: "DELETE" }),
+    fetchClient(`/users/my-cv/projects/${projectId}`, { method: "DELETE" }),
 };
 
 export const jobApi = {
@@ -149,17 +169,17 @@ export const jobApi = {
 
 export const consultantApi = {
   processChatbotIntent: (intent, userInput) =>
-    fetchClient("/consultant/chatbot/process-intent", {
+    fetchClient("/consultants/chatbot/process-intent", {
       method: "POST",
       body: { intent, user_input: userInput },
     }),
   processAgentIntent: (intent, actionType) =>
-    fetchClient("/consultant/agents/process-intent", {
+    fetchClient("/consultants/agents/process-intent", {
       method: "POST",
       body: { intent, action_type: actionType },
     }),
-  getHistory: () => fetchClient("/consultant/history"),
-  clearHistory: () => fetchClient("/consultant/history", { method: "DELETE" }),
+  getHistory: () => fetchClient("/consultants/history"),
+  clearHistory: () => fetchClient("/consultants/history", { method: "DELETE" }),
 };
 
 export const companyApi = {
