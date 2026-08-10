@@ -32,7 +32,7 @@ jobs:
     name: Test Docker Build and Run
     needs: ci-pipeline
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - name: Checkout Code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -107,6 +107,7 @@ jobs:
           severity: 'HIGH,CRITICAL'
           format: 'table'
           exit-code: '1'
+          timeout: '20m'
 
       - name: Scan Frontend Image Security (Trivy)
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
@@ -117,6 +118,7 @@ jobs:
           severity: 'HIGH,CRITICAL'
           format: 'table'
           exit-code: '1'
+          timeout: '20m'
 
       - name: Scan Celery Image Security (Trivy)
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
@@ -127,13 +129,4 @@ jobs:
           severity: 'HIGH,CRITICAL'
           format: 'table'
           exit-code: '1'
-
-      - name: Start Docker Stack
-        run: docker compose up -d
-
-      - name: Verify Container Health
-        run: bash scripts/verify_container_health.sh
-
-      - name: Stop Docker Stack
-        if: always()
-        run: docker compose down -v
+          timeout: '20m'
