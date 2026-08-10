@@ -1,12 +1,4 @@
-# ruff: noqa: E402
-import os
-import sys
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-root_dir = os.path.dirname(os.path.dirname(current_dir))
-
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
+from pathlib import Path
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -49,6 +41,7 @@ openapi_url = (
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
+    debug=settings.ENVIRONMENT != "production",
     openapi_url=openapi_url,
     docs_url=docs_url,
     redoc_url=redoc_url,
@@ -57,10 +50,12 @@ app = FastAPI(
 
 init_admin(app)
 
-static_dir = os.path.join(current_dir, "static")
+app_dir = Path(__file__).resolve().parent
+
+static_dir = app_dir / "static"
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
-templates_dir = os.path.join(current_dir, "templates")
+templates_dir = app_dir / "templates"
 templates = Jinja2Templates(directory=templates_dir)
 
 
@@ -85,7 +80,7 @@ if settings.ENVIRONMENT == "production":
         )
 
 
-@app.get("/", response_class=HTMLResponse, tags=["home"])
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def home_page(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(
         request=request,
@@ -107,7 +102,7 @@ app.add_middleware(StructuredLoggingMiddleware)
 app.add_middleware(ExceptionHandlerMiddleware)
 
 if settings.trusted_hosts_list:
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.trusted_hosts_list)
 else:
     app.add_middleware(
         TrustedHostMiddleware,
@@ -118,16 +113,9 @@ app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(ProcessTimeMiddleware)
 app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
 
-if settings.ENVIRONMENT != "production":
-    from typing import Any, cast
-
-    from debug_toolbar.middleware import DebugToolbarMiddleware
-
-    app.add_middleware(cast(Any, DebugToolbarMiddleware))
-
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 
-@app.get("/health", tags=["health"])
+@app.get("/health", include_in_schema=False)
 def health_check() -> dict[str, str]:
     return {"status": "ok"}

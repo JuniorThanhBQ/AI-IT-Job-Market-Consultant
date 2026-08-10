@@ -6,12 +6,12 @@ from typing import Any
 from google.genai import types
 
 from agents.base import BaseAgent
-from agents.subagents.personalization_agent.prompts import (
+from agents.supervisor.state import AgentState
+from app.google_genai import GenAIClientManager, GenAIConfig
+from app.google_genai.prompts import (
     PERSONALIZATION_SYSTEM_PROMPT,
     PERSONALIZATION_USER_TEMPLATE,
 )
-from agents.supervisor.state import AgentState
-from app.google_genai import GenAIClientManager, GenAIConfig
 
 logger = logging.getLogger(__name__)
 
@@ -86,15 +86,32 @@ class PersonalizationAgent(BaseAgent):
             generation_config = types.GenerateContentConfig(
                 system_instruction=PERSONALIZATION_SYSTEM_PROMPT,
                 response_mime_type="application/json",
-                temperature=0.2,
+                temperature=0.5,
             )
 
-            response = await client.aio.models.generate_content(
-                model=config.default_flash_model,
-                contents=user_prompt,
-                config=generation_config,
-            )
-            raw_json = response.text.strip() if response.text else "{}"
+            response = None
+            for m in config.flash_models:
+                try:
+                    response = await client.aio.models.generate_content(
+                        model=m,
+                        contents=user_prompt,
+                        config=generation_config,
+                    )
+                    if response.text:
+                        break
+                except Exception as e:
+                    logger.warning(
+                        "Flash model %s failed in personalization evaluation: %s",
+                        m,
+                        e,
+                    )
+
+            if not response or not response.text:
+                raise ValueError(
+                    "All Flash models failed for personalization evaluation."
+                )
+
+            raw_json = response.text.strip()
             parsed = json.loads(raw_json)
         except Exception:
             logger.exception(
@@ -173,7 +190,6 @@ class PersonalizationAgent(BaseAgent):
 
     @staticmethod
     def _format_vietnamese_report(data: dict) -> str:
-        """Construct the markdown evaluation report."""
         lines = [
             "### BÁO CÁO ĐÁNH GIÁ NĂNG LỰC & ĐỘ PHÙ HỢP CÁ NHÂN",
             f"**Điểm tương thích:** {data.get('score', 0)}/100\n",
@@ -196,7 +212,6 @@ class PersonalizationAgent(BaseAgent):
         if not data.get("need_to_import"):
             lines.append("  - Không có thêm yêu cầu bắt buộc nào khác.")
 
-        # Resume improvement section if score < 70
         improvement = data.get("resume_improvement")
         if improvement:
             lines.append("\n#### ⚠️ Gợi ý cải thiện CV (Resume Improvement):")

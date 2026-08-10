@@ -22,7 +22,7 @@ The project uses a modern stack for the backend, frontend, AI services, and data
 | **Backend models** | SQLModel + Pydantic | SQLModel 0.0.22+, Pydantic 2.13+ | Supports strongly typed data models, validation, and easy integration with the database for reliable backend development. |
 | **Database** | PostgreSQL + pgvector | PostgreSQL + pgvector 0.5+ | Stores structured job data and vector embeddings together, which is useful for semantic search, recommendation, and RAG workflows. |
 | **Authentication** | JWT + pwdlib | PyJWT 2.10+, pwdlib 0.3+ | Secures user login, password management, and access control with modern authentication practices. |
-| **AI / RAG** | LangChain + Google GenAI + sentence-transformers | LangChain 1.3+, Google GenAI 2.14+, sentence-transformers 3.0+ | Enables LLM orchestration, embedding generation, and retrieval-based AI features for intelligent job and CV assistance. |
+| **AI Agents** | Google GenAI SDK | Google GenAI 2.14+| Enables LLM orchestration, embedding generation, and retrieval-based AI features for intelligent job |
 | **Data collection** | Crawl4AI + Crawlee + Playwright | Crawl4AI 0.9+, Crawlee 1.8+, Playwright 1.62+ | Allows the system to collect job information from websites, including dynamic pages that require browser rendering. |
 | **Background jobs** | Celery + Redis | Celery 5.4+, Redis 5.0+ | Handles asynchronous crawlers, scheduled tasks, and background processing without blocking the main application. |
 | **Frontend** | Next.js + React | Next.js 16.2+, React 19.2+ | Builds a responsive and interactive web interface for job discovery, dashboards, and user experience. |
@@ -127,14 +127,23 @@ Adminer Panel (Only in development)
 Chatbot of AIJMC
   ![Chatbot_1](docs/showcase/Chatbot_1.png)
 
+Chatbot page of AIJMC
+  ![Chatbot_2](docs/showcase/advanced_consultant.png)
+
 CV Scoring of AIJMC
   ![CV_Scoring_1](docs/showcase/CV_Scoring_1.png)
 
 Market dashboard of AIJMC
   ![Market_Dashboard](docs/showcase/Market_Dashboard.png)
 
-Profile_Dashboard
+Profile Dashboard
   ![Profile_Dashboard](docs/showcase/Profile_Dashboard.png)
+
+Semantic Search Panel
+  ![Semantic_search_panel](docs/showcase/semantic_search_panel.png)
+
+Semantic Search
+  ![Semantic_Search_Page](docs/showcase/semantic_search.png)
 
 More showcase here: [The showcase folder](docs/showcase/)
 
@@ -144,7 +153,7 @@ There are two main ways to use this system.
 
 1. First, you can use the web that is already deployed. In this case, you only need to accept the terms and conditions, then register and log in. After that, you can access most features, such as job search, CV analysis, and the AIJMC chatbot. Please note that you should not share sensitive personal information.
 
-2. Second, if you want to run the project locally, you need to prepare the environment files first. Create a .env file based on the .env.example template, and create a .rclone.conf file based on the .rclone.conf.example template in the celery folder. After that, you can start the project locally and use the same features. Note: Knowledge about Docker and system understanding are required.
+2. Second, if you want to run the project locally, you need to prepare the environment files first. Create a .env file based on the .env.example template, and create a .rclone.conf file based on the .rclone.conf.example template in the celery folder. After that, you can start the project locally and use the same features. Note: Knowledge about Docker and UV are required.
 
 ## VII. Deployment
 For the VPS deployment, the project is planned to use a server with a strong and stable setup:

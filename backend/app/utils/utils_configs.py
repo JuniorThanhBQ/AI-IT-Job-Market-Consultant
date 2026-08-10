@@ -1,7 +1,9 @@
+import json
 import logging
 import os
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 from pydantic.fields import FieldInfo
 from pydantic_settings import PydanticBaseSettingsSource
@@ -53,12 +55,32 @@ class FlatEnvSettingsSource(PydanticBaseSettingsSource):
         return data
 
 
-def parse_cors(v: Any) -> list[str] | str:
-    if isinstance(v, str) and not v.startswith("["):
+def parse_cors(v: Any) -> list[str]:
+    if isinstance(v, str):
+        v = v.strip()
+        if v.startswith("[") and v.endswith("]"):
+            try:
+                parsed = json.loads(v)
+                if isinstance(parsed, list):
+                    return [str(i).strip() for i in parsed if str(i).strip()]
+            except Exception:
+                pass
         return [i.strip() for i in v.split(",") if i.strip()]
-    elif isinstance(v, list | str):
-        return v
-    raise ValueError(v)
+    elif isinstance(v, list):
+        return [str(i).strip() for i in v if str(i).strip()]
+    return []
+
+
+def parse_trusted_host(v: str) -> str:
+    cleaned = v.strip()
+    if cleaned.startswith(("http://", "https://")):
+        parsed = urlparse(cleaned)
+        return parsed.hostname or parsed.netloc or cleaned
+    return (
+        cleaned.split(":")[0]
+        if ":" in cleaned and not cleaned.startswith("*")
+        else cleaned
+    )
 
 
 def get_secret(name: str, default: str = "") -> str:

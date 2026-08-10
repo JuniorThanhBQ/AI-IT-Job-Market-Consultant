@@ -1,4 +1,3 @@
-import uuid
 from datetime import UTC, datetime
 
 from sqlmodel import Session, select
@@ -11,10 +10,6 @@ from app.modules.user.models import User
 def get_user_by_email(*, session: Session, email: str) -> User | None:
     statement = select(User).where(User.email == email)
     return session.exec(statement).first()
-
-
-def get_user_by_id(*, session: Session, user_id: uuid.UUID) -> User | None:
-    return session.get(User, user_id)
 
 
 def create_user(

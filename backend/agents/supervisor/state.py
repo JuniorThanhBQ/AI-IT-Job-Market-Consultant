@@ -15,7 +15,7 @@ class AgentState(TypedDict):
     final_result: str
     tool_outputs: dict | None
     error: str | None
-    status: str  # "ok" | "partial" | "failed"
+    status: str
 
 
 def create_initial_state(

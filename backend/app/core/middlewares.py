@@ -1,3 +1,4 @@
+import contextvars
 import json
 import logging
 import time
@@ -10,6 +11,10 @@ from starlette.responses import JSONResponse
 
 logger = logging.getLogger(__name__)
 
+_query_stats: contextvars.ContextVar[dict[str, float | int] | None] = (
+    contextvars.ContextVar("query_stats", default=None)
+)
+
 
 class StructuredLoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -20,12 +25,16 @@ class StructuredLoggingMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
 
         latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
+        stats = _query_stats.get() or {"count": 0, "time_ms": 0.0}
+
         log_data = {
             "timestamp": datetime.now(UTC).isoformat(),
             "method": request.method,
             "path": request.url.path,
             "status_code": response.status_code,
             "latency_ms": latency_ms,
+            "query_count": int(stats["count"]),
+            "query_time_ms": round(float(stats["time_ms"]), 2),
             "request_id": request_id,
         }
 
@@ -40,11 +49,18 @@ class StructuredLoggingMiddleware(BaseHTTPMiddleware):
 
 class ProcessTimeMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        stats: dict[str, float | int] = {"count": 0, "time_ms": 0.0}
+        token = _query_stats.set(stats)
         start_time = time.perf_counter()
-        response = await call_next(request)
-        process_time = time.perf_counter() - start_time
-        response.headers["X-Process-Time"] = str(process_time)
-        return response
+        try:
+            response = await call_next(request)
+            process_time = time.perf_counter() - start_time
+            response.headers["X-Process-Time"] = str(process_time)
+            response.headers["X-Query-Count"] = str(stats["count"])
+            response.headers["X-Query-Time-Ms"] = f"{stats['time_ms']:.2f}"
+            return response
+        finally:
+            _query_stats.reset(token)
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):

@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import ChatbotPage from "@/features/Chatbot/ChatbotPage";
 
 export default function ChatbotRoute() {
-  redirect("/counselee/overview");
+  return <ChatbotPage />;
 }

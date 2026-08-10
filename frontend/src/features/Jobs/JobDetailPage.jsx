@@ -33,7 +33,6 @@ export default function JobDetailPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Redirect if not logged in
   useEffect(() => {
     if (!authLoading && !user) {
       router.replace("/counselee/login");
@@ -58,8 +57,10 @@ export default function JobDetailPage({ params }) {
 
   useEffect(() => {
     if (user && id) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      fetchJobDetails();
+      const timer = setTimeout(() => {
+        fetchJobDetails();
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [user, id, fetchJobDetails]);
 

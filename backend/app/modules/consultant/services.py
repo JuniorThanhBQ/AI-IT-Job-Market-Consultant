@@ -1,9 +1,10 @@
 import json
+import os
 import uuid
 from collections.abc import AsyncGenerator
-from typing import Any
+from typing import Any, cast
 
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 from agents.hybrid_rag.embeddings import build_user_profile
 from agents.hybrid_rag.reranker import rerank_candidates_via_api
@@ -13,9 +14,11 @@ from agents.subagents.market_analysis_agent.tools import (
 )
 from agents.supervisor.graph import Intent
 from agents.supervisor.orchestrator import execute_agent_flow
+from agents.tools.document_parser.main import parse_document
 from app.core.enums import ActionType, ConsultantMode
 from app.modules.consultant import repository as consultant_repo
 from app.modules.consultant.models import ConsultantHistory
+from app.modules.consultee_profile import repository as profile_repo
 from app.utils.embeddings import generate_embedding_async
 
 ALL_HYBRID_CANDIDATES_HEADER = "All Hybrid Candidates & Retrieval Quality:\n"
@@ -162,7 +165,7 @@ class ConsultantService:
         )
 
         top_documents = await rerank_candidates_via_api(
-            query=user_input, candidates=candidates, limit=5
+            query=user_input, candidates=candidates, limit=4
         )
 
         rag_context = build_rag_context(top_documents)
@@ -202,14 +205,14 @@ class ConsultantService:
     ) -> AsyncGenerator[str]:
         user_vector = await generate_embedding_async(user_input)
         candidates = consultant_repo.get_hybrid_candidates(
-            session=self.db, user_query=user_input, user_vector=user_vector, limit=15
+            session=self.db, user_query=user_input, user_vector=user_vector, limit=10
         )
 
-        top_documents = await rerank_candidates_via_api(
-            query=user_input, candidates=candidates, limit=7
-        )
+        # top_documents = await rerank_candidates_via_api(
+        #     query=user_input, candidates=candidates, limit=5
+        # )
 
-        rag_context = build_rag_context(top_documents)
+        rag_context = build_rag_context(candidates[:5])
 
         user_profile = None
         if intent in (
@@ -226,7 +229,7 @@ class ConsultantService:
                 user_input=user_input,
                 user_vector=user_vector,
                 candidates=candidates,
-                top_documents=top_documents,
+                top_documents=candidates[:5],
                 rag_context=rag_context,
             )
         else:
@@ -236,7 +239,7 @@ class ConsultantService:
                 user_input=user_input,
                 user_vector=user_vector,
                 candidates=candidates,
-                top_documents=top_documents,
+                top_documents=candidates[:5],
                 rag_context=rag_context,
                 user_profile=user_profile,
             )
@@ -257,8 +260,6 @@ class ConsultantService:
             ConsultantMode.JOB_RECOMMEND,
             ConsultantMode.DEEP_ANALYSIS_EVALUATION,
         ):
-            from app.modules.consultee_profile import repository as profile_repo
-
             profile = profile_repo.get_profile_by_user_id(
                 session=self.db, user_id=user_id
             )
@@ -267,10 +268,6 @@ class ConsultantService:
                 structure_illogical = False
                 bad_text_recognition = False
                 if profile.cv.attachment:
-                    import os
-
-                    from agents.tools.document_parser.main import parse_document
-
                     file_path = os.path.join("uploads", profile.cv.attachment)
                     if os.path.exists(file_path):
                         parsed_res = parse_document(file_path, "cv")
@@ -308,8 +305,6 @@ class ConsultantService:
             ConsultantMode.PERSONAL_STANDARD_EVALUATION,
             ConsultantMode.DEEP_ANALYSIS_EVALUATION,
         ):
-            from app.modules.consultee_profile import repository as profile_repo
-
             profile = profile_repo.get_profile_by_user_id(
                 session=self.db, user_id=user_id
             )
@@ -366,12 +361,6 @@ class ConsultantService:
         return final_state
 
     def get_history(self, user_id: uuid.UUID) -> list[ConsultantHistory]:
-        from typing import Any, cast
-
-        from sqlmodel import select
-
-        from app.modules.consultant.models import ConsultantHistory
-
         stmt = (
             select(ConsultantHistory)
             .where(ConsultantHistory.user_id == user_id)
@@ -384,10 +373,6 @@ class ConsultantService:
         return list(self.db.exec(stmt).all())
 
     def clear_history(self, user_id: uuid.UUID) -> int:
-        from sqlmodel import select
-
-        from app.modules.consultant.models import ConsultantHistory
-
         stmt = select(ConsultantHistory).where(ConsultantHistory.user_id == user_id)
         histories = self.db.exec(stmt).all()
         for h in histories:
