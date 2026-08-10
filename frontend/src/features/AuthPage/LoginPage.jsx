@@ -64,6 +64,7 @@ export default function AuthPage() {
                 height={288}
                 className="w-full h-full object-contain"
                 priority
+                loading="eager"
               />
             </motion.div>
           </Link>

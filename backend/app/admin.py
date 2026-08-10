@@ -28,6 +28,7 @@ class AdminAuth(AuthenticationBackend):
         password = form.get("password")
         if not isinstance(email, str) or not isinstance(password, str):
             return False
+
         with Session(engine) as session:
             statement = select(User).where(User.email == email)
             user = session.exec(statement).first()
@@ -58,6 +59,7 @@ class AdminAuth(AuthenticationBackend):
             user = session.get(User, user_uuid)
             if user and user.is_superuser and user.is_active:
                 return True
+
         return False
 
 

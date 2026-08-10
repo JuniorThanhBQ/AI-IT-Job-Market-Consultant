@@ -6,7 +6,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.core.deps import CurrentUser, SessionDep
 from app.core.enums import SeniorityLevel, WorkingModel
-from app.modules.job.schemas import JobDetail, JobRead
+from app.modules.job.schemas import (
+    JobDetail,
+    JobRead,
+    JobSearchResult,
+    SemanticSearchRequest,
+)
 from app.modules.job.services import JobService
 
 router = APIRouter()
@@ -50,7 +55,7 @@ def list_jobs_endpoint(
 @router.get("/{id}", response_model=JobDetail)
 def get_job_endpoint(
     id: int,
-    _current_user: CurrentUser,  # pylint: disable=unused-argument
+    _current_user: CurrentUser,
     service: JobService = Depends(get_job_service),
 ):
     job = service.get_job(id)
@@ -60,3 +65,18 @@ def get_job_endpoint(
             detail="Job posting not found",
         )
     return job
+
+
+@router.post("/search/semantic", response_model=list[JobSearchResult])
+async def semantic_search_endpoint(
+    body: SemanticSearchRequest,
+    _current_user: CurrentUser,
+    service: JobService = Depends(get_job_service),
+):
+    return await service.semantic_search(
+        query=body.query,
+        seniority=body.seniority,
+        working_model=body.working_model,
+        min_salary=body.min_salary,
+        limit=body.limit,
+    )

@@ -4,7 +4,12 @@ version = "0.1.0"
 description = "AI IT Jobs Market Consultant platform used UV to manage Python packages. The reason to use UV is that it has a nice CLI UI, is easy to learn, and has a management package using pyproject.toml"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "httpx>=0.27.0",
+    "openpyxl>=3.1.0",
+    "pandas>=2.2.0",
+    "python-dotenv>=1.0.0",
+]
 
 [dependency-groups]
 dev = [

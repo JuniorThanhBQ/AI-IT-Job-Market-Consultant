@@ -59,6 +59,7 @@ export default function Footer() {
                   width={320}
                   height={320}
                   className="h-44 w-auto object-contain"
+                  loading="eager"
                 />
               </div>
               <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
