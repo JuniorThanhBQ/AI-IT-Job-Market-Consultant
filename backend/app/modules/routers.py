@@ -8,7 +8,7 @@ from app.modules.user.views import auth_router
 from app.modules.user.views import router as user_router
 
 api_router = APIRouter()
-api_router.include_router(auth_router, prefix="/auth", tags=["auth"])
+api_router.include_router(auth_router, prefix="/accounts", tags=["auth"])
 api_router.include_router(profile_router, prefix="/users/my-profile", tags=["profile"])
 api_router.include_router(cv_router, prefix="/users/my-cv", tags=["cv"])
 api_router.include_router(user_router, prefix="/users", tags=["users"])

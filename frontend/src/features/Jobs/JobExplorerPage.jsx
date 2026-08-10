@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import Header from "@/components/shared/Header";
 import { useJobExplorer } from "./Hooks/useJobExplorer";
+import JobExplorerHeader from "./Components/JobExplorerHeader";
 import JobSearchFilterBar from "./Components/JobSearchFilterBar";
 import JobListSidebar from "./Components/JobListSidebar";
 import JobDetailPane from "./Components/JobDetailPane";
@@ -66,7 +67,8 @@ export default function JobExplorerPage() {
 
       <Header />
 
-      <main className="relative z-10 max-w-[85vw] mx-auto px-4 sm:px-6 pt-28 flex flex-col gap-8">
+      <main className="relative z-10 max-w-[90vw] mx-auto px-4 sm:px-6 pt-28 flex flex-col gap-8">
+        <JobExplorerHeader />
         <JobSearchFilterBar
           searchTitle={searchTitle}
           setSearchTitle={setSearchTitle}

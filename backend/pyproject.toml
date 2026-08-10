@@ -128,7 +128,7 @@ enable = [
 ]
 
 [tool.pylint.similar]
-min-similarity-lines = 50
+min-similarity-lines = 80
 ignore-comments = "yes"
 ignore-docstrings = "yes"
 ignore-imports = "yes"

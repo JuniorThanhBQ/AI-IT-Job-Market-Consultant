@@ -65,7 +65,6 @@ export function AuthProvider({ children }) {
   const register = async (email, username, password) => {
     try {
       await authApi.register(email, username, password);
-      // Auto login after registering
       await login(email, password);
     } catch (error) {
       throw error;

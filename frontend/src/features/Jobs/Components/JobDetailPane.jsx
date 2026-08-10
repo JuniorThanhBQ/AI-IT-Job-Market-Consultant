@@ -22,13 +22,16 @@ export default function JobDetailPane({
   selectedJobId,
   selectedJobDetail,
   selectedJobLoading,
+  stickyTop = "top-28",
 }) {
   const locale = useLocale();
   const t = useTranslations("Counselee.Explorer");
 
   if (!selectedJobId) {
     return (
-      <div className="lg:w-3/5">
+      <div
+        className={`lg:w-3/5 ${stickyTop} flex flex-col gap-6 lg:sticky self-start`}
+      >
         <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-[2.5rem] p-12 text-center backdrop-blur-md h-full min-h-[400px] flex flex-col justify-center items-center">
           <Briefcase className="w-12 h-12 text-slate-300 dark:text-slate-600 mb-4" />
           <h3 className="text-base font-extrabold text-slate-900 dark:text-white mb-1">
@@ -44,7 +47,9 @@ export default function JobDetailPane({
 
   if (selectedJobLoading) {
     return (
-      <div className="lg:w-3/5">
+      <div
+        className={`lg:w-3/5 ${stickyTop} flex flex-col gap-6 lg:sticky self-start`}
+      >
         <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-[2.5rem] p-12 text-center backdrop-blur-md h-full min-h-[400px] flex flex-col justify-center items-center">
           <Loader2 className="w-10 h-10 animate-spin text-[#285872]" />
         </div>
@@ -58,11 +63,13 @@ export default function JobDetailPane({
   const detailLogoUrl = LOGO[detailSource.toUpperCase()] || LOGO.AIJMC_LOGO;
 
   return (
-    <div className="lg:w-3/5 flex flex-col gap-6">
-      <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-[2.5rem] p-8 backdrop-blur-md shadow-sm flex flex-col gap-6 sticky top-28">
+    <div
+      className={`lg:w-3/5 flex flex-col gap-6 lg:sticky ${stickyTop} self-start`}
+    >
+      <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-[2.5rem] p-8 backdrop-blur-md shadow-sm flex flex-col gap-6">
         <div className="flex items-start justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-6">
           <div className="flex items-start gap-4">
-            <div className="w-16 h-16 bg-white border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center overflow-hidden p-2 shrink-0">
+            <div className="w-16 h-16 bg-white border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center p-2 shrink-0">
               <Image
                 src={detailLogoUrl}
                 alt={detailSource}

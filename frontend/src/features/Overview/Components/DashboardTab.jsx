@@ -90,25 +90,6 @@ export default function DashboardTab({
               <TrendingUp className="w-5.5 h-5.5 text-[#285872]" />
               {t("market_trend")}
             </h2>
-            <button
-              type="button"
-              onClick={onFetchMarketAnalysis}
-              disabled={loadingMarketData}
-              className="bg-[#285872]/10 hover:bg-[#285872]/20 dark:bg-[#285872]/20 dark:hover:bg-[#285872]/30 text-[#285872] dark:text-[#58a0c9] border border-[#285872]/30 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-            >
-              {loadingMarketData ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : hasMarketData ? (
-                <RefreshCw className="w-3.5 h-3.5" />
-              ) : (
-                <Sparkles className="w-3.5 h-3.5" />
-              )}
-              {loadingMarketData
-                ? "Analyzing..."
-                : hasMarketData
-                  ? "Refresh Trends"
-                  : "Analyze Live Market"}
-            </button>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

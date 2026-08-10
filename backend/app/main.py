@@ -116,6 +116,6 @@ app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 
-@app.get("/health", tags=["health"])
+@app.get("/health", include_in_schema=False)
 def health_check() -> dict[str, str]:
     return {"status": "ok"}

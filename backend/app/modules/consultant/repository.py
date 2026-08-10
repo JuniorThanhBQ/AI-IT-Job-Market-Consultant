@@ -38,8 +38,8 @@ def get_hybrid_candidates(
     )
     vector_results = session.exec(stmt_vector).all()
 
-    tsquery = func.plainto_tsquery("english", user_query)
-    tsvector = func.to_tsvector("english", Job.vector_context)
+    tsquery = func.plainto_tsquery("simple", user_query)
+    tsvector = func.to_tsvector("simple", Job.vector_context)
 
     stmt_lexical = (
         select(Job, Company, func.ts_rank(tsvector, tsquery).label("lexical_score"))

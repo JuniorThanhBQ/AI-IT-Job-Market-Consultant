@@ -6,7 +6,6 @@ import Header from "@/components/shared/Header";
 import { useOverviewData } from "./Hooks/useOverviewData";
 import OverviewHeaderBanner from "./Components/OverviewHeaderBanner";
 import DashboardTab from "./Components/DashboardTab";
-import CVAnalysisTab from "./Components/CVAnalysisTab";
 
 export default function OverviewPage() {
   const {
@@ -18,12 +17,10 @@ export default function OverviewPage() {
     cv,
     loading,
     loadingMarketData,
-    loadingCVAnalysis,
     error,
     cvAnalysisData,
     marketAgentData,
     fetchMarketAnalysis,
-    fetchCVAnalysis,
   } = useOverviewData();
 
   if (authLoading || loading) {
@@ -173,13 +170,7 @@ export default function OverviewPage() {
               onFetchMarketAnalysis={fetchMarketAnalysis}
             />
           ) : (
-            <CVAnalysisTab
-              cv={cv}
-              cvAnalysisData={cvAnalysisData}
-              loadingCVAnalysis={loadingCVAnalysis}
-              hasCVAnalysis={!!cvAnalysisData}
-              onFetchCVAnalysis={fetchCVAnalysis}
-            />
+            <h1></h1>
           )}
         </AnimatePresence>
       </main>

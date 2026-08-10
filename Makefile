@@ -1,4 +1,4 @@
-.PHONY: app-check backup-restore backup-restore-docker clean coverage-xml db-migrate db-migrate-docker db-migration db-migration-docker dev-app-build dev-app-down dev-backend dev-frontend docker-lint generate-secret help install lint pre-commit-autoupdate pre-commit-check prod-app-build prod-app-down radon-check run-crawlfourai-celery run-crawler-celery run-crawler-update test test-backend test-celery test-frontend
+.PHONY: app-check backup-restore backup-restore-docker clean coverage-xml db-migrate db-migrate-docker db-migration db-migration-docker dev-app-build dev-app-down dev-backend dev-frontend docker-lint generate-secret help install lint pre-commit-autoupdate pre-commit-check prod-app-build prod-app-down radon-check run-crawlfourai-celery run-crawler-celery run-crawler-update test test-backend test-celery test-frontend test-report
 .DEFAULT_GOAL := help
 
 help:
@@ -33,6 +33,7 @@ help:
 	@echo "  make test-backend               - Run backend unit and integration tests"
 	@echo "  make test-celery                - Run celery unit and integration tests"
 	@echo "  make test-frontend              - Run frontend audit and e2e tests"
+	@echo "  make test-report               - Scan test-case-report.xlsx and report failures as GitHub issues (requires GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO)"
 
 clean:
 	python scripts/clean_temporary_files.py ${CLEAN_TYPE}
@@ -128,6 +129,9 @@ test-celery:
 test-frontend:
 	npm --prefix frontend audit --audit-level=critical
 	npm --prefix frontend run test:e2e
+
+test-report:
+	uv run python scripts/test_case_report.py
 
 test:
 	uv run --project backend bandit -c backend/pyproject.toml -r backend celery -ll

@@ -24,27 +24,9 @@ class UserUpdate(SQLModel):
     password: str | None = Field(default=None, min_length=8, max_length=40)
 
 
-class UserUpdateMe(SQLModel):
-    username: str | None = Field(default=None, max_length=255)
-    email: str | None = Field(default=None, max_length=255)
-
-
-class UpdatePassword(SQLModel):
-    current_password: str = Field(min_length=8, max_length=40)
-    new_password: str = Field(min_length=8, max_length=40)
-
-
-class ForgotPassword(SQLModel):
-    email: str = Field(max_length=255)
-
-
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=40)
-
-
-class VerifyAccount(SQLModel):
-    token: str
 
 
 class UserPublic(SQLModel):

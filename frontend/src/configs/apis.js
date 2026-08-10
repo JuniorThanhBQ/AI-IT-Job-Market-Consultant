@@ -67,86 +67,29 @@ export const authApi = {
     const params = new URLSearchParams();
     params.append("username", email);
     params.append("password", password);
-    return fetchClient("/auth/login", {
+    return fetchClient("/accounts/sessions/", {
       method: "POST",
       body: params,
       isFormUrlEncoded: true,
     });
   },
   register: (email, username, password) =>
-    fetchClient("/auth/register", {
+    fetchClient("/accounts", {
       method: "POST",
       body: { email, username, password },
     }),
-  verifyAccount: (token) =>
-    fetchClient("/auth/verify", {
-      method: "POST",
-      body: { token },
-    }),
-  forgotPassword: (email) =>
-    fetchClient("/auth/password/forgot", {
-      method: "POST",
-      body: { email },
-    }),
-  resetPassword: (token, newPassword) =>
-    fetchClient("/auth/password/reset", {
-      method: "POST",
-      body: { token, new_password: newPassword },
-    }),
-  testToken: () => fetchClient("/auth/test-token"),
 };
 
 export const userApi = {
-  getMe: () => fetchClient("/users/my-profile"),
+  getMe: () => fetchClient("/users/my-profile/"),
   updateMe: (data) =>
-    fetchClient("/users/my-profile", { method: "PATCH", body: data }),
-  updatePassword: (currentPassword, newPassword) =>
-    fetchClient("/users/my/password", {
-      method: "PATCH",
-      body: { current_password: currentPassword, new_password: newPassword },
-    }),
-  listUsers: (skip = 0, limit = 100) =>
-    fetchClient(`/users/?skip=${skip}&limit=${limit}`),
-  createUser: (data) => fetchClient("/users/", { method: "POST", body: data }),
-  getUser: (userId) => fetchClient(`/users/${userId}`),
-  updateUser: (userId, data) =>
-    fetchClient(`/users/${userId}`, { method: "PATCH", body: data }),
-  deleteUser: (userId) => fetchClient(`/users/${userId}`, { method: "DELETE" }),
+    fetchClient("/users/my-profile/", { method: "PATCH", body: data }),
 };
 
 export const profileApi = {
   getProfile: () => fetchClient("/users/my-profile/"),
   updateProfile: (data) =>
     fetchClient("/users/my-profile/", { method: "PATCH", body: data }),
-};
-
-export const cvApi = {
-  getCV: () => fetchClient("/users/my-cv/"),
-  updateCV: (data) =>
-    fetchClient("/users/my-cv/", {
-      method: "PUT",
-      body: data,
-    }),
-  uploadCVAttachment: (filename) =>
-    fetchClient("/users/my-cv/attachment", {
-      method: "POST",
-      body: { filename },
-    }),
-  uploadAttachment: (file) => {
-    return fetchClient("/users/my-cv/attachment", {
-      method: "POST",
-      body: { filename: typeof file === "string" ? file : file.name },
-    });
-  },
-  createProject: (project) =>
-    fetchClient("/users/my-cv/projects", { method: "POST", body: project }),
-  updateProject: (projectId, project) =>
-    fetchClient(`/users/my-cv/projects/${projectId}`, {
-      method: "PATCH",
-      body: project,
-    }),
-  deleteProject: (projectId) =>
-    fetchClient(`/users/my-cv/projects/${projectId}`, { method: "DELETE" }),
 };
 
 export const jobApi = {
@@ -165,6 +108,8 @@ export const jobApi = {
     return fetchClient(`/jobs?${queryString}`);
   },
   getJobDetails: (id) => fetchClient(`/jobs/${id}`),
+  semanticSearch: (payload) =>
+    fetchClient("/jobs/search/semantic", { method: "POST", body: payload }),
 };
 
 export const consultantApi = {
@@ -172,11 +117,6 @@ export const consultantApi = {
     fetchClient("/consultants/chatbot/process-intent", {
       method: "POST",
       body: { intent, user_input: userInput },
-    }),
-  processAgentIntent: (intent, actionType) =>
-    fetchClient("/consultants/agents/process-intent", {
-      method: "POST",
-      body: { intent, action_type: actionType },
     }),
   getHistory: () => fetchClient("/consultants/history"),
   clearHistory: () => fetchClient("/consultants/history", { method: "DELETE" }),

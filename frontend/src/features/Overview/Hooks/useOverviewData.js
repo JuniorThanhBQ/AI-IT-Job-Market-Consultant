@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthProvider";
-import { profileApi, cvApi, consultantApi } from "@/configs/apis";
+import { profileApi, consultantApi } from "@/configs/apis";
 import { useRouter } from "@/i18n/routing";
 
 export function useOverviewData() {
@@ -9,12 +9,9 @@ export function useOverviewData() {
 
   const [activeTab, setActiveTab] = useState("dashboard");
   const [profile, setProfile] = useState(null);
-  const [cv, setCv] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadingMarketData, setLoadingMarketData] = useState(false);
-  const [loadingCVAnalysis, setLoadingCVAnalysis] = useState(false);
   const [error, setError] = useState("");
-  const [cvAnalysisData, setCvAnalysisData] = useState(null);
   const [marketAgentData, setMarketAgentData] = useState(null);
 
   useEffect(() => {
@@ -23,16 +20,14 @@ export function useOverviewData() {
     }
   }, [user, authLoading, router]);
 
-  const fetchProfileAndCv = useCallback(async () => {
+  const fetchProfile = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
       const profileData = await profileApi.getProfile();
       setProfile(profileData);
-      const cvData = await cvApi.getCV();
-      setCv(cvData);
     } catch (err) {
-      setError("Could not fetch profile or CV data.");
+      setError("Could not fetch profile data.");
     } finally {
       setLoading(false);
     }
@@ -53,37 +48,14 @@ export function useOverviewData() {
     }
   };
 
-  const fetchCVAnalysis = async () => {
-    setLoadingCVAnalysis(true);
-    try {
-      const cvAnalysis = await consultantApi.processAgentIntent(
-        "PERSONAL_STANDARD_EVALUATION",
-        "CV_SCORE",
-      );
-      setCvAnalysisData(cvAnalysis);
-      if (
-        cvAnalysis?.tool_outputs?.personalization_analysis?.score !== undefined
-      ) {
-        setCv((prev) => ({
-          ...prev,
-          score: cvAnalysis.tool_outputs.personalization_analysis.score,
-        }));
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoadingCVAnalysis(false);
-    }
-  };
-
   useEffect(() => {
     if (user) {
       const timer = setTimeout(() => {
-        fetchProfileAndCv();
+        fetchProfile();
       }, 0);
       return () => clearTimeout(timer);
     }
-  }, [user, fetchProfileAndCv]);
+  }, [user, fetchProfile]);
 
   return {
     user,
@@ -91,15 +63,11 @@ export function useOverviewData() {
     activeTab,
     setActiveTab,
     profile,
-    cv,
     loading,
     loadingMarketData,
-    loadingCVAnalysis,
     error,
-    cvAnalysisData,
     marketAgentData,
-    fetchProfileAndCv,
+    fetchProfile,
     fetchMarketAnalysis,
-    fetchCVAnalysis,
   };
 }
