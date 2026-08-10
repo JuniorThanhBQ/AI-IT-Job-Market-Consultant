@@ -54,15 +54,15 @@ export default function Header() {
         href: "/counselee/overview",
       };
     }
-    if (pathname.includes("/counselee/overview")) {
+    if (pathname.includes("/counselee/jobs")) {
       return {
         label: t("cta_dashboard"),
-        href: "/counselee/jobs",
+        href: "/counselee/overview",
       };
     }
     return {
       label: t("cta_dashboard"),
-      href: "/counselee/overview",
+      href: "/counselee/jobs",
     };
   };
 
@@ -91,6 +91,7 @@ export default function Header() {
               width={320}
               height={320}
               className="h-44 w-auto object-contain"
+              loading="eager"
             />
           </Link>
 
@@ -127,7 +128,7 @@ export default function Header() {
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-slate-900 dark:text-white hover:opacity-80 transition-opacity cursor-pointer"
                 >
-                  {user?.username || "Counselee"}
+                  {user?.last_name} {user?.first_name || "Counselee"}
                   <ChevronDown className="w-4 h-4 opacity-50" />
                 </button>
 
@@ -155,13 +156,7 @@ export default function Header() {
                         >
                           {t("my_profile")}
                         </Link>
-                        <Link
-                          href="/counselee/cv"
-                          onClick={() => setUserMenuOpen(false)}
-                          className="block px-4 py-2.5 text-sm text-slate-700 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                        >
-                          {t("my_cv")}
-                        </Link>
+
                         <button
                           onClick={() => {
                             setUserMenuOpen(false);
@@ -337,16 +332,6 @@ export default function Header() {
                         )}
                       >
                         {t("my_profile")}
-                      </Link>
-                      <Link
-                        href="/counselee/cv"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={cn(
-                          buttonVariants({ variant: "outline" }),
-                          "w-full justify-center",
-                        )}
-                      >
-                        {t("my_cv")}
                       </Link>
                       <button
                         onClick={() => {

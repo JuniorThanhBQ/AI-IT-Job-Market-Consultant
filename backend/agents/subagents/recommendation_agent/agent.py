@@ -5,12 +5,12 @@ from typing import Any
 from google.genai import types
 
 from agents.base import BaseAgent
-from agents.subagents.recommendation_agent.prompts import (
+from agents.supervisor.state import AgentState
+from app.google_genai import GenAIClientManager, GenAIConfig
+from app.google_genai.prompts import (
     RECOMMENDATION_SYSTEM_PROMPT,
     RECOMMENDATION_USER_TEMPLATE,
 )
-from agents.supervisor.state import AgentState
-from app.google_genai import GenAIClientManager, GenAIConfig
 
 logger = logging.getLogger(__name__)
 
@@ -65,28 +65,39 @@ class RecommendationAgent(BaseAgent):
             manager = GenAIClientManager(config)
             client = manager.get_client()
 
-            # Request JSON structured output
             generation_config = types.GenerateContentConfig(
                 system_instruction=RECOMMENDATION_SYSTEM_PROMPT,
                 response_mime_type="application/json",
-                temperature=0.2,
+                temperature=0.5,
             )
 
-            response = await client.aio.models.generate_content(
-                model=config.default_flash_model,
-                contents=user_prompt,
-                config=generation_config,
-            )
-            raw_json = response.text.strip() if response.text else "{}"
+            response = None
+            for m in config.flash_models:
+                try:
+                    response = await client.aio.models.generate_content(
+                        model=m,
+                        contents=user_prompt,
+                        config=generation_config,
+                    )
+                    if response.text:
+                        break
+                except Exception as e:
+                    logger.warning(
+                        "Flash model %s failed in recommendation agent: %s",
+                        m,
+                        e,
+                    )
+
+            if not response or not response.text:
+                raise ValueError("All Flash models failed for recommendation agent.")
+
+            raw_json = response.text.strip()
             parsed = json.loads(raw_json)
         except Exception:
             logger.exception("Error calling Gemini Flash for recommendation agent")
             parsed = {"recommendations": []}
 
-        # ── Format Vietnamese report ──
         formatted_report = self._format_vietnamese_report(parsed, personal_eval)
-
-        # Merge tool outputs in state if any
         tool_outputs = state.get("tool_outputs") or {}
         tool_outputs["job_recommendations"] = parsed
 
@@ -98,16 +109,13 @@ class RecommendationAgent(BaseAgent):
 
     @staticmethod
     def _format_vietnamese_report(data: dict, personal_eval: str) -> str:
-        """Render markdown report for jobs recommendations + personalization summary."""
         lines = []
 
-        # If personal evaluation has content, prepend a clean divider/summary of evaluation
         if personal_eval:
             lines.append(personal_eval)
             lines.append("\n" + "=" * 50 + "\n")
 
         lines.append("### TOP 5 VIỆC LÀM PHÙ HỢP NHẤT VỚI BẠN")
-
         jobs = data.get("recommendations", [])
         if not jobs:
             lines.append(
@@ -115,7 +123,6 @@ class RecommendationAgent(BaseAgent):
             )
             return "\n".join(lines)
 
-        # Ensure exactly/up to 5 recommendations
         for idx, job in enumerate(jobs[:5], start=1):
             lines.append(
                 f"**{idx}. {job.get('job_title', 'N/A')} tại {job.get('company_name', 'N/A')}**"

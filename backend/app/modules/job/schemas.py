@@ -3,9 +3,15 @@ from __future__ import annotations
 from datetime import datetime
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
-from app.core.enums import Currency, JobStatus, SeniorityLevel, WorkingModel
+from app.core.enums import (
+    CrawlWebsite,
+    Currency,
+    JobStatus,
+    SeniorityLevel,
+    WorkingModel,
+)
 from app.modules.company.schemas import CompanyRead
 
 
@@ -36,5 +42,18 @@ class JobRead(BaseModel):
 
 
 class JobDetail(JobRead):
+    source: CrawlWebsite | None = None
     company: CompanyRead | None = None
     skills: list[SkillRead] = []
+
+
+class SemanticSearchRequest(BaseModel):
+    query: str
+    seniority: SeniorityLevel | None = None
+    working_model: WorkingModel | None = None
+    min_salary: Decimal | None = None
+    limit: int = Field(default=15, ge=5, le=30)
+
+
+class JobSearchResult(JobDetail):
+    score: float = 0.0

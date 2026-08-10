@@ -14,6 +14,8 @@ services:
       --host 0.0.0.0
       --port 8000
       --reload
+      --reload-dir app
+      --reload-dir agents
 
   backend-init:
     build:
@@ -62,7 +64,7 @@ services:
 
   adminer:
     restart: "no"
-    image: adminer:5.4.2-standalone@sha256:983261ecc40a4aaf11e25aeda8ef821f5a43a9f024b3967c81cbcc0e6ce43ba3
+    image: adminer:5.5.0-standalone@sha256:a1e730bf95a18f1d7c38b409ab58a39d57d07bdb090614b81f5c7b37c6021b96
     ports:
       - "8082:8080"
     depends_on:

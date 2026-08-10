@@ -15,7 +15,9 @@ from app.modules.user import repository as user_repo
 from app.modules.user.models import User
 from app.modules.user.schemas import TokenPayload
 
-reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
+reusable_oauth2 = OAuth2PasswordBearer(
+    tokenUrl=f"{settings.API_V1_STR}/accounts/sessions/"
+)
 
 
 def get_db() -> Generator[Session]:

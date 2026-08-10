@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Annotated, Any, Literal, Self
 
 from pydantic import (
-    AnyUrl,
     BaseModel,
     BeforeValidator,
     EmailStr,
@@ -18,7 +17,12 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
-from app.utils.utils_configs import FlatEnvSettingsSource, get_secret, parse_cors
+from app.utils.utils_configs import (
+    FlatEnvSettingsSource,
+    get_secret,
+    parse_cors,
+    parse_trusted_host,
+)
 
 
 class DatabaseSettings(BaseModel):
@@ -199,13 +203,9 @@ class Settings(BaseSettings):
     FRONTEND_HOST: str = "http://localhost:5173"
     ENVIRONMENT: Literal["local", "development", "staging", "production"] = "local"
 
-    BACKEND_CORS_ORIGINS: Annotated[
-        list[AnyUrl] | str, BeforeValidator(parse_cors)
-    ] = []
+    BACKEND_CORS_ORIGINS: Annotated[list[str], BeforeValidator(parse_cors)] = []
 
-    BACKEND_TRUSTED_HOSTS: Annotated[
-        list[AnyUrl] | str, BeforeValidator(parse_cors)
-    ] = []
+    BACKEND_TRUSTED_HOSTS: Annotated[list[str], BeforeValidator(parse_cors)] = []
 
     @computed_field  # type: ignore[prop-decorator]
     @property
@@ -217,9 +217,10 @@ class Settings(BaseSettings):
     @computed_field  # type: ignore[prop-decorator]
     @property
     def trusted_hosts_list(self) -> list[str]:
-        return [str(origin).rstrip("/") for origin in self.BACKEND_TRUSTED_HOSTS] + [
-            self.FRONTEND_HOST
-        ]
+        hosts = [parse_trusted_host(h) for h in self.BACKEND_TRUSTED_HOSTS]
+        if self.FRONTEND_HOST:
+            hosts.append(parse_trusted_host(self.FRONTEND_HOST))
+        return list(dict.fromkeys(filter(None, hosts)))
 
     PROJECT_NAME: str = "AI IT Job Market Consultant"
     CELERY_WORKER_MAX_TASKS_PER_CHILD: int = 50
