@@ -37,12 +37,12 @@ services:
       dockerfile: frontend/Dockerfile
       target: dependencies
       args:
-        - NEXTJS_API_URL=http://localhost:8081/api/v1
-        - NODE_ENV=development
+        - BACKEND_INTERNAL_URL=http://backend:8000/api/v1
+        - NODE_ENV=production
     environment:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
-      - NEXT_PUBLIC_API_URL=http://localhost:8081/api/v1
+      - BACKEND_INTERNAL_URL=http://backend:8000/api/v1
     volumes:
       - frontend_next:/app/.next
       - ./frontend/src:/app/src

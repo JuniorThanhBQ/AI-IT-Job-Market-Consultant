@@ -118,9 +118,7 @@ export function useChatbot() {
       const token =
         typeof window !== "undefined" ? localStorage.getItem("token") : null;
       const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081/api/v1"
-        }/consultants/chatbot/process-intent`,
+        `${"/api/v1"}/consultants/chatbot/process-intent`,
         {
           method: "POST",
           headers: {

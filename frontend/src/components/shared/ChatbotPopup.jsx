@@ -93,7 +93,7 @@ export default function ChatbotPopup() {
       const token = localStorage.getItem("token");
       const response = await fetch(
         `${
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081/api/v1"
+          process.env.BACKEND_INTERNAL_URL || "http://localhost:8081/api/v1"
         }/consultants/chatbot/process-intent`,
         {
           method: "POST",

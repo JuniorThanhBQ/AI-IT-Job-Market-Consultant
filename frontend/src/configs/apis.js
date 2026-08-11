@@ -1,5 +1,4 @@
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081/api/v1";
+const BASE_URL = "/api/v1";
 
 async function fetchClient(
   endpoint,
