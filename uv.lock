@@ -736,7 +736,7 @@ requires-dist = [
     { name = "asyncpg", specifier = ">=0.30.0" },
     { name = "celery", specifier = ">=5.4.0" },
     { name = "crawl4ai", specifier = ">=0.9.2" },
-    { name = "crawlee", extras = ["all"], specifier = ">=1.8.3" },
+    { name = "crawlee", extras = ["all"], specifier = ">=1.9.1" },
     { name = "email-validator", specifier = ">=2.3.0" },
     { name = "emails", specifier = ">=0.6" },
     { name = "google-genai", specifier = ">=2.16.0" },
@@ -1070,7 +1070,7 @@ wheels = [
 
 [[package]]
 name = "crawlee"
-version = "1.8.3"
+version = "1.9.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "async-timeout" },
@@ -1082,14 +1082,13 @@ dependencies = [
     { name = "psutil" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
-    { name = "pyee" },
     { name = "tldextract" },
     { name = "typing-extensions" },
     { name = "yarl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/10/b4/4c359c2e073c720b3960d2d41ab6e06b1ea0ff3d570e7c6467b899e787c1/crawlee-1.8.3.tar.gz", hash = "sha256:8f06e4bec07a5438126a22f5c6ae040f238e22eeaba1a4257de4240292419e6d", size = 316089, upload-time = "2026-07-20T07:07:51.617Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/56/0e/ff363177fdbbb774d392f419db2363daaf4c3838b1e13649337af9d2ac31/crawlee-1.9.1.tar.gz", hash = "sha256:5ddbe6b7188ad4acee4221ad8afc4c27a6e0f77f815d2c1617e3e00eaafcd950", size = 325529, upload-time = "2026-08-06T09:28:36.247Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5a/85/05b8c4c73cad542e9aefe9a5568d03f73eb7ccb5f84524c47d066ce3bc85/crawlee-1.8.3-py3-none-any.whl", hash = "sha256:42c3e2404922a1ba51659e97ab31f0b451eeeed02faaf673d5ad4932f12bda7e", size = 403479, upload-time = "2026-07-20T07:07:49.96Z" },
+    { url = "https://files.pythonhosted.org/packages/21/eb/ac3e04315130801b6a20e8d14b954f3b1fac27d5bae9e15601b42bbd174b/crawlee-1.9.1-py3-none-any.whl", hash = "sha256:012c2f2c6e2f7021ea772eb2d95951f62092d2de1933f70fdffc31e716c53e94", size = 412364, upload-time = "2026-08-06T09:28:34.759Z" },
 ]
 
 [package.optional-dependencies]
@@ -1379,7 +1378,7 @@ wheels = [
 
 [[package]]
 name = "docling-core"
-version = "2.87.1"
+version = "2.91.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "defusedxml" },
@@ -1396,9 +1395,9 @@ dependencies = [
     { name = "typer" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6c/36/96e3c029d8e018403e178e1d68b2135b63413c1a3ed4c39a56fec032d265/docling_core-2.87.1.tar.gz", hash = "sha256:a2c19e63519e49f993d93103481934b772db701c80c683900476f898dfac841a", size = 338077, upload-time = "2026-07-15T09:11:39.579Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e5/f5/5aaf6f1221242a4dd598b515786ffca796352a8d960a9c6a0deb614301f4/docling_core-2.91.0.tar.gz", hash = "sha256:dc40fe76524a2700f869265015a9ef86027888e73b5652f324b3b5c52a2df240", size = 344852, upload-time = "2026-08-06T14:23:07.919Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/af/d4c2efbb825f3b5df55ffb6c533e30e118d881ead4f3492a7e7b483905a0/docling_core-2.87.1-py3-none-any.whl", hash = "sha256:1cd1748470523322b6314b72c79e8d1c638489fa903b8a1901cae023b14a4f84", size = 282104, upload-time = "2026-07-15T09:11:37.595Z" },
+    { url = "https://files.pythonhosted.org/packages/9f/68/de7c0ba404d035afe78ae4e602290bb6c330b34cc53fd5f92c9950be4ac0/docling_core-2.91.0-py3-none-any.whl", hash = "sha256:4949a5dd77ae1daf4153c095897d3bdde1c870f2bbe401bf94d8834bef867998", size = 286832, upload-time = "2026-08-06T14:23:05.908Z" },
 ]
 
 [package.optional-dependencies]
@@ -5200,17 +5199,17 @@ wheels = [
 
 [[package]]
 name = "typer"
-version = "0.24.2"
+version = "0.26.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-doc" },
-    { name = "click" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "rich" },
     { name = "shellingham" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/83/b8/9ebb531b6c2d377af08ac6746a5df3425b21853a5d2260876919b58a2a4a/typer-0.24.2.tar.gz", hash = "sha256:ec070dcfca1408e85ee203c6365001e818c3b7fffe686fd07ff2d68095ca0480", size = 119849, upload-time = "2026-04-22T17:45:34.413Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7c/f7/68adc395201b20b872d68e975386832e8005ffeacedd43a1d837a32815be/typer-0.26.8.tar.gz", hash = "sha256:c244a6bd558886fe3f8780efb6bdd28bb9aff005a94eedebaa5cb32926fe2f7e", size = 202097, upload-time = "2026-06-26T09:22:45.705Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/39/d1/9484b497e0a0410b901c12b8251c3e746e1e863f7d28419ffe06f7892fda/typer-0.24.2-py3-none-any.whl", hash = "sha256:b618bc3d721f9a8d30f3e05565be26416d06e9bcc29d49bc491dc26aba674fa8", size = 55977, upload-time = "2026-04-22T17:45:33.055Z" },
+    { url = "https://files.pythonhosted.org/packages/80/87/b9fd69c92c6102a066e1b86a35243f53e70bd4c709f2a26d9f4fee4f4dc0/typer-0.26.8-py3-none-any.whl", hash = "sha256:3512ca79ac5c11113414b36e80281b872884477722440691c89d1112e321a49c", size = 122564, upload-time = "2026-06-26T09:22:44.72Z" },
 ]
 
 [[package]]
