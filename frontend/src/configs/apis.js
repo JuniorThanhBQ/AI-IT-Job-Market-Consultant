@@ -17,6 +17,7 @@ async function fetchClient(
   const config = {
     method,
     headers: {
+      "ngrok-skip-browser-warning": "true",
       ...headers,
     },
     ...customConfig,
@@ -86,7 +87,7 @@ export const authApi = {
     });
   },
   register: (email, username, password) =>
-    fetchClient("/accounts", {
+    fetchClient("/accounts/", {
       method: "POST",
       body: { email, username, password },
     }),
@@ -117,7 +118,7 @@ export const jobApi = {
       }
     });
     const queryString = new URLSearchParams(cleanedParams).toString();
-    return fetchClient(`/jobs?${queryString}`);
+    return fetchClient(`/jobs/?${queryString}`);
   },
   getJobDetails: (id) => fetchClient(`/jobs/${id}`),
   semanticSearch: (payload) =>

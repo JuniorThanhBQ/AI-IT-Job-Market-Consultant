@@ -252,3 +252,4 @@ test-results/
 # Rclone config credentials
 rclone.conf
 celery/rclone.conf
+.vercel
