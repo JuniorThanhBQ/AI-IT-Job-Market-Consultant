@@ -1,15 +1,22 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
+import { validateLogin, validateRegister } from "@/utils/field_validator";
 
 export default function useAuthForm() {
+  const t = useTranslations("Auth");
   const [isLogin, setIsLogin] = useState(true);
   const { user, authLoading, login, register } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!authLoading && user) {
-      router.replace("/counselee/overview");
+      if (!user.first_name || !user.last_name) {
+        router.replace("/counselee/profile?missing_name=true");
+      } else {
+        router.replace("/counselee/overview");
+      }
     }
   }, [user, authLoading, router]);
 
@@ -21,8 +28,9 @@ export default function useAuthForm() {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError("Please fill in all fields.");
+    const validationError = validateLogin(email, password, t);
+    if (validationError) {
+      setError(validationError);
       return;
     }
     setError("");
@@ -38,8 +46,9 @@ export default function useAuthForm() {
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password || !username) {
-      setError("Please fill in all fields.");
+    const validationError = validateRegister(email, username, password, t);
+    if (validationError) {
+      setError(validationError);
       return;
     }
     setError("");

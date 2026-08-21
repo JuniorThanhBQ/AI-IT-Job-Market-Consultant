@@ -1,14 +1,16 @@
 "use client";
 
 import { Compass, Cpu } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function ChatbotSidebar({
   suggestedIntents,
   selectedIntent,
   onSelectIntent,
 }) {
+  const t = useTranslations("Counselee.Chat");
   return (
-    <aside className="lg:w-80 flex flex-col gap-6 shrink-0">
+    <aside className="lg:w-80 flex flex-col gap-6 shrink-0 lg:sticky lg:top-28 lg:self-start">
       <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-[2rem] p-6 backdrop-blur-md flex flex-col gap-5">
         <h2 className="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
           <Compass className="w-4 h-4 text-[#285872] dark:text-[#407c9c]" />
@@ -39,12 +41,10 @@ export default function ChatbotSidebar({
       <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-[2rem] p-6 backdrop-blur-md hidden lg:flex flex-col gap-3">
         <h3 className="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
           <Cpu className="w-4 h-4 text-[#285872] dark:text-[#407c9c]" />
-          Multi-Agent Collaboration
+          {t("legal_title")}
         </h3>
-        <p className="text-[11px] text-slate-505 dark:text-slate-400 leading-relaxed font-medium">
-          When sending prompts, the orchestrator delegates queries to
-          Personalization, Recommendation, and Market Intelligence agents with
-          dynamic streaming output.
+        <p className="text-[11px] text-slate-550 dark:text-slate-400 leading-relaxed font-medium text-justify">
+          {t("legal_desc")}
         </p>
       </div>
     </aside>

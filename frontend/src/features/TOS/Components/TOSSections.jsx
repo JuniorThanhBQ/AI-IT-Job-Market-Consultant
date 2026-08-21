@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 
 export default function TOSSections() {
   const t = useTranslations("TOS");
-
   return (
     <section className="flex-1 flex flex-col gap-8">
       <div className="mb-4">

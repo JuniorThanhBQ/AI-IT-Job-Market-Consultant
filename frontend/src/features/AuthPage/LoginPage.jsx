@@ -1,14 +1,14 @@
 "use client";
 
-import { motion, AnimatePresence } from "motion/react";
-import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { LOGO } from "@/assets/CloudinaryAssetsUrl";
 import useAuthForm from "./hooks/useAuthForm";
 import LoginForm from "./components/LoginForm";
 import SignupForm from "./components/SignupForm";
 import AuthVisualPanel from "./components/AuthVisualPanel";
+import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
+import { LOGO } from "@/assets/CloudinaryAssetsUrl";
+import { motion, AnimatePresence } from "motion/react";
 
 export default function AuthPage() {
   const t = useTranslations("Auth");

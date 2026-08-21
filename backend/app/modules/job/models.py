@@ -142,7 +142,24 @@ class Job(BaseModel, table=True):
         )
     )
 
+    @property
+    def company_name(self) -> str | None:
+        return self.company.name if self.company else None
+
     @model_validator(mode="after")
     def validate_salary_range(self):
         validate_salary_range(self.min_salary, self.max_salary)
         return self
+
+
+class SemanticSearchLog(BaseModel, table=True):
+    __tablename__ = "semantic_search_logs"
+
+    query: str = Field(index=True)
+    results: list[dict] = Field(
+        default=None, sa_column=Column(JSONB().with_variant(JSON(), "sqlite"))
+    )
+    latency: float
+    request_meta: dict | None = Field(
+        default=None, sa_column=Column(JSONB().with_variant(JSON(), "sqlite"))
+    )

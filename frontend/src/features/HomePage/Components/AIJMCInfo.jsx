@@ -12,62 +12,21 @@ import {
   Cpu,
   Server,
 } from "lucide-react";
-import VerticalScrollbar from "@/components/shared/VerticalScrollbar";
 import { useTranslations } from "next-intl";
 
 export default function AIJMCInfo() {
   const t = useTranslations("AIJMCInfo");
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
-
   const yParallax = useTransform(scrollYProgress, [0, 1], [0, 300]);
 
-  const sections = [
-    { id: "about", label: t("nav_about") },
-    { id: "goals", label: t("nav_goals") },
-    { id: "roadmap", label: t("nav_roadmap") },
-  ];
-
-  const aims = [
-    {
-      time: t("aim_1_time"),
-      title: t("aim_1_title"),
-      desc: t("aim_1_desc"),
-      icon: BookOpen,
-    },
-    {
-      time: t("aim_2_time"),
-      title: t("aim_2_title"),
-      desc: t("aim_2_desc"),
-      icon: Layers,
-    },
-    {
-      time: t("aim_3_time"),
-      title: t("aim_3_title"),
-      desc: t("aim_3_desc"),
-      icon: Workflow,
-    },
-    {
-      time: t("aim_4_time"),
-      title: t("aim_4_title"),
-      desc: t("aim_4_desc"),
-      icon: Cpu,
-    },
-    {
-      time: t("aim_5_time"),
-      title: t("aim_5_title"),
-      desc: t("aim_5_desc"),
-      icon: Server,
-    },
-  ];
+  const aims = getAimsList(t, { BookOpen, Layers, Workflow, Cpu, Server });
 
   return (
     <div
       ref={containerRef}
       className="relative w-full bg-white dark:bg-slate-950 overflow-hidden"
     >
-      <VerticalScrollbar sections={sections} />
-
       <section
         id="about"
         className="relative min-h-screen flex items-center justify-center pt-32 pb-20 px-6 md:px-12 overflow-hidden bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800"

@@ -1,5 +1,5 @@
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081/api/v1";
+export const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8081/api/v1";
 
 async function fetchClient(
   endpoint,
@@ -39,9 +39,8 @@ async function fetchClient(
   }
 
   try {
-    const response = await fetch(`${BASE_URL}${endpoint}`, config);
-
     let data;
+    const response = await fetch(`${BASE_URL}${endpoint}`, config);
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
       data = await response.json();
@@ -58,6 +57,19 @@ async function fetchClient(
 
     return data;
   } catch (error) {
+    if (
+      typeof window !== "undefined" &&
+      (error.message === "Failed to fetch" || error.name === "TypeError")
+    ) {
+      const currentPath = window.location.pathname;
+      const pathParts = currentPath.split("/");
+      const locale = pathParts[1] || "en";
+      if (!currentPath.includes("/unavailable")) {
+        window.location.replace(
+          `${window.location.origin}/${locale}/unavailable`,
+        );
+      }
+    }
     throw error;
   }
 }
@@ -114,7 +126,7 @@ export const jobApi = {
 
 export const consultantApi = {
   processChatbotIntent: (intent, userInput) =>
-    fetchClient("/consultants/chatbot/process-intent", {
+    fetchClient("/consultants/chatbot/intents", {
       method: "POST",
       body: { intent, user_input: userInput },
     }),
@@ -124,4 +136,19 @@ export const consultantApi = {
 
 export const companyApi = {
   getCompanyDetails: (id) => fetchClient(`/companies/${id}`),
+};
+
+export const chatbotAPI = (intent, userInput) => {
+  const token = localStorage.getItem("token");
+  return fetch(`${BASE_URL}/consultants/chatbot/intents`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      intent,
+      user_input: userInput,
+    }),
+  });
 };

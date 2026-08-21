@@ -13,7 +13,9 @@ export function useHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const langMenuRef = useRef(null);
+  const userMenuRef = useRef(null);
 
   const navLinks = [
     { name: t("nav_aijmc"), href: "/aijmc" },
@@ -32,6 +34,9 @@ export function useHeader() {
     const handleClickOutside = (event) => {
       if (langMenuRef.current && !langMenuRef.current.contains(event.target)) {
         setLangMenuOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setUserMenuOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -52,6 +57,9 @@ export function useHeader() {
     langMenuOpen,
     setLangMenuOpen,
     langMenuRef,
+    userMenuOpen,
+    setUserMenuOpen,
+    userMenuRef,
     navLinks,
     switchLanguage,
     pathname,

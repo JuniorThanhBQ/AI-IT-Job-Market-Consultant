@@ -1,10 +1,10 @@
 class GenAIException(Exception):
-    """Base exception for application GenAI integration."""
+    pass
 
 
 class GenAIRateLimitError(GenAIException):
-    """Exception raised when API limit or resource exhaustion (429) occurs."""
+    pass
 
 
 class GenAIAuthError(GenAIException):
-    """Exception raised when API key or credentials authentication fails."""
+    pass

@@ -12,3 +12,15 @@ export const FOUNDER_SOCIAL_LINKS = {
   LINKEDIN: "https://www.linkedin.com/in/juniorthanh09/",
   EMAIL: "thanh.vantrung2005@gmail.com",
 };
+
+export const CHATBOT_INTENTS = [
+  { id: "MARKET_ANALYSIS", label: "Market Analysis" },
+];
+
+export const SUGGESTED_INTENTS = [
+  {
+    id: "MARKET_ANALYSIS",
+    name: "Market Analysis",
+    desc: "Analyze IT trends, salary distributions, and market demand.",
+  },
+];

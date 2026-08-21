@@ -1,5 +1,5 @@
 # AI-IT-JOB-MARKET-CONSULTANT
-AI IT Job Market Consultant (AIJMC), also known as an IT Job Market personalization system. This system solves three aspects of today's IT job market problems. The first aspect is providing a Job Consultant System amid today's low trend. The second aspect is solving the lack of an efficient way for IT job seekers to find suitable jobs. The final aspect is proving the theory of multi-agent applications for solving Job Consultant problems.          
+AI IT Job Market Consultant (AIJMC), also known as an IT Job Market personalization system. This system solves three aspects of today's IT job market problems. The first aspect is providing a Job Consultant System amid today's low trend. The second aspect is solving the lack of an efficient way for IT job seekers to find suitable jobs. The final aspect is proving the theory of multi-agent applications for solving Job Consultant problems.
 
 ## I. Project Description
 ### 1. Main goal
@@ -110,7 +110,6 @@ AI-IT-Job-Market-Consultant/
     ├── clean_temporary_files.py
     ├── create_staging_env.sh
     ├── generate_secret_key.py
-    ├── verify_container_health.sh
     ├── compose/
     ├── release/
     └── security/

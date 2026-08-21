@@ -3,9 +3,9 @@
 
 help:
 	@echo "Available commands:"
-	@echo "  make clean                      - Cleaning unused files (requires CLEAN_TYPE=\"...\" like --dist --dry-run )"
-	@echo "  make generate-secret            - Generate a secure random SECRET_KEY for FastAPI"
-	@echo "  make help                       - Show this help message"
+	@echo "  make clean                      - Cleaning unused files (optional CLEAN_TYPE=\"...\" like --dist --dry-run )"
+	@echo "  make generate-secret            - Generate a secure random SECRET_KEY"
+	@echo "  make help                       - Show the list of supported commands"
 	@echo "  make install                    - Install dependencies for both backend and frontend"
 	@echo "  make dev-backend                - Run backend development local"
 	@echo "  make dev-frontend               - Run frontend development local"
@@ -33,7 +33,7 @@ help:
 	@echo "  make test-backend               - Run backend unit and integration tests"
 	@echo "  make test-celery                - Run celery unit and integration tests"
 	@echo "  make test-frontend              - Run frontend audit and e2e tests"
-	@echo "  make test-report               - Scan test-case-report.xlsx and report failures as GitHub issues (requires GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO)"
+	@echo "  make test-report                - Scan test-case-report.xlsx and report failures as GitHub issues"
 
 clean:
 	python scripts/clean_temporary_files.py ${CLEAN_TYPE}

@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import Depends, FastAPI
@@ -9,12 +10,14 @@ from fastapi.responses import HTMLResponse
 from fastapi.routing import APIRoute
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from sqlmodel import Session
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.requests import Request
 
 from app.admin import init_admin
 from app.core.auth import authenticate_admin
 from app.core.config import settings
+from app.core.db import engine
 from app.core.middlewares import (
     ExceptionHandlerMiddleware,
     ProcessTimeMiddleware,
@@ -23,6 +26,7 @@ from app.core.middlewares import (
 )
 from app.db import base as _db_base  # noqa: F401
 from app.modules.routers import api_router
+from app.modules.shared.bm25 import BM25Index
 from app.modules.user.models import User
 
 
@@ -39,6 +43,14 @@ openapi_url = (
     else f"{settings.API_V1_STR}/openapi.json"
 )
 
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    with Session(engine) as session:
+        BM25Index.build(session)
+    yield
+
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     debug=settings.ENVIRONMENT != "production",
@@ -46,10 +58,10 @@ app = FastAPI(
     docs_url=docs_url,
     redoc_url=redoc_url,
     generate_unique_id_function=custom_generate_unique_id,
+    lifespan=lifespan,
 )
 
 init_admin(app)
-
 app_dir = Path(__file__).resolve().parent
 
 static_dir = app_dir / "static"

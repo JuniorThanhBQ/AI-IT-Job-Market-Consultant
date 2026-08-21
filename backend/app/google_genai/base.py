@@ -26,11 +26,23 @@ class BaseModelService:
         last_error: Exception | None = None
         for m in self.models:
             try:
+                local_config = (
+                    config.model_copy() if config else types.GenerateContentConfig()
+                )
+                if "gemini-3" in m:
+                    local_config.thinking_config = types.ThinkingConfig(
+                        thinking_level=types.ThinkingLevel.MINIMAL
+                    )
+                else:
+                    local_config.thinking_config = types.ThinkingConfig(
+                        thinking_budget=768
+                    )
+
                 client = self.client_manager.get_client()
                 response = await client.aio.models.generate_content(
                     model=m,
                     contents=prompt,
-                    config=config,
+                    config=local_config,
                 )
                 return response.text or ""
             except Exception as e:
@@ -55,11 +67,23 @@ class BaseModelService:
         last_error: Exception | None = None
         for m in self.models:
             try:
+                local_config = (
+                    config.model_copy() if config else types.GenerateContentConfig()
+                )
+                if "gemini-3" in m:
+                    local_config.thinking_config = types.ThinkingConfig(
+                        thinking_level=types.ThinkingLevel.MINIMAL
+                    )
+                else:
+                    local_config.thinking_config = types.ThinkingConfig(
+                        thinking_budget=768
+                    )
+
                 client = self.client_manager.get_client()
                 response = client.models.generate_content(
                     model=m,
                     contents=prompt,
-                    config=config,
+                    config=local_config,
                 )
                 return response.text or ""
             except Exception as e:
@@ -84,11 +108,23 @@ class BaseModelService:
         last_error: Exception | None = None
         for m in self.models:
             try:
+                local_config = (
+                    config.model_copy() if config else types.GenerateContentConfig()
+                )
+                if "gemini-3" in m:
+                    local_config.thinking_config = types.ThinkingConfig(
+                        thinking_level=types.ThinkingLevel.MINIMAL
+                    )
+                else:
+                    local_config.thinking_config = types.ThinkingConfig(
+                        thinking_budget=768
+                    )
+
                 client = self.client_manager.get_client()
                 response_stream = await client.aio.models.generate_content_stream(
                     model=m,
                     contents=prompt,
-                    config=config,
+                    config=local_config,
                 )
                 async for chunk in response_stream:
                     if chunk.text:
@@ -116,11 +152,23 @@ class BaseModelService:
         last_error: Exception | None = None
         for m in self.models:
             try:
+                local_config = (
+                    config.model_copy() if config else types.GenerateContentConfig()
+                )
+                if "gemini-3" in m:
+                    local_config.thinking_config = types.ThinkingConfig(
+                        thinking_level=types.ThinkingLevel.MINIMAL
+                    )
+                else:
+                    local_config.thinking_config = types.ThinkingConfig(
+                        thinking_budget=768
+                    )
+
                 client = self.client_manager.get_client()
                 response_stream = client.models.generate_content_stream(
                     model=m,
                     contents=prompt,
-                    config=config,
+                    config=local_config,
                 )
                 for chunk in response_stream:
                     if chunk.text:

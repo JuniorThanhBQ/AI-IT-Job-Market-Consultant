@@ -5,7 +5,6 @@ import Introduction from "./Components/Introduction";
 import AIJMCInfo from "./Components/AIJMCInfo";
 import FounderInspiration from "./Components/FounderInspiration";
 import FAQ from "./Components/FAQ";
-import TermsOfService from "./Components/TermsOfService";
 import Contact from "./Components/Contact";
 
 export default function HomePage({ activePage }) {
@@ -19,8 +18,6 @@ export default function HomePage({ activePage }) {
         return <FounderInspiration />;
       case "faq":
         return <FAQ />;
-      case "tos":
-        return <TermsOfService />;
       case "contact":
         return <Contact />;
       default:

@@ -12,6 +12,7 @@ _client_manager = GenAIClientManager(_config)
 _embedding_service = EmbeddingService(_client_manager)
 
 DEFAULT_EMBEDDING_MODEL = "gemini-embedding-001"
+_embedding_cache: dict[tuple[str, str], list[float]] = {}
 
 
 def get_gemini_api_key() -> str:
@@ -35,12 +36,26 @@ def _normalize_model_name(model_name: str) -> GeminiModel:
 async def generate_embedding_async(
     text: str, model_name: str = DEFAULT_EMBEDDING_MODEL
 ) -> list[float]:
+    cache_key = (text, model_name)
+    if cache_key in _embedding_cache:
+        return _embedding_cache[cache_key]
     model = _normalize_model_name(model_name)
-    return await _embedding_service.generate_embedding_async(text, model=model)
+    val = await _embedding_service.generate_embedding_async(text, model=model)
+    if len(_embedding_cache) >= 1024:
+        _embedding_cache.pop(next(iter(_embedding_cache)))
+    _embedding_cache[cache_key] = val
+    return val
 
 
 def generate_embedding(
     text: str, model_name: str = DEFAULT_EMBEDDING_MODEL
 ) -> list[float]:
+    cache_key = (text, model_name)
+    if cache_key in _embedding_cache:
+        return _embedding_cache[cache_key]
     model = _normalize_model_name(model_name)
-    return _embedding_service.generate_embedding(text, model=model)
+    val = _embedding_service.generate_embedding(text, model=model)
+    if len(_embedding_cache) >= 1024:
+        _embedding_cache.pop(next(iter(_embedding_cache)))
+    _embedding_cache[cache_key] = val
+    return val

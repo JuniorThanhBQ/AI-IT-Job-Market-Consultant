@@ -11,7 +11,7 @@ from app.modules.consultee_profile.schemas import (
 )
 
 
-def _get_profile_or_404(session: Session, user_id: uuid.UUID) -> ConsulteeProfile:
+def get_profile_or_404(session: Session, user_id: uuid.UUID) -> ConsulteeProfile:
     profile = profile_repo.get_profile_by_user_id(session=session, user_id=user_id)
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
@@ -19,14 +19,14 @@ def _get_profile_or_404(session: Session, user_id: uuid.UUID) -> ConsulteeProfil
 
 
 def get_my_profile(*, session: Session, user_id: uuid.UUID) -> ConsulteeProfileRead:
-    profile = _get_profile_or_404(session, user_id)
+    profile = get_profile_or_404(session, user_id)
     return ConsulteeProfileRead.model_validate(profile)
 
 
 def update_my_profile(
     *, session: Session, user_id: uuid.UUID, data: ConsulteeProfileUpdate
 ) -> ConsulteeProfileRead:
-    profile = _get_profile_or_404(session, user_id)
+    profile = get_profile_or_404(session, user_id)
     updated = profile_repo.update_profile(
         session=session, profile=profile, data=data.model_dump(exclude_unset=True)
     )

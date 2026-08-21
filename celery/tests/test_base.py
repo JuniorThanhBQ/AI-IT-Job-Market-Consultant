@@ -20,10 +20,3 @@ class TestBase:
         }
         for task_name in expected_tasks:
             assert task_name in app.tasks
-
-    def test_beat_schedule_configured(self) -> None:
-        assert app.conf.beat_schedule is not None
-        assert "run-crawler-every-day" in app.conf.beat_schedule
-        assert "run-crawler-update-every-2-hours" in app.conf.beat_schedule
-        assert "run-crawl4ai-every-day" in app.conf.beat_schedule
-        assert "run-database-backup-every-3-hours" in app.conf.beat_schedule

@@ -1,44 +1,14 @@
 "use client";
 
-import { Link } from "@/i18n/routing";
 import Image from "next/image";
+import { Link } from "@/i18n/routing";
 import { motion } from "motion/react";
-import { useTranslations } from "next-intl";
 import { PROJECT_NAME, LINKS } from "@/utils/const";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
+import { useFooter } from "@/components/shared/hooks/useFooter";
 
 export default function Footer() {
-  const t = useTranslations("Footer");
-
-  const footerLinks = {
-    product: [
-      { name: t("link_jd_matching"), href: "/counselee/chatbot" },
-      { name: t("link_tech_trends"), href: "/counselee/overview" },
-      { name: t("link_career_roadmaps"), href: "/counselee/overview" },
-      { name: t("link_pricing"), href: "/aijmc" },
-    ],
-    company: [
-      { name: t("link_about_us"), href: "/aijmc" },
-      { name: t("link_careers"), href: "/aijmc/founder-inspiration" },
-      { name: t("link_blog"), href: "/aijmc/faq" },
-      { name: t("link_contact"), href: "/aijmc/contact" },
-    ],
-    legal: [{ name: t("link_terms_of_service"), href: "/tos" }],
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { staggerChildren: 0.1, duration: 0.5 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 },
-  };
+  const { t, footerLinks, containerVariants, itemVariants } = useFooter();
 
   return (
     <footer className="bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 pt-12 pb-6">

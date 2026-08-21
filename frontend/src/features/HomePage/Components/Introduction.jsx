@@ -1,78 +1,31 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform, useInView } from "motion/react";
-import {
-  ArrowUpRight,
-  BrainCircuit,
-  TrendingUp,
-  FileUser,
-  Database,
-  Network,
-  Server,
-} from "lucide-react";
-import VerticalScrollbar from "@/components/shared/VerticalScrollbar";
+import { BrainCircuit, TrendingUp, FileUser } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { LOGO } from "@/assets/CloudinaryAssetsUrl";
 import Image from "next/image";
-
-function BlinkingStat({ targetValue, label }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  return (
-    <div
-      ref={ref}
-      className="flex flex-col items-center justify-center p-6 md:p-8 bg-white/80 dark:bg-slate-900/40 backdrop-blur-md rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl transition-all duration-500 hover:scale-105 hover:bg-white/90 dark:hover:bg-slate-900/50"
-    >
-      <motion.span
-        animate={
-          isInView
-            ? {
-                opacity: [1, 0, 1, 0, 1, 0, 1],
-              }
-            : {
-                opacity: 0,
-              }
-        }
-        transition={{
-          duration: 1.5,
-          times: [0, 0.16, 0.33, 0.5, 0.66, 0.83, 1],
-          ease: "easeInOut",
-        }}
-        className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4 min-h-[1.2em] font-mono text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-600 dark:from-white dark:via-blue-100 dark:to-white"
-      >
-        {targetValue}
-      </motion.span>
-      <span className="text-sm md:text-base font-bold uppercase tracking-widest text-slate-500 dark:text-blue-200 text-center">
-        {label}
-      </span>
-    </div>
-  );
-}
+import BlinkingStat from "@/components/shared/BlinkingStat";
+import { getPlatformsList, getFeaturesList } from "@/utils/homepage_utils";
 
 export default function Introduction() {
   const t = useTranslations("Introduction");
+  const platformsList = getPlatformsList(t);
+  const featuresList = getFeaturesList(t, {
+    TrendingUp,
+    BrainCircuit,
+    FileUser,
+  });
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
-
   const yHero = useTransform(scrollYProgress, [0, 1], [0, 400]);
   const opacityHero = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-
-  const sections = [
-    { id: "hero", label: t("nav_hero") },
-    { id: "platforms", label: t("nav_platforms") },
-    { id: "features", label: t("nav_features") },
-    { id: "cta", label: t("nav_cta") },
-  ];
 
   return (
     <div
       ref={containerRef}
       className="relative w-full bg-slate-50 dark:bg-slate-950 overflow-hidden"
     >
-      <VerticalScrollbar sections={sections} />
-
       <section
         id="hero"
         className="relative min-h-screen flex items-center justify-start px-6 md:px-12 overflow-hidden bg-slate-50 dark:bg-slate-950"
@@ -192,32 +145,7 @@ export default function Introduction() {
             </motion.div>
 
             <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
-              {[
-                {
-                  name: t("platforms_itviec"),
-                  desc: t("platforms_itviec_desc"),
-                  image: LOGO.ITVIEC,
-                  delay: 0,
-                },
-                {
-                  name: t("platforms_topdev"),
-                  desc: t("platforms_topdev_desc"),
-                  image: LOGO.TOPDEV,
-                  delay: 0.1,
-                },
-                {
-                  name: t("platforms_itjobs"),
-                  desc: t("platforms_itjobs_desc"),
-                  image: LOGO.ITJOBS,
-                  delay: 0.2,
-                },
-                {
-                  name: t("platforms_vietnamworks"),
-                  desc: t("platforms_vietnamworks_desc"),
-                  image: LOGO.VIETNAMWORKS,
-                  delay: 0.3,
-                },
-              ].map((platform, i) => (
+              {platformsList.map((platform, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 50 }}
@@ -274,26 +202,7 @@ export default function Introduction() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            {[
-              {
-                title: t("feature_1_title"),
-                desc: t("feature_1_desc"),
-                icon: TrendingUp,
-                color: "bg-slate-50 dark:bg-slate-900",
-              },
-              {
-                title: t("feature_2_title"),
-                desc: t("feature_2_desc"),
-                icon: BrainCircuit,
-                color: "bg-slate-50 dark:bg-slate-900",
-              },
-              {
-                title: t("feature_3_title"),
-                desc: t("feature_3_desc"),
-                icon: FileUser,
-                color: "bg-slate-50 dark:bg-slate-900",
-              },
-            ].map((feature, i) => (
+            {featuresList.map((feature, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 50 }}
@@ -327,29 +236,22 @@ export default function Introduction() {
       <section className="relative overflow-hidden py-24" id="cta">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.12),transparent_55%)]" />
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(circle_at_50%_100%,rgba(0,0,0,0.12),transparent_65%)]" />
-
         <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-blue-500">
               {t("stats_badge")}
             </p>
-
             <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
               {t("stats_title")}
             </h2>
-
             <p className="mt-4 text-base text-muted-foreground">
               {t("stats_desc")}
             </p>
           </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             <BlinkingStat targetValue="1500+" label={t("stats_jobs")} />
-
             <BlinkingStat targetValue="50+" label={t("stats_companies")} />
-
             <BlinkingStat targetValue="500+" label={t("stats_skills")} />
-
             <BlinkingStat targetValue="4+" label={t("stats_portals")} />
           </div>
         </div>
