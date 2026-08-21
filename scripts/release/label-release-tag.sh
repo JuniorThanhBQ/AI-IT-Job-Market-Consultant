@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-# Ensure PR_NUMBER is set
 if [ -z "${PR_NUMBER:-}" ]; then
   echo "Error: PR_NUMBER environment variable is not set." >&2
   exit 1
@@ -14,7 +13,6 @@ if [ -z "$REPO" ]; then
 fi
 
 echo "Fetching commits for PR #${PR_NUMBER} in repo ${REPO}..."
-
 commits=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json commits --jq '.commits[].message' 2>/dev/null || true)
 
 if [ -z "$commits" ]; then

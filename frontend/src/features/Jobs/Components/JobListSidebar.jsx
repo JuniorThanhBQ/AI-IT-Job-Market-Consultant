@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { mapEnum, formatSalaryRange } from "@/utils/enumMapper";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
 import Image from "next/image";
+import { Link } from "@/i18n/routing";
 
 export default function JobListSidebar({
   jobs,
@@ -19,13 +20,7 @@ export default function JobListSidebar({
   const t = useTranslations("Counselee.Explorer");
 
   return (
-    <div className="lg:w-2/5 flex flex-col gap-4">
-      <div className="flex items-center justify-between px-2">
-        <span className="text-xs font-black uppercase tracking-widest text-slate-450 dark:text-slate-500">
-          {t("jobs_found", { count: jobs.length })}
-        </span>
-      </div>
-
+    <div className="lg:w-2/5 w-full max-w-full min-w-0 flex flex-col gap-4">
       {jobsLoading ? (
         <div className="py-20 flex justify-center items-center">
           <Loader2 className="w-8 h-8 animate-spin text-[#285872]" />
@@ -75,53 +70,94 @@ export default function JobListSidebar({
                       {job.title}
                     </h3>
                     <p className="text-xs font-bold text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                      {job.company?.name || "Company Confidential"}
+                      {job.company_name || "Company Confidential"}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-1.5 mt-1">
-                  <span className="bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase tracking-wider">
+                <div className="flex flex-wrap gap-1.5 mt-1.5">
+                  <span className="bg-slate-100/50 dark:bg-slate-950/60 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border border-slate-200/60 dark:border-slate-800">
                     {mapEnum(job.seniority, "SeniorityLevel", locale)}
                   </span>
-                  <span className="bg-slate-100 dark:bg-slate-955 text-slate-600 dark:text-slate-400 px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase tracking-wider">
+                  <span className="bg-slate-100/50 dark:bg-slate-955/60 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border border-slate-200/60 dark:border-slate-800">
                     {mapEnum(job.working_model, "WorkingModel", locale)}
                   </span>
+                  {job.status && (
+                    <span
+                      className={`inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg border ${
+                        job.status.toUpperCase() === "OPEN"
+                          ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-450"
+                          : "bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400"
+                      }`}
+                    >
+                      <span
+                        className={`w-1 h-1 rounded-full ${
+                          job.status.toUpperCase() === "OPEN"
+                            ? "bg-emerald-500"
+                            : "bg-red-500"
+                        }`}
+                      />
+                      {locale === "vi"
+                        ? job.status.toUpperCase() === "OPEN"
+                          ? "Mở"
+                          : "Đóng"
+                        : job.status.toUpperCase() === "OPEN"
+                          ? "Open"
+                          : "Closed"}
+                    </span>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-850/60 pt-3 mt-1">
-                  <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-450 flex items-center">
-                    <DollarSign className="w-3.5 h-3.5" />
-                    {formatSalaryRange(job.min_salary, job.max_salary, locale)}
-                  </span>
-                  <span className="text-[10px] font-bold text-slate-400 flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
+                <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-850/60 pt-3 mt-1.5">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-black text-[#285872] dark:text-[#407c9c]">
+                      {formatSalaryRange(
+                        job.min_salary,
+                        job.max_salary,
+                        locale,
+                      )}
+                    </span>
+                    {job.score !== undefined && (
+                      <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-450 mt-1">
+                        {locale === "vi" ? "Mức độ khớp: " : "Percent match: "}
+                        {Math.round(job.score * 100)}%
+                      </span>
+                    )}
+                  </div>
+                  <Link
+                    href={`/counselee/jobs/${job.id}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[10px] font-bold text-slate-450 hover:text-[#285872] dark:hover:text-[#407c9c] flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform cursor-pointer"
+                  >
                     {t("view_details")}
                     <ChevronRight className="w-3 h-3" />
-                  </span>
+                  </Link>
                 </div>
               </div>
             );
           })}
 
-          <div className="flex items-center justify-between p-2 mt-2">
-            <button
-              disabled={page === 1}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 hover:bg-slate-50 dark:hover:bg-slate-850 disabled:opacity-40 text-slate-700 dark:text-slate-300 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer select-none"
-            >
-              {t("prev_page")}
-            </button>
-            <span className="text-xs font-black text-slate-500">
-              {t("page_indicator", { page })}
-            </span>
-            <button
-              disabled={jobs.length < pageSize}
-              onClick={() => setPage((p) => p + 1)}
-              className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 hover:bg-slate-50 dark:hover:bg-slate-850 disabled:opacity-40 text-slate-700 dark:text-slate-300 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer select-none"
-            >
-              {t("next_page")}
-            </button>
-          </div>
+          {setPage && (
+            <div className="flex items-center justify-between p-2 mt-2">
+              <button
+                disabled={page === 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 hover:bg-slate-50 dark:hover:bg-slate-850 disabled:opacity-40 text-slate-700 dark:text-slate-300 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer select-none"
+              >
+                {t("prev_page")}
+              </button>
+              <span className="text-xs font-black text-slate-500">
+                {t("page_indicator", { page })}
+              </span>
+              <button
+                disabled={jobs.length < pageSize}
+                onClick={() => setPage((p) => p + 1)}
+                className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 hover:bg-slate-50 dark:hover:bg-slate-850 disabled:opacity-40 text-slate-700 dark:text-slate-300 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer select-none"
+              >
+                {t("next_page")}
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -26,7 +26,7 @@ DIST_FIXED_PATHS: list[str] = [
 ]
 
 
-def _remove(path: Path, dry_run: bool) -> None:
+def remove(path: Path, dry_run: bool) -> None:
     if dry_run:
         print(f"would remove: {path}")
     else:
@@ -45,13 +45,13 @@ def main() -> None:
         if p.name in target_names and p.is_dir():
             if not any(parent in seen for parent in p.parents):
                 seen.add(p)
-                _remove(p, args.dry_run)
+                remove(p, args.dry_run)
 
     fixed = FIXED_PATHS + (DIST_FIXED_PATHS if args.dist else [])
     for path_str in fixed:
         p = Path(path_str)
         if p.exists():
-            _remove(p, args.dry_run)
+            remove(p, args.dry_run)
 
 
 if __name__ == "__main__":

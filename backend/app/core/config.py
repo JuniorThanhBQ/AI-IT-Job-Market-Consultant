@@ -202,9 +202,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     FRONTEND_HOST: str = "http://localhost:5173"
     ENVIRONMENT: Literal["local", "development", "staging", "production"] = "local"
-
     BACKEND_CORS_ORIGINS: Annotated[list[str], BeforeValidator(parse_cors)] = []
-
     BACKEND_TRUSTED_HOSTS: Annotated[list[str], BeforeValidator(parse_cors)] = []
 
     @computed_field  # type: ignore[prop-decorator]
@@ -225,7 +223,6 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "AI IT Job Market Consultant"
     CELERY_WORKER_MAX_TASKS_PER_CHILD: int = 50
     GEMINI_API_KEY: list[str] | str = []
-
     EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
     EMAIL_TEST_USER: EmailStr = "test@example.com"
     FIRST_SUPERUSER: EmailStr = "admin@example.com"
@@ -239,7 +236,7 @@ class Settings(BaseSettings):
     backup: BackupSettings = None  # type: ignore
 
     @staticmethod
-    def _build_nested_model(
+    def build_nested_model(
         data: dict[str, Any],
         setting_cls: type[BaseModel],
         keys: list[str],
@@ -254,16 +251,16 @@ class Settings(BaseSettings):
 
     @model_validator(mode="before")
     @classmethod
-    def _parse_nested_settings(cls, data: Any) -> Any:
+    def parse_nested_settings(cls, data: Any) -> Any:
         if not isinstance(data, dict):
             return data
 
         for key, (setting_cls, keys) in NESTED_SETTINGS_MAP.items():
-            data[key] = cls._build_nested_model(data, setting_cls, keys, data.get(key))
+            data[key] = cls.build_nested_model(data, setting_cls, keys, data.get(key))
 
         return data
 
-    def _check_default_secret(self, var_name: str, value: str | None) -> None:
+    def check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
             message = (
                 f'The value of {var_name} is "changethis", '
@@ -275,7 +272,7 @@ class Settings(BaseSettings):
                 raise ValueError(message)
 
     @model_validator(mode="after")
-    def _enforce_non_default_secrets(self) -> Self:
+    def enforce_non_default_secrets(self) -> Self:
         if not self.SECRET_KEY:
             self.SECRET_KEY = get_secret("secret_key")
         if not self.SECRET_KEY:
@@ -292,9 +289,9 @@ class Settings(BaseSettings):
                 "first_superuser_password", "changethis"
             )
 
-        self._check_default_secret("SECRET_KEY", self.SECRET_KEY)
-        self._check_default_secret("POSTGRES_PASSWORD", self.database.POSTGRES_PASSWORD)
-        self._check_default_secret(
+        self.check_default_secret("SECRET_KEY", self.SECRET_KEY)
+        self.check_default_secret("POSTGRES_PASSWORD", self.database.POSTGRES_PASSWORD)
+        self.check_default_secret(
             "FIRST_SUPERUSER_PASSWORD", self.FIRST_SUPERUSER_PASSWORD
         )
 

@@ -1,6 +1,6 @@
 [project]
 name = "ai-it-job-market-consultant"
-version = "0.1.0"
+version = "1.0.0"
 description = "AI IT Jobs Market Consultant platform used UV to manage Python packages. The reason to use UV is that it has a nice CLI UI, is easy to learn, and has a management package using pyproject.toml"
 readme = "README.md"
 requires-python = ">=3.14"
@@ -29,11 +29,7 @@ pythonpath = [".", "backend", "celery"]
 exclude = ["venv", ".venv", "alembic"]
 
 [[tool.mypy.overrides]]
-module = [
-    "celery.*",
-    "crawl4ai.*",
-    "crawlee.*",
-]
+module = "celery.*,crawl4ai.*,crawlee.*,rank_bm25"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]

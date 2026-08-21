@@ -40,8 +40,3 @@ class CompanyQueryParams(BaseModel):
     company_type: CompanyType | None = None
     skip: int = Field(default=0, ge=0)
     limit: int = Field(default=20, ge=1, le=100)
-
-
-from app.modules.job.schemas import JobRead  # noqa: E402  # pylint: disable=reimported
-
-CompanyDetail.model_rebuild()

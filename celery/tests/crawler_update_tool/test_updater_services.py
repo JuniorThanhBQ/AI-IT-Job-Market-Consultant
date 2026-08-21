@@ -247,3 +247,13 @@ class TestProcessJob:
         result = await process_job(mock_job, AsyncMock(), AsyncMock())
         assert result is False
         assert mock_job.status == JobStatus.OPEN
+
+    async def test_delete_job_due_to_placeholder_title(self):
+        mock_repo = AsyncMock()
+        mock_job = MagicMock()
+        mock_job.title = "Trang bạn đang tìm kiếm"
+
+        result = await process_job(mock_job, AsyncMock(), mock_repo)
+        assert result is True
+        mock_repo.drop.assert_called_once_with(mock_job)
+        mock_repo.session.flush.assert_called_once()

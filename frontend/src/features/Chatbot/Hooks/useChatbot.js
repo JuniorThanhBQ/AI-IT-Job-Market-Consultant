@@ -1,30 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/context/AuthProvider";
-import { consultantApi } from "@/configs/apis";
+import { consultantApi, BASE_URL } from "@/configs/apis";
 import { useRouter } from "@/i18n/routing";
-
-export const SUGGESTED_INTENTS = [
-  {
-    id: "MARKET_ANALYSIS",
-    name: "Market Analysis",
-    desc: "Analyze IT trends, salary distributions, and market demand.",
-  },
-  {
-    id: "PERSONAL_STANDARD_EVALUATION",
-    name: "Career Evaluation",
-    desc: "Assess your profile and compare skills with current job criteria.",
-  },
-  {
-    id: "JOB_RECOMMEND",
-    name: "Job Recommendation",
-    desc: "Discover vacancies closely matching your tech stack.",
-  },
-  {
-    id: "DEEP_ANALYSIS_EVALUATION",
-    name: "Deep CV Analysis",
-    desc: "Run comprehensive AI feedback to optimize your CV/Resume.",
-  },
-];
+import { SUGGESTED_INTENTS } from "@/utils/const";
+import { hasXSS, hasSQLInjection } from "@/utils/field_validator";
 
 export function useChatbot() {
   const { user, loading: authLoading } = useAuth();
@@ -43,7 +22,7 @@ export function useChatbot() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.replace("/counselee/login");
+      router.replace("/counselee/auth");
     }
   }, [user, authLoading, router]);
 
@@ -105,6 +84,10 @@ export function useChatbot() {
     if (!inputMessage.trim() || isSending) return;
 
     const userText = inputMessage.trim();
+    if (hasXSS(userText) || hasSQLInjection(userText)) {
+      setError("Unsafe input detected.");
+      return;
+    }
     setInputMessage("");
     setError("");
     setMessages((prev) => [
@@ -117,20 +100,17 @@ export function useChatbot() {
     try {
       const token =
         typeof window !== "undefined" ? localStorage.getItem("token") : null;
-      const response = await fetch(
-        `${"/api/v1"}/consultants/chatbot/process-intent`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            intent: selectedIntent,
-            user_input: userText,
-          }),
+      const response = await fetch(`${BASE_URL}/consultants/chatbot/intents`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          intent: selectedIntent,
+          user_input: userText,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Chatbot API response was not OK");

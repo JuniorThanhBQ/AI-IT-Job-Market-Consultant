@@ -5,7 +5,6 @@ from decimal import Decimal
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.core.deps import CurrentUser, SessionDep
-from app.core.enums import SeniorityLevel, WorkingModel
 from app.modules.job.schemas import (
     JobDetail,
     JobRead,
@@ -13,6 +12,7 @@ from app.modules.job.schemas import (
     SemanticSearchRequest,
 )
 from app.modules.job.services import JobService
+from app.utils.job_utils import parse_seniority_levels, parse_working_models
 
 router = APIRouter()
 
@@ -25,11 +25,11 @@ def get_job_service(session: SessionDep) -> JobService:
 def list_jobs_endpoint(
     _current_user: CurrentUser,  # pylint: disable=unused-argument
     title: str | None = Query(default=None, description="Filter by job title"),
-    seniority: SeniorityLevel | None = Query(
-        default=None, description="Filter by seniority level"
+    seniority: list[str] | None = Query(
+        default=None, description="Filter by seniority levels"
     ),
-    working_model: WorkingModel | None = Query(
-        default=None, description="Filter by working model"
+    working_model: list[str] | None = Query(
+        default=None, description="Filter by working models"
     ),
     min_salary: Decimal | None = Query(
         default=None, description="Filter by minimum salary"
@@ -41,10 +41,12 @@ def list_jobs_endpoint(
     limit: int = Query(default=20, ge=1, le=100),
     service: JobService = Depends(get_job_service),
 ):
+    parsed_seniority = parse_seniority_levels(seniority)
+    parsed_working_model = parse_working_models(working_model)
     return service.list_jobs(
         title=title,
-        seniority=seniority,
-        working_model=working_model,
+        seniority=parsed_seniority,
+        working_model=parsed_working_model,
         min_salary=min_salary,
         max_salary=max_salary,
         skip=skip,

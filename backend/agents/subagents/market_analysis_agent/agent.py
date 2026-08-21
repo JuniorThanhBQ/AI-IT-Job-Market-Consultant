@@ -97,7 +97,7 @@ TOOL_DECLARATIONS = [
 
 class MarketAnalysisAgent(BaseAgent):
     name = "market_analysis"
-    MAX_TOOL_ITERATIONS = 2
+    MAX_TOOL_ITERATIONS = 0
 
     async def execute(self, state: AgentState) -> dict[str, Any]:
         user_input = state["user_input"]

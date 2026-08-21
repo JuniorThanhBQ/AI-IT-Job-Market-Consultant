@@ -37,10 +37,10 @@ app.conf.beat_schedule = {
         "schedule": crontab(hour=0, minute=0),
         "options": {"expires": 21600},
     },
-    "run-crawler-update-every-2-hours": {
+    "run-crawler-update-every-hours": {
         "task": "celery_app.run_jobs_update_task",
-        "schedule": crontab(minute=0, hour="*/2"),
-        "options": {"expires": 1800},
+        "schedule": crontab(minute=0, hour="*/1"),
+        "options": {"expires": 720},
     },
     "run-crawl4ai-every-day": {
         "task": "celery_app.run_crawl4ai_task",

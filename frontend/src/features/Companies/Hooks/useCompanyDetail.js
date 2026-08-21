@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { companyApi } from "@/configs/apis";
@@ -14,7 +16,7 @@ export function useCompanyDetail(id) {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.replace("/counselee/login");
+      router.replace("/counselee/auth");
     }
   }, [user, authLoading, router]);
 

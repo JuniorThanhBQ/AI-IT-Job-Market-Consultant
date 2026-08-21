@@ -1,9 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
 import Image from "next/image";
 import MarkdownRenderer from "@/components/shared/MarkdownRenderer";
+import { useTranslations } from "next-intl";
 
 export default function ChatbotMessageList({
   messages,
@@ -11,6 +13,40 @@ export default function ChatbotMessageList({
   isSending,
   chatEndRef,
 }) {
+  const t = useTranslations("Counselee.Chat");
+  const [secondsElapsed, setSecondsElapsed] = useState(0);
+
+  useEffect(() => {
+    let intervalId;
+    if (isSending && !streamingMessage) {
+      intervalId = setInterval(() => {
+        setSecondsElapsed((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+      setSecondsElapsed(0);
+    };
+  }, [isSending, streamingMessage]);
+
+  const getLoadingMessage = () => {
+    if (secondsElapsed < 5) {
+      return t("loading_processing");
+    }
+    if (secondsElapsed > 10 && secondsElapsed <= 20) {
+      return t("loading_large_input");
+    }
+    if (secondsElapsed > 20 && secondsElapsed <= 30) {
+      return t("loading_heavy_payload");
+    }
+    if (secondsElapsed > 30) {
+      return t("loading_almost_there");
+    }
+    return t("loading_default");
+  };
+
   return (
     <div className="flex-1 overflow-y-auto pr-2 space-y-6 min-h-0 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
       {messages.length === 0 && !streamingMessage && !isSending && (
@@ -56,7 +92,7 @@ export default function ChatbotMessageList({
           )}
 
           <div
-            className={`rounded-[1.75rem] px-6 py-4 text-xs font-medium leading-relaxed ${
+            className={`rounded-[1.75rem] px-6 py-4 text-xs font-medium leading-relaxed w-full max-w-full min-w-0 overflow-hidden ${
               msg.role === "user"
                 ? "bg-[#285872] text-white rounded-tr-none shadow-md whitespace-pre-line"
                 : msg.isError
@@ -74,7 +110,7 @@ export default function ChatbotMessageList({
       ))}
 
       {(streamingMessage || isSending) && (
-        <div className="flex gap-3 max-w-3xl mr-auto">
+        <div className="flex gap-3 max-w-3xl mr-auto w-full">
           <div className="w-9 h-9 rounded-xl overflow-hidden bg-white border border-[#285872]/20 flex items-center justify-center shrink-0 p-1.5 shadow-sm">
             <Image
               src={LOGO.AIJMC_LOGO}
@@ -85,13 +121,13 @@ export default function ChatbotMessageList({
               loading="eager"
             />
           </div>
-          <div className="rounded-[1.75rem] rounded-tl-none px-6 py-4 text-xs font-medium leading-relaxed bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-850 dark:text-slate-200 min-h-[48px] flex items-center shadow-sm">
+          <div className="rounded-[1.75rem] rounded-tl-none px-6 py-4 text-xs font-medium leading-relaxed bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-850 dark:text-slate-200 min-h-[48px] flex items-center shadow-sm w-full max-w-full min-w-0 overflow-hidden">
             {streamingMessage ? (
               <MarkdownRenderer content={streamingMessage} />
             ) : (
               <div className="flex items-center gap-2 text-xs text-slate-400">
                 <Loader2 className="w-4 h-4 animate-spin text-[#285872]" />
-                <span>Consulting multi-agent swarm...</span>
+                <span>{getLoadingMessage()}</span>
               </div>
             )}
           </div>

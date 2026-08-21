@@ -2,15 +2,10 @@
 
 import { useState } from "react";
 import { jobApi } from "@/configs/apis";
+import { hasXSS, hasSQLInjection } from "@/utils/field_validator";
 
 export function useJobAdvanced() {
   const [query, setQuery] = useState("");
-  const [filters, setFilters] = useState({
-    seniority: "",
-    working_model: "",
-    min_salary: "",
-    limit: 15,
-  });
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -21,6 +16,12 @@ export function useJobAdvanced() {
   const handleSearch = async (overrideQuery) => {
     const q = overrideQuery ?? query;
     if (!q.trim()) return;
+    if (hasXSS(q) || hasSQLInjection(q)) {
+      setError("Search query contains unsafe patterns.");
+      setResults([]);
+      setHasSearched(true);
+      return;
+    }
     setLoading(true);
     setHasSearched(true);
     setError("");
@@ -29,10 +30,7 @@ export function useJobAdvanced() {
     try {
       const payload = {
         query: q,
-        limit: filters.limit,
-        ...(filters.seniority && { seniority: filters.seniority }),
-        ...(filters.working_model && { working_model: filters.working_model }),
-        ...(filters.min_salary && { min_salary: Number(filters.min_salary) }),
+        limit: 15,
       };
       const data = await jobApi.semanticSearch(payload);
       setResults(data);
@@ -52,8 +50,6 @@ export function useJobAdvanced() {
   return {
     query,
     setQuery,
-    filters,
-    setFilters,
     results,
     loading,
     hasSearched,

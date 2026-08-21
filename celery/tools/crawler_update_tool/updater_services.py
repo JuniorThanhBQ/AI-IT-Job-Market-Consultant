@@ -21,7 +21,7 @@ HTTP_SEMAPHORE = asyncio.Semaphore(MAX_CONCURRENCY)
 async def check_url_status(session: aiohttp.ClientSession, url: str) -> int:
     try:
         async with HTTP_SEMAPHORE:
-            await asyncio.sleep(random.SystemRandom().uniform(1, 1.5))
+            await asyncio.sleep(random.SystemRandom().uniform(0.2, 0.8))
             async with session.get(
                 url, timeout=aiohttp.ClientTimeout(total=10), allow_redirects=True
             ) as response:
@@ -135,6 +135,17 @@ async def process_job(job: Job, session: aiohttp.ClientSession, repo: Any) -> bo
         company = job.company
         await repo.drop(job)
         await repo.session.delete(company)
+        await repo.session.flush()
+        return True
+
+    if job.title and (
+        "Trang bạn đang tìm kiếm" in job.title
+        or "Tất cả danh mục" in job.job_description
+    ):
+        logger.info(
+            f"Deleting job {job.id} due to deleted or generic page title pattern."
+        )
+        await repo.drop(job)
         await repo.session.flush()
         return True
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "motion/react";
-import Header from "@/components/shared/Header";
 import { useJobExplorer } from "./Hooks/useJobExplorer";
 import JobExplorerHeader from "./Components/JobExplorerHeader";
 import JobSearchFilterBar from "./Components/JobSearchFilterBar";
@@ -22,12 +21,11 @@ export default function JobExplorerPage() {
     setSearchSeniority,
     searchWorkingModel,
     setSearchWorkingModel,
-    searchMinSalary,
-    setSearchMinSalary,
     page,
     setPage,
     pageSize,
     handleSearch,
+    error,
   } = useJobExplorer();
 
   return (
@@ -65,8 +63,6 @@ export default function JobExplorerPage() {
         className="absolute bottom-0 left-0 w-[45vw] h-[45vw] bg-[#285872]/10 dark:bg-[#285872]/10 rounded-full blur-[140px] pointer-events-none z-0"
       />
 
-      <Header />
-
       <main className="relative z-10 max-w-[90vw] mx-auto px-4 sm:px-6 pt-28 flex flex-col gap-8">
         <JobExplorerHeader />
         <JobSearchFilterBar
@@ -76,10 +72,14 @@ export default function JobExplorerPage() {
           setSearchSeniority={setSearchSeniority}
           searchWorkingModel={searchWorkingModel}
           setSearchWorkingModel={setSearchWorkingModel}
-          searchMinSalary={searchMinSalary}
-          setSearchMinSalary={setSearchMinSalary}
           onSearch={handleSearch}
         />
+
+        {error && (
+          <p className="text-red-500 text-xs font-semibold text-center bg-red-500/10 border border-red-500/20 py-2.5 rounded-xl">
+            {error}
+          </p>
+        )}
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           <JobListSidebar

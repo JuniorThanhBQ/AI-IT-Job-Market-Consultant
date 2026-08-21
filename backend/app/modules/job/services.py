@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from decimal import Decimal
 
 from sqlmodel import Session
@@ -22,8 +23,8 @@ class JobService:
     def list_jobs(
         self,
         title: str | None = None,
-        seniority: SeniorityLevel | None = None,
-        working_model: WorkingModel | None = None,
+        seniority: list[SeniorityLevel] | None = None,
+        working_model: list[WorkingModel] | None = None,
         min_salary: Decimal | None = None,
         max_salary: Decimal | None = None,
         skip: int = 0,
@@ -43,37 +44,31 @@ class JobService:
     async def semantic_search(
         self,
         query: str,
-        seniority: SeniorityLevel | None = None,
-        working_model: WorkingModel | None = None,
+        seniority: list[SeniorityLevel] | None = None,
+        working_model: list[WorkingModel] | None = None,
         min_salary: Decimal | None = None,
-        limit: int = 15,
+        limit: int = 10,
     ) -> list[JobSearchResult]:
+        start_time = time.time()
         embedding = await generate_embedding_async(query)
-
-        candidates = consultant_repo.get_hybrid_candidates(
-            session=self.db,
-            user_query=query,
-            user_vector=embedding,
-            limit=limit * 2,
+        embedding_latency = time.time() - start_time
+        candidates, retrieval_latency, rrf_latency = (
+            consultant_repo.get_hybrid_candidates(
+                session=self.db,
+                user_query=query,
+                user_vector=embedding,
+                limit=limit * 2,
+            )
         )
-
-        filtered = [
-            (job, company, dist)
-            for job, company, dist in candidates
-            if (not seniority or job.seniority == seniority)
-            and (not working_model or job.working_model == working_model)
-            and (min_salary is None or job.min_salary >= min_salary)
-        ]
-
-        reranked = filtered[:limit]
-
+        top_candidates = candidates[:limit]
         results: list[JobSearchResult] = []
-        for job, company, distance in reranked:
+        for job, company, distance in top_candidates:
             score = max(0.0, round(1.0 - float(distance), 4))
             results.append(
                 JobSearchResult(
                     id=job.id if job.id is not None else 0,
                     company_id=job.company_id,
+                    company_name=company.name if company else None,
                     title=job.title,
                     job_description=job.job_description,
                     expired_date=job.expired_date,
@@ -92,4 +87,35 @@ class JobService:
                 )
             )
 
+        latency = time.time() - start_time
+        job_repo.create_semantic_search_log(
+            session=self.db,
+            query=query,
+            results=[
+                {
+                    "embedding_latency": embedding_latency,
+                    "retrieval_latency": retrieval_latency,
+                    "rrf_latency": rrf_latency,
+                }
+            ]
+            + [
+                {
+                    "job_id": job.id,
+                    "score": float(max(0.0, round(1.0 - float(distance), 4))),
+                    "distance": float(distance),
+                }
+                for job, company, distance in top_candidates
+            ],
+            latency=latency,
+            request_meta={
+                "limit": limit,
+                "seniority": [s.value for s in seniority] if seniority else None,
+                "working_model": [wm.value for wm in working_model]
+                if working_model
+                else None,
+                "min_salary": float(min_salary) if min_salary is not None else None,
+            },
+        )
+
+        results.sort(key=lambda x: x.score, reverse=True)
         return results

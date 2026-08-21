@@ -1,14 +1,13 @@
 "use client";
 
-import { motion } from "motion/react";
-import { useTOSNavigation } from "./Hooks/useTOSNavigation";
 import TOSHeader from "./Components/TOSHeader";
 import TOSNav from "./Components/TOSNav";
 import TOSSections from "./Components/TOSSections";
+import { motion } from "motion/react";
+import { useTOSNavigation } from "./Hooks/useTOSNavigation";
 
 export default function TOSPage() {
   const { scrollToSection } = useTOSNavigation();
-
   return (
     <div className="relative min-h-screen bg-slate-50 dark:bg-slate-955 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300">
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">

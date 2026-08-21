@@ -33,7 +33,7 @@ def clear_user_history_endpoint(
     return {"status": "success", "cleared_count": cleared_count}
 
 
-@router.post("/chatbot/process-intent")
+@router.post("/chatbot/intents")
 async def execute_chatbot_intent(
     request: AIChatbotRequest,
     current_user: CurrentUser,

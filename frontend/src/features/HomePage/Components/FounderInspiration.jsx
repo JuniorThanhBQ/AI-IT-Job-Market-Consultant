@@ -3,35 +3,31 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { Mail, BrainCircuit, Terminal, Blocks, Flame } from "lucide-react";
-import VerticalScrollbar from "@/components/shared/VerticalScrollbar";
 import { useTranslations } from "next-intl";
 import { FOUNDER_SOCIAL_LINKS } from "@/utils/const";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
 import Image from "next/image";
 import { LINKS } from "@/utils/const";
+import { getFounderSkillsList } from "@/utils/homepage_utils";
 
 export default function FounderInspiration() {
   const t = useTranslations("FounderInspiration");
+  const skillsList = getFounderSkillsList(t, {
+    BrainCircuit,
+    Terminal,
+    Blocks,
+  });
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
-
   const yBg = useTransform(scrollYProgress, [0, 1], [0, 200]);
   const yAvatar = useTransform(scrollYProgress, [0, 0.5], [0, -100]);
   const opacityFade = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-
-  const sections = [
-    { id: "founder", label: t("nav_founder") },
-    { id: "expertise", label: t("nav_expertise") },
-    { id: "story", label: t("nav_story") },
-  ];
 
   return (
     <div
       ref={containerRef}
       className="relative w-full bg-slate-50 dark:bg-slate-950 overflow-hidden"
     >
-      <VerticalScrollbar sections={sections} />
-
       <section
         id="founder"
         className="relative min-h-screen flex items-center pt-32 pb-20 px-6 md:px-12 overflow-hidden border-b border-slate-200 dark:border-slate-800"
@@ -190,32 +186,7 @@ export default function FounderInspiration() {
               </div>
             </motion.div>
 
-            {[
-              {
-                title: t("skill_1"),
-                desc: t("skill_1_desc"),
-                icon: BrainCircuit,
-                color: "text-purple-600 dark:text-purple-400",
-                bg: "bg-purple-50 dark:bg-purple-900/30",
-                border: "border-purple-100 dark:border-purple-900/50",
-              },
-              {
-                title: t("skill_2"),
-                desc: t("skill_2_desc"),
-                icon: Terminal,
-                color: "text-emerald-600 dark:text-emerald-400",
-                bg: "bg-emerald-50 dark:bg-emerald-900/30",
-                border: "border-emerald-100 dark:border-emerald-900/50",
-              },
-              {
-                title: t("skill_3"),
-                desc: t("skill_3_desc"),
-                icon: Blocks,
-                color: "text-blue-600 dark:text-blue-400",
-                bg: "bg-blue-50 dark:bg-blue-900/30",
-                border: "border-blue-100 dark:border-blue-900/50",
-              },
-            ].map((skill, i) => (
+            {skillsList.map((skill, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 50 }}

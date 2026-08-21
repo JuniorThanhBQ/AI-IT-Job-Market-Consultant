@@ -7,12 +7,11 @@ import { AuthProvider } from "@/context/AuthProvider";
 
 export default async function LocaleLayout({ children, params }) {
   const { locale } = await params;
+  const messages = await getMessages();
 
   if (!routing.locales.includes(locale)) {
     notFound();
   }
-
-  const messages = await getMessages();
 
   return (
     <NextIntlClientProvider messages={messages}>

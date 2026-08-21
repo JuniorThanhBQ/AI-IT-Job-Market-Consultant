@@ -1,7 +1,7 @@
 {
   "Header": {
     "nav_aijmc": "AIJMC",
-    "nav_founder": "Founder & Inspiration",
+    "nav_founder": "Founder and Inspiration",
     "nav_faq": "FAQ",
     "nav_tos": "Terms of Service",
     "nav_contact": "Contact",
@@ -64,7 +64,7 @@
     "link_career_roadmaps": "Job Recommendations",
     "link_pricing": "Learn More",
     "link_about_us": "About",
-    "link_careers": "Founder & Inspiration",
+    "link_careers": "Founder and Inspiration",
     "link_blog": "FAQ",
     "link_contact": "Contact",
     "link_privacy_policy": "Privacy Policy",
@@ -106,7 +106,7 @@
     "aim_4_title": "Web Application",
     "aim_4_desc": "Develop job search, career chatbot, and personal skill dashboard features.",
     "aim_5_time": "Week 9–10",
-    "aim_5_title": "Deployment & Testing",
+    "aim_5_title": "Deployment and Testing",
     "aim_5_desc": "Deploy the system to a VPS, perform system testing, and complete the graduation project report."
   },
   "FounderInspiration": {
@@ -122,9 +122,9 @@
     "expertise_heading": "About Me",
     "quirk_title": "A Fun Fact About Me",
     "quirk_desc": "I sometimes overthink deadlines and can feel burned out. However, I still manage to finish my work well. In IT, I believe my biggest strength is persistence rather than problem-solving talent.",
-    "skill_1": "AI Models & AI Agents",
+    "skill_1": "AI Models and AI Agents",
     "skill_1_desc": "I have experience in fine-tuning AI models and using AI agents to automate software development tasks.",
-    "skill_2": "DevOps & CI/CD",
+    "skill_2": "DevOps and CI/CD",
     "skill_2_desc": "Security and deployment are important parts of software development. A good repository should have a clear CI/CD workflow to manage security, code quality, and commits.",
     "skill_3": "Software Architecture",
     "skill_3_desc": "There are many ways to build a system, but it is important to understand why we choose a specific design. Architecture Decision Records (ADRs) help explain these decisions.",
@@ -195,10 +195,10 @@
   },
   "Auth": {
     "login_title": "Welcome",
-    "login_subtitle": "Back.",
+    "login_subtitle": "Back!",
     "login_desc": "Enter your details to access your personalized IT career workspace.",
     "signup_title": "Create",
-    "signup_subtitle": "Account.",
+    "signup_subtitle": "Account",
     "signup_desc": "Start your journey to better career matching and market insights.",
     "label_username": "Username",
     "label_email": "Email Address",
@@ -216,7 +216,13 @@
     "toggle_to_signup": "Don't have an account?",
     "toggle_to_login": "Already have an account?",
     "btn_ghost_signup": "Create an account",
-    "btn_ghost_login": "Sign In here"
+    "btn_ghost_login": "Sign In here",
+    "validation_fill_fields": "Please fill in all fields.",
+    "validation_xss": "Input contains unsafe HTML or script tags.",
+    "validation_sqli": "Input contains unsafe SQL patterns.",
+    "validation_email": "Please enter a valid email address.",
+    "validation_password_weak": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+    "validation_username_blank": "Username cannot be blank."
   },
   "TOS": {
     "title": "Terms of Service",
@@ -337,7 +343,7 @@
       "total_cv_score": "Total CV Quality Score",
       "cv_advantages": "2. CV Advantages",
       "cv_disadvantages": "CV Disadvantages",
-      "conclusion_suggestions": "3. Conclusion & Suggestions",
+      "conclusion_suggestions": "3. Conclusion and Suggestions",
       "conclusion_p1": "Your CV offers a solid baseline showing clear academic history and core developer traits. However, to maximize response rates and succeed through modern ATS screening filters, we recommend implementing these improvements:",
       "conclusion_bullet1": "Quantify your project outcomes: instead of listing just responsibilities, mention performance indicators (e.g., \"decreased page render latency by 24% using next-intl\").",
       "conclusion_bullet2": "Align your keyword vocabulary to match target job titles (e.g., utilizing exact keywords from your chosen segment like Python/FastAPI).",
@@ -365,12 +371,12 @@
       "biography": "Biography / Summary",
       "biography_placeholder": "Share details about your educational background and career path...",
       "goal": "Career Goal",
-      "goal_placeholder": "e.g. Become a Senior Python & AI engineer at top product companies.",
+      "goal_placeholder": "e.g. Become a Senior Python and AI engineer at top product companies.",
       "btn_save": "Save Profile Changes",
       "go_back": "Go Back"
     },
     "CV": {
-      "title": "Edit My CV & Projects",
+      "title": "Edit My CV and Projects",
       "subtitle": "Refine your Curriculum Vitae information and manage up to three projects.",
       "back_overview": "Back to Overview",
       "save_cv": "Save CV",
@@ -435,13 +441,21 @@
       "error_project_save": "Failed to save project. Ensure dates and sizes are correct."
     },
     "Chat": {
-      "online": "Online & Ready",
+      "online": "Online and Ready",
+      "chatbot_title": "AI Chatbot of AIJMC",
       "confirm_clear": "Confirm",
       "cancel_clear": "Cancel",
       "welcome_title": "Welcome to AI Market Advisor",
       "welcome_desc": "Ask me anything about current job trends, technologies, companies, or salary benchmarks in Vietnam.",
       "error_message": "Something went wrong. Please try again.",
-      "input_placeholder": "Ask your market advisor..."
+      "input_placeholder": "Ask your market advisor...",
+      "legal_title": "AI-Generated Content Only",
+      "legal_desc": "Responses do not constitute legal, financial, medical, or life advice of any kind. The site owner assumes no liability for any decisions or outcomes resulting from use of this chatbot. Use at your own discretion.",
+      "loading_default": "Working with AI Agents",
+      "loading_processing": "Processing",
+      "loading_large_input": "This may take a little longer than expected",
+      "loading_heavy_payload": "Calculating and organizing results",
+      "loading_almost_there": "Almost done"
     },
     "Company": {
       "title": "Job Openings ({count})",
@@ -450,10 +464,41 @@
       "prev": "Previous",
       "next": "Next",
       "page_indicator": "Page {page} of {total}",
-      "go_back": "Go Back"
+      "go_back": "Go Back",
+      "try_again": "Try Again",
+      "profile": "Company Profile",
+      "about": "About the Company",
+      "locations": "Office Locations",
+      "benefits": "Key Benefits & Perks",
+      "type": "Company Type",
+      "size": "Company Size",
+      "country": "Country",
+      "working_days": "Working Days",
+      "overtime": "Overtime Policy",
+      "website": "Website",
+      "visit_website": "Visit Website ↗",
+      "confidential": "Company Confidential"
+    },
+    "Job": {
+      "details": "Job Details",
+      "back_to_jobs": "Back to Jobs",
+      "view_profile": "View Company Profile →",
+      "salary_range": "Salary range",
+      "seniority": "Seniority Level",
+      "model": "Working Model",
+      "hours": "Hours / Day",
+      "description": "Job Description",
+      "responsibilities": "Key Responsibilities",
+      "required": "Required",
+      "nice_to_have": "Nice to Have",
+      "additional": "Additional",
+      "skills": "Key Technical Skills",
+      "domains": "Business Domains",
+      "expiration": "Expiration Date",
+      "apply_external": "Apply via External Link ↗"
     },
     "Consultant": {
-      "title": "Market Analysis & Career Consultant",
+      "title": "Market Analysis and Career Consultant",
       "subtitle": "Personalized insights and metrics derived from current tech listings and your career preferences.",
       "back_market": "Back to Market",
       "demand_title": "1. Market Demand Summary",
@@ -480,7 +525,7 @@
       "title": "IT Job Explorer",
       "subtitle": "Explore tech jobs updated daily from top Vietnamese recruitment platforms.",
       "btn_consultant": "Market Analysis and Consultant",
-      "btn_advanced_search": "Advanced Search (Beta)",
+      "btn_advanced_search": "Advanced Search",
       "label_search": "Search Keywords",
       "placeholder_search": "Title, skill, keywords...",
       "search_placeholder": "Title, skill, keywords...",
@@ -520,5 +565,10 @@
       "select_job_desc": "Select a job from the list to view full description and requirements.",
       "placeholder_select": "Select a job from the list to view details."
     }
+  },
+  "UnavailablePage": {
+    "title": "Server is not available",
+    "desc": "Our server is currently under maintenance. Please contact 2351050164thanh@ou.edu.vn for help.",
+    "retry_btn": "Try again"
   }
 }

@@ -1,159 +1,35 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
+import MarkdownRenderer from "./MarkdownRenderer";
 import { motion, AnimatePresence } from "motion/react";
-import {
-  MessageSquare,
-  Bot,
-  X,
-  Send,
-  Trash2,
-  Loader2,
-  Trash,
-  Maximize2,
-} from "lucide-react";
-import { useAuth } from "@/context/AuthProvider";
-import { useLocale, useTranslations } from "next-intl";
-import { consultantApi } from "@/configs/apis";
+import { Bot, X, Send, Trash2, Loader2, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
-import Image from "next/image";
-import { useRouter } from "@/i18n/routing";
-import MarkdownRenderer from "./MarkdownRenderer";
+import { useChatbot } from "@/components/shared/hooks/useChatbot";
+import { CHATBOT_INTENTS } from "@/utils/const";
 
 export default function ChatbotPopup() {
-  const { isAuthenticated } = useAuth();
-  const locale = useLocale();
-  const router = useRouter();
-  const t = useTranslations("Counselee.Chat");
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [streamingMessage, setStreamingMessage] = useState("");
-  const [activeIntent, setActiveIntent] = useState("MARKET_ANALYSIS");
-  const [confirmClear, setConfirmClear] = useState(false);
-
-  const messagesEndRef = useRef(null);
-  const chatInputRef = useRef(null);
-
-  const loadHistory = useCallback(async () => {
-    try {
-      const data = await consultantApi.getHistory();
-      const historyMessages = [];
-      data.forEach((item) => {
-        if (item.user_input && item.user_input !== "deleted") {
-          historyMessages.push({ role: "user", text: item.user_input });
-        }
-        if (item.output && item.output !== "deleted") {
-          historyMessages.push({ role: "bot", text: item.output });
-        }
-      });
-      setMessages(historyMessages);
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isOpen && isAuthenticated) {
-      const timer = setTimeout(() => {
-        loadHistory();
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, isAuthenticated, loadHistory]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, streamingMessage, isOpen]);
-
-  const handleClearHistory = async () => {
-    try {
-      await consultantApi.clearHistory();
-      setMessages([]);
-      setConfirmClear(false);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleSend = async (e) => {
-    e.preventDefault();
-    if (!input.trim() || loading) return;
-
-    const userText = input.trim();
-    setInput("");
-    setMessages((prev) => [...prev, { role: "user", text: userText }]);
-    setLoading(true);
-    setStreamingMessage("");
-
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `${
-          process.env.BACKEND_INTERNAL_URL || "http://localhost:8081/api/v1"
-        }/consultants/chatbot/process-intent`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            intent: activeIntent,
-            user_input: userText,
-          }),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error();
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let done = false;
-      let textBuffer = "";
-      let accumulatedText = "";
-
-      while (!done) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
-        if (value) {
-          const chunkStr = decoder.decode(value, { stream: !done });
-          textBuffer += chunkStr;
-          const lines = textBuffer.split("\n");
-          textBuffer = lines.pop() || "";
-
-          for (const line of lines) {
-            if (!line.trim()) continue;
-            try {
-              const parsed = JSON.parse(line);
-              if (parsed.type === "chunk" && parsed.text) {
-                accumulatedText += parsed.text;
-                setStreamingMessage(accumulatedText);
-              }
-            } catch (e) {
-              // Ignore partial JSON parse errors
-            }
-          }
-        }
-      }
-
-      setMessages((prev) => [...prev, { role: "bot", text: accumulatedText }]);
-      setStreamingMessage("");
-    } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        { role: "bot", text: t("error_message") },
-      ]);
-    } finally {
-      setLoading(false);
-      setTimeout(() => chatInputRef.current?.focus(), 50);
-    }
-  };
+  const {
+    isAuthenticated,
+    t,
+    isOpen,
+    setIsOpen,
+    messages,
+    input,
+    setInput,
+    loading,
+    streamingMessage,
+    activeIntent,
+    setActiveIntent,
+    confirmClear,
+    setConfirmClear,
+    messagesEndRef,
+    chatInputRef,
+    handleClearHistory,
+    handleSend,
+    router,
+  } = useChatbot();
 
   if (!isAuthenticated) return null;
 
@@ -193,7 +69,7 @@ export default function ChatbotPopup() {
                 </div>
                 <div>
                   <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">
-                    Market AI Advisor
+                    {t("chatbot_title")}
                   </h3>
                   <span className="text-[10px] text-emerald-500 font-bold flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
@@ -231,7 +107,7 @@ export default function ChatbotPopup() {
                     setIsOpen(false);
                     router.push("/counselee/chatbot");
                   }}
-                  title="Open Full Chat Experience"
+                  title="Chatbot Page"
                   className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-[#285872] dark:hover:text-[#58a0c9] transition-colors cursor-pointer"
                 >
                   <Maximize2 className="w-4.5 h-4.5" />
@@ -246,15 +122,7 @@ export default function ChatbotPopup() {
             </div>
 
             <div className="flex flex-wrap gap-2 px-6 py-3 bg-slate-50/30 dark:bg-slate-950/10 border-b border-slate-100 dark:border-slate-850">
-              {[
-                { id: "MARKET_ANALYSIS", label: "Market Analysis" },
-                {
-                  id: "PERSONAL_STANDARD_EVALUATION",
-                  label: "Career Evaluation",
-                },
-                { id: "JOB_RECOMMEND", label: "Job Recommend" },
-                { id: "DEEP_ANALYSIS_EVALUATION", label: "Deep CV Analysis" },
-              ].map((tab) => {
+              {CHATBOT_INTENTS.map((tab) => {
                 const isActive = activeIntent === tab.id;
                 return (
                   <button
@@ -319,7 +187,7 @@ export default function ChatbotPopup() {
                   )}
                   <div
                     className={cn(
-                      "px-4 py-2.5 rounded-[1.25rem] text-xs leading-relaxed font-medium",
+                      "px-4 py-2.5 rounded-[1.25rem] text-xs leading-relaxed font-medium w-full max-w-full min-w-0 overflow-hidden",
                       msg.role === "user"
                         ? "bg-[#285872] text-white rounded-tr-none whitespace-pre-line"
                         : "bg-slate-100 dark:bg-slate-800 text-slate-850 dark:text-slate-200 rounded-tl-none border border-slate-200/50 dark:border-slate-700/50",
@@ -335,7 +203,7 @@ export default function ChatbotPopup() {
               ))}
 
               {(streamingMessage || loading) && (
-                <div className="flex gap-3 max-w-[85%] mr-auto">
+                <div className="flex gap-3 max-w-[85%] mr-auto w-full">
                   <div className="w-8 h-8 rounded-lg overflow-hidden bg-white border border-[#285872]/20 flex items-center justify-center shrink-0">
                     <Image
                       src={LOGO.AIJMC_LOGO}
@@ -346,7 +214,7 @@ export default function ChatbotPopup() {
                       loading="eager"
                     />
                   </div>
-                  <div className="px-4 py-2.5 rounded-[1.25rem] rounded-tl-none text-xs leading-relaxed bg-slate-100 dark:bg-slate-800 text-slate-850 dark:text-slate-200 border border-slate-200/50 dark:border-slate-700/50 min-h-[40px] flex items-center">
+                  <div className="px-4 py-2.5 rounded-[1.25rem] rounded-tl-none text-xs leading-relaxed bg-slate-100 dark:bg-slate-800 text-slate-850 dark:text-slate-200 border border-slate-200/50 dark:border-slate-700/50 min-h-[40px] flex items-center w-full max-w-full min-w-0 overflow-hidden">
                     {streamingMessage ? (
                       <MarkdownRenderer content={streamingMessage} />
                     ) : (
