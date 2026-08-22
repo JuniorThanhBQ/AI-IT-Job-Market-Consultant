@@ -13,6 +13,7 @@ from app.core.enums import (
     WorkingModel,
 )
 from app.modules.company.schemas import CompanyRead
+from app.utils.validators import SafeStr
 
 
 class SkillRead(BaseModel):
@@ -54,7 +55,7 @@ class JobDetail(JobRead):
 
 
 class SemanticSearchRequest(BaseModel):
-    query: str
+    query: SafeStr
     seniority: list[SeniorityLevel] | None = None
     working_model: list[WorkingModel] | None = None
     min_salary: Decimal | None = None

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.core.enums import CompanyType, CountryEnum
+from app.utils.validators import SafeStr
 
 if TYPE_CHECKING:
     from app.modules.job.schemas import JobRead
@@ -35,8 +36,8 @@ class CompanyDetail(CompanyRead):
 
 
 class CompanyQueryParams(BaseModel):
-    name: str | None = None
-    industry: str | None = None
+    name: SafeStr | None = None
+    industry: SafeStr | None = None
     company_type: CompanyType | None = None
     skip: int = Field(default=0, ge=0)
     limit: int = Field(default=20, ge=1, le=100)

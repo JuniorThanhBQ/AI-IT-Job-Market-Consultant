@@ -17,7 +17,7 @@ export function useJobAdvanced() {
     const q = overrideQuery ?? query;
     if (!q.trim()) return;
     if (hasXSS(q) || hasSQLInjection(q)) {
-      setError("Search query contains unsafe patterns.");
+      setError("Invalid input.");
       setResults([]);
       setHasSearched(true);
       return;

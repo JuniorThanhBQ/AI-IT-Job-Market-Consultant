@@ -217,9 +217,10 @@
     "toggle_to_login": "Đã có tài khoản?",
     "btn_ghost_signup": "Tạo tài khoản",
     "btn_ghost_login": "Đăng nhập ngay",
+    "validation_username_invalid": "Tên đăng nhập không phù hợp",
     "validation_fill_fields": "Vui lòng điền đầy đủ thông tin vào các trường.",
-    "validation_xss": "Đầu vào chứa các thẻ HTML hoặc script không an toàn.",
-    "validation_sqli": "Đầu vào chứa các mẫu SQL không an toàn.",
+    "validation_xss": "Vui lòng nhập đúng email và mật khẩu.",
+    "validation_sqli": "Vui lòng nhập đúng email và mật khẩu.",
     "validation_email": "Vui lòng nhập địa chỉ email hợp lệ.",
     "validation_password_weak": "Mật khẩu phải dài ít nhất 8 ký tự và chứa ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt.",
     "validation_username_blank": "Tên đăng nhập không được để trống."
@@ -373,7 +374,16 @@
       "goal": "Mục tiêu nghề nghiệp",
       "goal_placeholder": "Ví dụ: Trở thành kỹ sư Python và AI cấp cao tại các công ty sản phẩm hàng đầu.",
       "btn_save": "Lưu thay đổi thông tin",
-      "go_back": "Quay lại"
+      "go_back": "Quay lại",
+      "validation_firstname_length": "Tên phải từ 2 đến 64 ký tự.",
+      "validation_lastname_length": "Họ phải từ 2 đến 64 ký tự.",
+      "validation_name_spam": "Họ tên dường như không hợp lệ hoặc là spam.",
+      "validation_age_invalid": "Tuổi phải từ 16 trở lên.",
+      "validation_bio_length": "Tiểu sử không được vượt quá 512 ký tự.",
+      "validation_goal_length": "Mục tiêu không được vượt quá 512 ký tự.",
+      "validation_fill_fields": "Vui lòng điền đầy đủ các thông tin.",
+      "validation_xss": "Vui lòng nhập đúng định dạng dữ liệu.",
+      "validation_sqli": "Vui lòng nhập đúng định dạng dữ liệu."
     },
     "CV": {
       "title": "Chỉnh sửa chi tiết CV và Dự án",
@@ -529,6 +539,7 @@
       "label_search": "Từ khóa tìm kiếm",
       "placeholder_search": "Tiêu đề, kỹ năng, từ khóa...",
       "search_placeholder": "Tiêu đề, kỹ năng, từ khóa...",
+      "semantic_search_example": "Thử chức năng nhanh chóng",
       "label_seniority": "Cấp bậc",
       "all_seniorities": "Tất cả cấp bậc",
       "label_model": "Hình thức làm việc",

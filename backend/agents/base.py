@@ -13,11 +13,7 @@ class BaseAgent(ABC):
 
     @abstractmethod
     async def execute(self, state: AgentState) -> dict[str, Any]:
-        """Core logic implemented by each concrete agent.
-
-        Must return a dict of state updates (only the keys to change).
-        """
-        ...
+        pass
 
     async def run(self, state: AgentState) -> dict[str, Any]:
         start = time.perf_counter()

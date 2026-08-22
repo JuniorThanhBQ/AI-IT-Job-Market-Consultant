@@ -2,15 +2,11 @@ import logging
 from typing import Any
 
 from agents.subagents.market_analysis_agent import MarketAnalysisAgent
-from agents.subagents.personalization_agent import PersonalizationAgent
-from agents.subagents.recommendation_agent import RecommendationAgent
 from agents.supervisor.graph import Intent, build_graph
 from agents.supervisor.registry import register_agent
 from agents.supervisor.state import create_initial_state
 
 register_agent(MarketAnalysisAgent())
-register_agent(PersonalizationAgent())
-register_agent(RecommendationAgent())
 
 logger = logging.getLogger(__name__)
 

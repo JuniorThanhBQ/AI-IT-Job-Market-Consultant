@@ -14,8 +14,10 @@ export default function UnavailablePage() {
   const handleRetry = async () => {
     setRetrying(true);
     try {
-      await fetch(BASE_URL);
-      router.push("/");
+      const res = await fetch(BASE_URL);
+      if (res.ok) {
+        router.push("/counselee/auth");
+      }
       return;
     } catch (e) {}
     setTimeout(() => {

@@ -1,5 +1,10 @@
 import re
 from datetime import UTC, date, datetime, timedelta
+from typing import Annotated
+
+from email_validator import EmailNotValidError
+from email_validator import validate_email as check_email
+from pydantic import AfterValidator
 
 
 def name_validator(value: str) -> str:
@@ -48,3 +53,69 @@ def validate_salary_range(min_salary: float, max_salary: float) -> None:
         raise ValueError("max_salary cannot be negative")
     if min_salary > max_salary:
         raise ValueError("min_salary cannot be greater than max_salary")
+
+
+def validate_xss(value: str) -> str:
+    patterns = [
+        r"<script[^>]*>",
+        r"javascript:",
+        r"onerror\s*=",
+        r"onload\s*=",
+        r"onmouseover\s*=",
+        r"</?[a-z][\s\S]*>",
+    ]
+    for pattern in patterns:
+        if re.search(pattern, value, re.IGNORECASE):
+            raise ValueError("Input contains unsafe HTML or script tags.")
+    return value
+
+
+def validate_sql_injection(value: str) -> str:
+    patterns = [
+        r"['\"`;\-\-]",
+        r"\bor\b.*\b\d+\s*=\s*\d+",
+        r"\bunion\b.*\bselect\b",
+        r"\bselect\b.*\bfrom\b",
+        r"\binsert\b.*\binto\b",
+        r"\bdelete\b.*\bfrom\b",
+        r"\bdrop\b.*\btable\b",
+    ]
+    for pattern in patterns:
+        if re.search(pattern, value, re.IGNORECASE):
+            raise ValueError("Input contains unsafe SQL patterns.")
+    return value
+
+
+def validate_command_injection(value: str) -> str:
+    patterns = [
+        r"[|;&$`><!]",
+        r"\$\(.*\)",
+        r"`.*`",
+        r"\b(eval|exec|system|sh|bash|cmd|powershell)\b",
+    ]
+    for pattern in patterns:
+        if re.search(pattern, value, re.IGNORECASE):
+            raise ValueError("Input contains unsafe system command patterns.")
+    return value
+
+
+def validate_email_address(value: str) -> str:
+    try:
+        check_email(value, check_deliverability=False)
+    except EmailNotValidError as e:
+        raise ValueError("Invalid email address format.") from e
+    return value
+
+
+SafeStr = Annotated[
+    str,
+    AfterValidator(validate_xss),
+    AfterValidator(validate_sql_injection),
+    AfterValidator(validate_command_injection),
+]
+
+
+SafeEmailStr = Annotated[
+    SafeStr,
+    AfterValidator(validate_email_address),
+]

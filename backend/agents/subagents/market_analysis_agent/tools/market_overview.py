@@ -1,10 +1,3 @@
-"""Market Overview Tool — SQL-based market statistics aggregation.
-
-Queries the database to produce comprehensive market statistics:
-total jobs, distribution by seniority/working model, salary stats,
-top domains, and top hiring companies.
-"""
-
 import json
 import logging
 from typing import Any, cast
@@ -126,6 +119,6 @@ def execute_market_overview(
     except Exception:
         logger.exception("Error querying market overview data")
         return json.dumps(
-            {"error": "Không thể truy vấn dữ liệu tổng quan thị trường."},
+            {"error": "Unable to process market data."},
             ensure_ascii=False,
         )

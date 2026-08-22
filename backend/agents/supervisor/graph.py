@@ -24,16 +24,13 @@ INTENT_PIPELINES: dict[Intent, list[str]] = {
         "market_analysis",
     ],
     Intent.PERSONAL_STANDARD_EVALUATION: [
-        "personalization",
+        "market_analysis",
     ],
     Intent.JOB_RECOMMEND: [
-        "personalization",
-        "recommendation",
+        "market_analysis",
     ],
     Intent.DEEP_ANALYSIS_EVALUATION: [
         "market_analysis",
-        "personalization",
-        "recommendation",
     ],
 }
 

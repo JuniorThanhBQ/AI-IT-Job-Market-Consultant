@@ -14,10 +14,7 @@ async def execute_market_consultant_stream(
     rag_context: str,
 ) -> AsyncGenerator[str]:
     if not rag_context or not rag_context.strip():
-        yield (
-            "Không có dữ liệu tuyển dụng để phân tích. "
-            "Vui lòng thử câu hỏi khác hoặc kiểm tra lại hệ thống."
-        )
+        yield ("No data")
         return
 
     prompt = get_prompt_template(
@@ -38,10 +35,7 @@ async def execute_market_consultant_stream(
             yield chunk
     except Exception:
         logger.exception("Error calling GenAI Flash for market consultant stream")
-        yield (
-            "Xin lỗi, hiện tại không thể phân tích dữ liệu thị trường "
-            "do lỗi kết nối với AI."
-        )
+        yield ("Unable to connect to Gemini Flash")
 
 
 async def execute_market_consultant(
@@ -49,10 +43,7 @@ async def execute_market_consultant(
     rag_context: str,
 ) -> str:
     if not rag_context or not rag_context.strip():
-        return (
-            "Không có dữ liệu tuyển dụng để phân tích. "
-            "Vui lòng thử câu hỏi khác hoặc kiểm tra lại hệ thống."
-        )
+        return "No data"
 
     prompt = get_prompt_template(
         "market_analysis_agent",
@@ -72,7 +63,4 @@ async def execute_market_consultant(
         return result_text.strip()
     except Exception:
         logger.exception("Error calling GenAI Flash for market consultant tool")
-        return (
-            "Xin lỗi, hiện tại không thể phân tích dữ liệu thị trường "
-            "do lỗi kết nối với AI."
-        )
+        return "Error connection"

@@ -31,7 +31,7 @@ export function useJobExplorer() {
         searchTitle &&
         (hasXSS(searchTitle) || hasSQLInjection(searchTitle))
       ) {
-        setError("Search input contains unsafe patterns.");
+        setError("Invalid input.");
         setJobs([]);
         setSelectedJobId(null);
         setSelectedJobDetail(null);

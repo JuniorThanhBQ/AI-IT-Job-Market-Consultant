@@ -11,6 +11,10 @@ class BM25Index:
     @classmethod
     def build(cls, session: Session) -> None:
         results = session.exec(select(Job.id, Job.vector_context)).all()
+        if not results:
+            cls._job_ids = []
+            cls._bm25 = None
+            return
         cls._job_ids = [row[0] for row in results if row[0] is not None]
         corpus = [row[1].lower().split() for row in results]
         cls._bm25 = BM25Okapi(corpus)

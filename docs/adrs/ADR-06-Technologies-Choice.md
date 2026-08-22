@@ -1,7 +1,7 @@
 # ADR-06: Decision on frontend, backend and multi-agent technology
 
 ## Status
-Pending
+Accepted
 
 ## Context
 Our IT job market consulting system requires parsing diverse, unstructured recruitment websites, processing sensitive user profiles, and executing complex semantic matching between them. Because this flow is highly sequential and relies on large language models (LLMs) and vector search, we need a high-performance, type-safe, and modular stack. The frontend must deliver a premium, fluid user experience; the backend must support async data pipelines and AI dependencies; the database must handle both relational data and vector embeddings; and the multi-agent system must support stateful, predictable coordination.
@@ -34,4 +34,4 @@ Adopt the following idealized technology stack for the project:
 * **Upfront Configuration Overhead:** Implementing standalone Next.js outputs, FastAPI structures, and agent states requires more initial configuration before functional code runs.
 
 ## Decision Date
-Pending Approved until 26/07/2026
+Approve on 26/07/2026

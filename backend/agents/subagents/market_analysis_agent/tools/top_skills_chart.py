@@ -1,9 +1,3 @@
-"""Top Skills Chart Tool — SQL-based skill demand analysis.
-
-Queries the database directly (skills + job_skills + jobs tables) to
-produce chart-ready JSON data showing the most in-demand skills.
-"""
-
 import json
 import logging
 from typing import Any, cast
@@ -22,16 +16,6 @@ def execute_top_skills_chart(
     limit: int = 15,
     seniority_filter: str | None = None,
 ) -> str:
-    """Query the most in-demand skills from the job database.
-
-    Args:
-        limit: Number of top skills to return (1-50, default 15).
-        seniority_filter: Optional seniority level filter (e.g., "Junior", "Senior").
-
-    Returns:
-        JSON string with chart-ready data:
-        [{"label": "Python", "value": 42, "category": "Language"}, ...]
-    """
     limit = max(1, min(50, limit))
 
     try:
@@ -68,6 +52,6 @@ def execute_top_skills_chart(
     except Exception:
         logger.exception("Error querying top skills chart data")
         return json.dumps(
-            {"error": "Không thể truy vấn dữ liệu kỹ năng từ cơ sở dữ liệu."},
+            {"error": "Error querying top skills chart data."},
             ensure_ascii=False,
         )

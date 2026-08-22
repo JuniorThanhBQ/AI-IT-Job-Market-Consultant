@@ -21,11 +21,6 @@ logger = logging.getLogger(__name__)
 TOOL_DECLARATIONS = [
     types.FunctionDeclaration(
         name="market_consultant",
-        description=(
-            "Phân tích thị trường IT dựa trên dữ liệu tuyển dụng thực tế (RAG). "
-            "Dùng khi người dùng hỏi về xu hướng, công nghệ, vị trí, mức lương, "
-            "hoặc cần phân tích chi tiết từ dữ liệu tuyển dụng."
-        ),
         parameters=cast(
             Any,
             {
@@ -33,7 +28,6 @@ TOOL_DECLARATIONS = [
                 "properties": {
                     "query": {
                         "type": "STRING",
-                        "description": "Câu hỏi phân tích thị trường của người dùng",
                     },
                 },
                 "required": ["query"],
@@ -42,11 +36,6 @@ TOOL_DECLARATIONS = [
     ),
     types.FunctionDeclaration(
         name="top_skills_chart",
-        description=(
-            "Truy vấn cơ sở dữ liệu để lấy danh sách kỹ năng IT được tuyển nhiều nhất. "
-            "Trả về dữ liệu dạng JSON cho biểu đồ (Chart.js). "
-            "Dùng khi người dùng hỏi về kỹ năng hot, top kỹ năng, công nghệ phổ biến."
-        ),
         parameters=cast(
             Any,
             {
@@ -54,14 +43,9 @@ TOOL_DECLARATIONS = [
                 "properties": {
                     "limit": {
                         "type": "INTEGER",
-                        "description": "Số lượng kỹ năng cần lấy (mặc định: 15)",
                     },
                     "seniority_filter": {
                         "type": "STRING",
-                        "description": (
-                            "Lọc theo cấp bậc: Intern, Fresher, Junior, Mid, "
-                            "Senior, Lead, Manager"
-                        ),
                     },
                 },
             },
@@ -69,12 +53,6 @@ TOOL_DECLARATIONS = [
     ),
     types.FunctionDeclaration(
         name="market_overview",
-        description=(
-            "Truy vấn cơ sở dữ liệu để lấy tổng quan thị trường: "
-            "tổng việc làm, phân bổ theo cấp bậc, mô hình làm việc, "
-            "thống kê lương, top domain, top công ty. "
-            "Dùng khi người dùng hỏi tổng quan, thống kê chung."
-        ),
         parameters=cast(
             Any,
             {
@@ -82,11 +60,9 @@ TOOL_DECLARATIONS = [
                 "properties": {
                     "seniority_filter": {
                         "type": "STRING",
-                        "description": "Lọc theo cấp bậc",
                     },
                     "working_model_filter": {
                         "type": "STRING",
-                        "description": "Lọc theo mô hình: Remote, Hybrid, Onsite",
                     },
                 },
             },
@@ -274,20 +250,20 @@ class MarketAnalysisAgent(BaseAgent):
         if action_type and action_type != "DEFAULT":
             hints = {
                 "CHART": (
-                    "\n\n[Gợi ý hệ thống: Người dùng cần dữ liệu biểu đồ. "
-                    "Hãy sử dụng công cụ top_skills_chart.]"
+                    "\n\n[System Hint: The user needs chart data. "
+                    "Please use the top_skills_chart tool.]"
                 ),
                 "SQL_TOP_SKILLS": (
-                    "\n\n[Gợi ý hệ thống: Người dùng cần thống kê kỹ năng. "
-                    "Hãy sử dụng công cụ top_skills_chart.]"
+                    "\n\n[System Hint: The user needs skill statistics. "
+                    "Please use the top_skills_chart tool.]"
                 ),
                 "SALARY_BENCHMARK": (
-                    "\n\n[Gợi ý hệ thống: Người dùng cần phân tích lương. "
-                    "Hãy sử dụng market_overview để lấy salary_stats.]"
+                    "\n\n[System Hint: The user needs salary analysis. "
+                    "Please use market_overview to get salary_stats.]"
                 ),
                 "DEMAND_TREND": (
-                    "\n\n[Gợi ý hệ thống: Người dùng cần xu hướng tuyển dụng. "
-                    "Hãy sử dụng market_overview VÀ market_consultant.]"
+                    "\n\n[System Hint: The user needs recruitment trends. "
+                    "Please use market_overview AND market_consultant.]"
                 ),
             }
             hint = hints.get(action_type, "")

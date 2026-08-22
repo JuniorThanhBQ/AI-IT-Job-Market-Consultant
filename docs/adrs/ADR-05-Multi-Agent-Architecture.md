@@ -1,7 +1,7 @@
 # ADR-05: Selection of Hierarchical Multi-Agent System (HMAS) Architecture
 
 ## Status
-Pending
+Accepted
 
 ## Context
 This decision is being evaluated in the context of our data processing and workflow requirements. Collecting and parsing job recruitment data, parsing and personalizing user profiles, matching job data with user goals, and querying generative LLMs are sequential steps rather than parallel processes. The system must know exactly when to execute each task with centralized orchestration, rather than allowing autonomous agents to operate independently without coordinated control.
@@ -27,4 +27,4 @@ Select a Hierarchical Multi-Agent System (HMAS) architecture for orchestrating A
 * **Latency Accumulation:** A sequential, coordinated flow of agent queries means the total response time is the sum of each step, which can feel slower than fully asynchronous, independent agent networks.
 
 ## Decision Date
-Pending Approved until 26/07/2026
+26/07/2026

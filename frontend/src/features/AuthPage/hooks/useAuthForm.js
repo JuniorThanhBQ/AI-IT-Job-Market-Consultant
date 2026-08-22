@@ -28,7 +28,9 @@ export default function useAuthForm() {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    const validationError = validateLogin(email, password, t);
+    const cleanEmail = email.trim();
+    const cleanPassword = password.trim();
+    const validationError = validateLogin(cleanEmail, cleanPassword, t);
     if (validationError) {
       setError(validationError);
       return;
@@ -36,7 +38,7 @@ export default function useAuthForm() {
     setError("");
     setIsSubmitting(true);
     try {
-      await login(email, password);
+      await login(cleanEmail, cleanPassword);
     } catch (err) {
       setError(err?.message || "Invalid email or password.");
     } finally {
@@ -46,7 +48,15 @@ export default function useAuthForm() {
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    const validationError = validateRegister(email, username, password, t);
+    const cleanEmail = email.trim();
+    const cleanUsername = username.trim();
+    const cleanPassword = password.trim();
+    const validationError = validateRegister(
+      cleanEmail,
+      cleanUsername,
+      cleanPassword,
+      t,
+    );
     if (validationError) {
       setError(validationError);
       return;
@@ -54,7 +64,7 @@ export default function useAuthForm() {
     setError("");
     setIsSubmitting(true);
     try {
-      await register(email, username, password);
+      await register(cleanEmail, cleanUsername, cleanPassword);
     } catch (err) {
       setError(
         err?.message || "Registration failed. Please check your inputs.",

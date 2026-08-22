@@ -62,7 +62,7 @@ export default function JobDetailPage({ params }) {
 
       <main className="max-w-[80vw] mx-auto px-4 sm:px-6 pt-24 pb-12 relative z-10 flex flex-col gap-6">
         <button
-          onClick={() => router.push("/counselee/jobs")}
+          onClick={() => router.back()}
           className="self-start flex items-center gap-2 text-sm font-bold text-slate-550 dark:text-slate-400 hover:text-[#285872] dark:hover:text-[#407c9c] transition-colors cursor-pointer group"
         >
           <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />

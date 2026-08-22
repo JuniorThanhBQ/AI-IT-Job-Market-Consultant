@@ -1,3 +1,5 @@
+import validator from "validator";
+
 export function hasXSS(value) {
   if (!value) return false;
   const lowercaseVal = value.toLowerCase();
@@ -29,8 +31,7 @@ export function hasSQLInjection(value) {
 
 export function isValidEmail(email) {
   if (!email) return false;
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  return validator.isEmail(email);
 }
 
 export function isStrongPassword(password) {
@@ -49,50 +50,146 @@ export function isStrongPassword(password) {
   );
 }
 
+export function isValidUsername(username) {
+  if (!username) return false;
+  return /^[a-zA-Z0-9_]{3,}$/.test(username);
+}
+
 export function validateLogin(email, password, t) {
-  if (!email || !password) {
+  const cleanEmail = (email || "").trim();
+  const cleanPassword = (password || "").trim();
+  if (!cleanEmail || !cleanPassword) {
     return t ? t("validation_fill_fields") : "Please fill in all fields.";
   }
-  if (hasXSS(email) || hasXSS(password)) {
-    return t
-      ? t("validation_xss")
-      : "Input contains unsafe HTML or script tags.";
+  if (hasXSS(cleanEmail) || hasXSS(cleanPassword)) {
+    return t ? t("validation_xss") : "Invalid input.";
   }
-  if (hasSQLInjection(email) || hasSQLInjection(password)) {
-    return t ? t("validation_sqli") : "Input contains unsafe SQL patterns.";
+  if (hasSQLInjection(cleanEmail) || hasSQLInjection(cleanPassword)) {
+    return t ? t("validation_sqli") : "Invalid input.";
   }
-  if (!isValidEmail(email)) {
+  if (!isValidEmail(cleanEmail)) {
     return t ? t("validation_email") : "Please enter a valid email address.";
   }
   return null;
 }
 
 export function validateRegister(email, username, password, t) {
-  if (!email || !username || !password) {
+  const cleanEmail = (email || "").trim();
+  const cleanUsername = (username || "").trim();
+  const cleanPassword = (password || "").trim();
+  if (!cleanEmail || !cleanUsername || !cleanPassword) {
     return t ? t("validation_fill_fields") : "Please fill in all fields.";
   }
-  if (!username.trim()) {
-    return t ? t("validation_username_blank") : "Username cannot be blank.";
-  }
-  if (hasXSS(email) || hasXSS(username) || hasXSS(password)) {
+  if (!isValidUsername(cleanUsername)) {
     return t
-      ? t("validation_xss")
-      : "Input contains unsafe HTML or script tags.";
+      ? t("validation_username_invalid")
+      : "Username must be at least 3 characters long and contain only letters.";
+  }
+  if (hasXSS(cleanEmail) || hasXSS(cleanUsername) || hasXSS(cleanPassword)) {
+    return t ? t("validation_xss") : "Invalid input.";
   }
   if (
-    hasSQLInjection(email) ||
-    hasSQLInjection(username) ||
-    hasSQLInjection(password)
+    hasSQLInjection(cleanEmail) ||
+    hasSQLInjection(cleanUsername) ||
+    hasSQLInjection(cleanPassword)
   ) {
-    return t ? t("validation_sqli") : "Input contains unsafe SQL patterns.";
+    return t ? t("validation_sqli") : "Invalid input.";
   }
-  if (!isValidEmail(email)) {
+  if (!isValidEmail(cleanEmail)) {
     return t ? t("validation_email") : "Please enter a valid email address.";
   }
-  if (!isStrongPassword(password)) {
+  if (!isStrongPassword(cleanPassword)) {
     return t
       ? t("validation_password_weak")
       : "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.";
   }
+  return null;
+}
+
+export function isSpamName(name) {
+  if (!name) return false;
+  const lowercase = name.toLowerCase();
+  if (/(.)\1{3,}/.test(lowercase)) return true;
+  if (/(.{2,})\1{2,}/.test(lowercase)) return true;
+  if (/[bcdfghjklmnpqrstvwxyz]{5,}/i.test(lowercase)) return true;
+  return false;
+}
+
+export function isValidAge(birthdayStr) {
+  if (!birthdayStr) return false;
+  const birthday = new Date(birthdayStr);
+  if (isNaN(birthday.getTime())) return false;
+  const today = new Date();
+  let age = today.getFullYear() - birthday.getFullYear();
+  const m = today.getMonth() - birthday.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
+    age--;
+  }
+  return age >= 16 && age <= 100;
+}
+
+export function validateProfile(
+  firstName,
+  lastName,
+  birthday,
+  biography,
+  goal,
+  t,
+) {
+  const cleanFirstName = (firstName || "").trim();
+  const cleanLastName = (lastName || "").trim();
+  const cleanBio = (biography || "").trim();
+  const cleanGoal = (goal || "").trim();
+
+  if (!cleanFirstName || !cleanLastName) {
+    return t ? t("validation_fill_fields") : "Please fill in all fields.";
+  }
+
+  if (cleanFirstName.length < 2 || cleanFirstName.length > 64) {
+    return t
+      ? t("validation_firstname_length")
+      : "First name must be between 2 and 64 characters.";
+  }
+  if (cleanLastName.length < 2 || cleanLastName.length > 64) {
+    return t
+      ? t("validation_lastname_length")
+      : "Last name must be between 2 and 64 characters.";
+  }
+
+  const fields = [cleanFirstName, cleanLastName, cleanBio, cleanGoal];
+  if (fields.some(hasXSS)) {
+    return t
+      ? t("validation_xss")
+      : "Input contains unsafe HTML or script tags.";
+  }
+  if (fields.some(hasSQLInjection)) {
+    return t ? t("validation_sqli") : "Input contains unsafe SQL patterns.";
+  }
+
+  if (isSpamName(cleanFirstName) || isSpamName(cleanLastName)) {
+    return t
+      ? t("validation_name_spam")
+      : "The name appears to be invalid or spam.";
+  }
+
+  if (birthday) {
+    if (!isValidAge(birthday)) {
+      return t
+        ? t("validation_age_invalid")
+        : "Age must be between 16 and 100 years old.";
+    }
+  }
+
+  if (cleanBio.length > 512) {
+    return t
+      ? t("validation_bio_length")
+      : "Biography cannot exceed 512 characters.";
+  }
+  if (cleanGoal.length > 512) {
+    return t
+      ? t("validation_goal_length")
+      : "Goal cannot exceed 512 characters.";
+  }
+
   return null;
 }

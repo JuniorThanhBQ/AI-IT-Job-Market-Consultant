@@ -64,7 +64,7 @@ class Company(BaseModel, table=True):
 
     __table_args__ = ()
 
-    jobs: list[Job] = Relationship(
+    jobs: list["Job"] = Relationship(
         sa_relationship=relationship(
             "Job",
             back_populates="company",

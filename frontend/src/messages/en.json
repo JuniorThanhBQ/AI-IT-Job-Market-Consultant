@@ -217,9 +217,10 @@
     "toggle_to_login": "Already have an account?",
     "btn_ghost_signup": "Create an account",
     "btn_ghost_login": "Sign In here",
+    "validation_username_invalid": "Username is invalid.",
     "validation_fill_fields": "Please fill in all fields.",
-    "validation_xss": "Input contains unsafe HTML or script tags.",
-    "validation_sqli": "Input contains unsafe SQL patterns.",
+    "validation_xss": "Please use the correct format for input.",
+    "validation_sqli": "Please use the correct format for input.",
     "validation_email": "Please enter a valid email address.",
     "validation_password_weak": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
     "validation_username_blank": "Username cannot be blank."
@@ -373,7 +374,16 @@
       "goal": "Career Goal",
       "goal_placeholder": "e.g. Become a Senior Python and AI engineer at top product companies.",
       "btn_save": "Save Profile Changes",
-      "go_back": "Go Back"
+      "go_back": "Go Back",
+      "validation_firstname_length": "First name must be between 2 and 64 characters.",
+      "validation_lastname_length": "Last name must be between 2 and 64 characters.",
+      "validation_name_spam": "The name appears to be invalid or spam.",
+      "validation_age_invalid": "Age must be above 16 years old.",
+      "validation_bio_length": "Biography cannot exceed 512 characters.",
+      "validation_goal_length": "Goal cannot exceed 512 characters.",
+      "validation_fill_fields": "Please fill in all fields.",
+      "validation_xss": "Please use the correct format for input.",
+      "validation_sqli": "Please use the correct format for input."
     },
     "CV": {
       "title": "Edit My CV and Projects",
@@ -528,6 +538,7 @@
       "btn_advanced_search": "Advanced Search",
       "label_search": "Search Keywords",
       "placeholder_search": "Title, skill, keywords...",
+      "semantic_search_example": "Try some semantic examples",
       "search_placeholder": "Title, skill, keywords...",
       "label_seniority": "Seniority Level",
       "all_seniorities": "All Seniorities",

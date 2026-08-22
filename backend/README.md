@@ -13,14 +13,23 @@ FastAPI backend for the AI IT Job Market Consultant platform.
 ## Structure
 ```text
 backend/
-├── app/          # API, config, modules, DB, templates
-├── agents/       # supervisor/subagents/hybrid_rag tooling
-├── tests/        # backend tests
-├── database/     # migration config
-├── scripts/      # startup helpers
-├── pyproject.toml
-├── Dockerfile
-└── README.md
+├── app/                  # FastAPI Application core
+│   ├── core/             # Security, configuration, dependencies, and enums
+│   ├── db/               # Database session setup and Base class definitions
+│   ├── google_genai/     # Gemini client manager and prompt templates
+│   ├── modules/          # Business modules (user, company, consultant, job, consultee_profile)
+│   └── utils/            # Validators, embeddings generator, and common helpers
+├── agents/               # LangGraph Orchestration & Tools
+│   ├── hybrid_rag/       # Vector retrieval and BM25 indexing search
+│   ├── subagents/        # Active subagents (market_analysis_agent)
+│   ├── supervisor/       # Orchestrator, Graph definition, registry, and state management
+│   └── tools/            # Custom agent actions and integrations
+├── tests/                # Testing Suite (Unit, Integration, and Mock configurations)
+├── database/             # Alembic migration configurations and versions
+├── scripts/              # Startup scripts and database seed operations
+├── pyproject.toml        # Ruff exclusions, Python version, dependencies, and metadata
+├── Dockerfile            # Container production and staging builder stages
+└── README.md             # Development environment docs and references
 ```
 
 ## API docs

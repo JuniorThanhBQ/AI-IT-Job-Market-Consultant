@@ -32,8 +32,7 @@ The project uses a modern stack for the backend, frontend, AI services, and data
 
 ## III. System Architecture
 The planned architecture will be client-server. The backend will be organized using a layered architecture. The system will prioritize two key criteria: performance and availability. In addition, design patterns will be applied to ensure the maintainability of the source code.
-A detailed description of the system architecture is provided in [ADR-01-Software-Architecture.md](ADR-01-Software-Architecture.md) <br>
-[Architecture overview image (not available)](docs/architectures/)
+A detailed description of the system architecture is provided in [ADR-01-Software-Architecture.md](ADR-01-Software-Architecture.md)
 
 ## IV. Project Structure
 ```text
@@ -117,32 +116,29 @@ AI-IT-Job-Market-Consultant/
 
 ## V. Showcase
 
-Admin Panel
-  ![Admin_Panel](docs/showcase/Admin_Panel.png)
+Home Page (English)
+  ![Home_Page_EN](docs/showcase/home_page_en.png)
 
-Adminer Panel (Only in development)
-  ![Adminer_Panel](docs/showcase/Adminer_Panel.png)
+Market Overview Panel
+  ![Market_Overview](docs/showcase/overview_panel.png)
 
-Chatbot of AIJMC
-  ![Chatbot_1](docs/showcase/Chatbot_1.png)
+Job Market Search & Filters
+  ![Job_Market_Search_Filter](docs/showcase/job_market_search_filter.png)
 
-Chatbot page of AIJMC
-  ![Chatbot_2](docs/showcase/advanced_consultant.png)
+Semantic Search Results
+  ![Semantic_Search_Result](docs/showcase/semantic_search_result.png)
 
-CV Scoring of AIJMC
-  ![CV_Scoring_1](docs/showcase/CV_Scoring_1.png)
+AIJMC Chatbot Interface
+  ![Using_Chatbot_Page](docs/showcase/using_chatbot_page.png)
 
-Market dashboard of AIJMC
-  ![Market_Dashboard](docs/showcase/Market_Dashboard.png)
+XSS & SQL Injection Security Protection
+  ![Security_Protection](docs/showcase/xss_sql_security_concern.png)
 
-Profile Dashboard
-  ![Profile_Dashboard](docs/showcase/Profile_Dashboard.png)
+Admin Control Panel
+  ![Admin_Panel](docs/showcase/admin_Panel.png)
 
-Semantic Search Panel
-  ![Semantic_search_panel](docs/showcase/semantic_search_panel.png)
-
-Semantic Search
-  ![Semantic_Search_Page](docs/showcase/semantic_search.png)
+Mobile First Responsive Design
+  ![Mobile_First_1](docs/showcase/mobile_first_1.png)
 
 More showcase here: [The showcase folder](docs/showcase/)
 

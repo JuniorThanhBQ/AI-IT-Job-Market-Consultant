@@ -1,87 +1,26 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Vietnamese IT Job Insights API",
-    "description": "REST API for exploring Software Engineering jobs in Vietnam from TopDev and ITviec",
+    "title": "AI IT Job Market Consultant",
     "version": "0.1.0"
   },
   "paths": {
-    "/api/v1/companies/": {
-      "get": {
-        "tags": [
-          "companies"
-        ],
-        "summary": "List Companies",
-        "description": "Retrieve a list of companies with optional pagination limits.",
-        "operationId": "list_companies_api_v1_companies__get",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 100,
-              "minimum": 1,
-              "default": 20,
-              "title": "Limit"
-            }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0,
-              "title": "Offset"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CompanyResponse"
-                  },
-                  "title": "Response List Companies Api V1 Companies  Get"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
+    "/api/v1/accounts/": {
       "post": {
         "tags": [
-          "companies"
+          "auth"
         ],
-        "summary": "Create Company",
-        "description": "Register a new company profile.",
-        "operationId": "create_company_api_v1_companies__post",
+        "summary": "Register",
+        "operationId": "auth-register",
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CompanyCreate"
+                "$ref": "#/components/schemas/UserRegister"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
@@ -89,7 +28,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CompanyResponse"
+                  "$ref": "#/components/schemas/UserPublic"
                 }
               }
             }
@@ -107,23 +46,301 @@
         }
       }
     },
-    "/api/v1/companies/{company_id}": {
+    "/api/v1/accounts/sessions/": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login",
+        "operationId": "auth-login",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_auth-login"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/my-profile/": {
+      "get": {
+        "tags": [
+          "profile"
+        ],
+        "summary": "Get My Profile",
+        "operationId": "profile-get_my_profile",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsulteeProfileRead"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "profile"
+        ],
+        "summary": "Update My Profile",
+        "operationId": "profile-update_my_profile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsulteeProfileUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsulteeProfileRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/consultants/history": {
+      "get": {
+        "tags": [
+          "consultant"
+        ],
+        "summary": "Get User History Endpoint",
+        "operationId": "consultant-get_user_history_endpoint",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ConsultantHistoryItem"
+                  },
+                  "type": "array",
+                  "title": "Response Consultant-Get User History Endpoint"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "consultant"
+        ],
+        "summary": "Clear User History Endpoint",
+        "operationId": "consultant-clear_user_history_endpoint",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/consultants/chatbot/intents": {
+      "post": {
+        "tags": [
+          "consultant"
+        ],
+        "summary": "Execute Chatbot Intent",
+        "operationId": "consultant-execute_chatbot_intent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AIChatbotRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/companies/": {
       "get": {
         "tags": [
           "companies"
         ],
-        "summary": "Get Company",
-        "description": "Retrieve a specific company profile by its UUID.",
-        "operationId": "get_company_api_v1_companies__company_id__get",
+        "summary": "List Companies Endpoint",
+        "operationId": "companies-list_companies_endpoint",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
         "parameters": [
           {
-            "name": "company_id",
-            "in": "path",
-            "required": true,
+            "name": "name",
+            "in": "query",
+            "required": false,
             "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Company Id"
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by company name",
+              "title": "Name"
+            },
+            "description": "Filter by company name"
+          },
+          {
+            "name": "industry",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by industry",
+              "title": "Industry"
+            },
+            "description": "Filter by industry"
+          },
+          {
+            "name": "company_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/CompanyType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by company type",
+              "title": "Company Type"
+            },
+            "description": "Filter by company type"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
             }
           }
         ],
@@ -133,7 +350,58 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CompanyResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyRead"
+                  },
+                  "title": "Response Companies-List Companies Endpoint"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/companies/{id}": {
+      "get": {
+        "tags": [
+          "companies"
+        ],
+        "summary": "Get Company Endpoint",
+        "operationId": "companies-get_company_endpoint",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyDetail"
                 }
               }
             }
@@ -156,33 +424,14 @@
         "tags": [
           "jobs"
         ],
-        "summary": "List Jobs",
-        "description": "Retrieve filtered job postings with pagination.",
-        "operationId": "list_jobs_api_v1_jobs__get",
+        "summary": "List Jobs Endpoint",
+        "operationId": "jobs-list_jobs_endpoint",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
         "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 100,
-              "minimum": 1,
-              "default": 20,
-              "title": "Limit"
-            }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0,
-              "title": "Offset"
-            }
-          },
           {
             "name": "title",
             "in": "query",
@@ -196,8 +445,10 @@
                   "type": "null"
                 }
               ],
+              "description": "Filter by job title",
               "title": "Title"
-            }
+            },
+            "description": "Filter by job title"
           },
           {
             "name": "seniority",
@@ -206,46 +457,40 @@
             "schema": {
               "anyOf": [
                 {
-                  "$ref": "#/components/schemas/Seniority"
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 },
                 {
                   "type": "null"
                 }
               ],
+              "description": "Filter by seniority levels",
               "title": "Seniority"
-            }
+            },
+            "description": "Filter by seniority levels"
           },
           {
-            "name": "remote_policy",
+            "name": "working_model",
             "in": "query",
             "required": false,
             "schema": {
               "anyOf": [
                 {
-                  "$ref": "#/components/schemas/RemotePolicy"
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Remote Policy"
-            }
-          },
-          {
-            "name": "employment_type",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/EmploymentType"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Employment Type"
-            }
+              "description": "Filter by working models",
+              "title": "Working Model"
+            },
+            "description": "Filter by working models"
           },
           {
             "name": "min_salary",
@@ -257,10 +502,61 @@
                   "type": "number"
                 },
                 {
+                  "type": "string",
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+                },
+                {
                   "type": "null"
                 }
               ],
+              "description": "Filter by minimum salary",
               "title": "Min Salary"
+            },
+            "description": "Filter by minimum salary"
+          },
+          {
+            "name": "max_salary",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by maximum salary",
+              "title": "Max Salary"
+            },
+            "description": "Filter by maximum salary"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
             }
           }
         ],
@@ -272,9 +568,9 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/JobResponse"
+                    "$ref": "#/components/schemas/JobRead"
                   },
-                  "title": "Response List Jobs Api V1 Jobs  Get"
+                  "title": "Response Jobs-List Jobs Endpoint"
                 }
               }
             }
@@ -290,220 +586,154 @@
             }
           }
         }
-      },
+      }
+    },
+    "/api/v1/jobs/{id}": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Get Job Endpoint",
+        "operationId": "jobs-get_job_endpoint",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/search/semantic": {
       "post": {
         "tags": [
           "jobs"
         ],
-        "summary": "Post Job",
-        "description": "Publish a new job posting or update it if already registered.",
-        "operationId": "post_job_api_v1_jobs__post",
+        "summary": "Semantic Search Endpoint",
+        "operationId": "jobs-semantic_search_endpoint",
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobCreate"
+                "$ref": "#/components/schemas/SemanticSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/JobSearchResult"
+                  },
+                  "type": "array",
+                  "title": "Response Jobs-Semantic Search Endpoint"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
               }
             }
           }
         },
-        "responses": {
-          "201": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/JobResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/jobs/{job_id}": {
-      "get": {
-        "tags": [
-          "jobs"
-        ],
-        "summary": "Get Job",
-        "description": "Fetch a specific job posting details by ID.",
-        "operationId": "get_job_api_v1_jobs__job_id__get",
-        "parameters": [
+        "security": [
           {
-            "name": "job_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Job Id"
-            }
+            "OAuth2PasswordBearer": []
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/JobResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/health": {
-      "get": {
-        "tags": [
-          "health"
-        ],
-        "summary": "Health Check",
-        "description": "Simple API health check endpoint.",
-        "operationId": "health_check_health_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        }
+        ]
       }
     }
   },
   "components": {
     "schemas": {
-      "CompanyCreate": {
+      "AIChatbotRequest": {
         "properties": {
-          "name": {
+          "intent": {
+            "$ref": "#/components/schemas/ConsultantMode"
+          },
+          "user_input": {
             "type": "string",
-            "title": "Name"
-          },
-          "source_id": {
-            "type": "string",
-            "title": "Source Id"
-          },
-          "source_site": {
-            "type": "string",
-            "title": "Source Site"
-          },
-          "logo_url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Logo Url"
-          },
-          "website_url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Website Url"
-          },
-          "company_size": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Company Size"
-          },
-          "industry": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Industry"
-          },
-          "address": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Address"
-          },
-          "raw_metadata": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Metadata"
+            "title": "User Input"
           }
         },
         "type": "object",
         "required": [
-          "name",
-          "source_id",
-          "source_site"
+          "intent",
+          "user_input"
         ],
-        "title": "CompanyCreate"
+        "title": "AIChatbotRequest"
       },
-      "CompanyResponse": {
+      "Body_auth-login": {
         "properties": {
-          "name": {
+          "grant_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^password$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grant Type"
+          },
+          "username": {
             "type": "string",
-            "title": "Name"
+            "title": "Username"
           },
-          "source_id": {
+          "password": {
             "type": "string",
-            "title": "Source Id"
+            "format": "password",
+            "title": "Password"
           },
-          "source_site": {
+          "scope": {
             "type": "string",
-            "title": "Source Site"
+            "title": "Scope",
+            "default": ""
           },
-          "logo_url": {
+          "client_id": {
             "anyOf": [
               {
                 "type": "string"
@@ -512,9 +742,9 @@
                 "type": "null"
               }
             ],
-            "title": "Logo Url"
+            "title": "Client Id"
           },
-          "website_url": {
+          "client_secret": {
             "anyOf": [
               {
                 "type": "string"
@@ -523,90 +753,512 @@
                 "type": "null"
               }
             ],
-            "title": "Website Url"
-          },
-          "company_size": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Company Size"
-          },
-          "industry": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Industry"
-          },
-          "address": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Address"
-          },
-          "raw_metadata": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Metadata"
-          },
+            "format": "password",
+            "title": "Client Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "Body_auth-login"
+      },
+      "CompanyDetail": {
+        "properties": {
           "id": {
-            "type": "string",
-            "format": "uuid",
+            "type": "integer",
             "title": "Id"
           },
-          "created_date": {
+          "name": {
             "type": "string",
-            "format": "date-time",
-            "title": "Created Date"
+            "title": "Name"
           },
-          "updated_date": {
+          "industry": {
             "type": "string",
-            "format": "date-time",
-            "title": "Updated Date"
+            "title": "Industry"
+          },
+          "size": {
+            "type": "string",
+            "title": "Size"
+          },
+          "location": {
+            "type": "string",
+            "title": "Location"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "website": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website"
+          },
+          "slogan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slogan"
+          },
+          "company_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CompanyType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "country": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CountryEnum"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "addresses": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Addresses"
+          },
+          "benefits": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Benefits"
+          },
+          "working_days": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Working Days"
+          },
+          "overtime_policy": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overtime Policy"
+          },
+          "vector_context": {
+            "type": "string",
+            "title": "Vector Context"
+          },
+          "jobs": {
+            "items": {
+              "$ref": "#/components/schemas/JobRead"
+            },
+            "type": "array",
+            "title": "Jobs"
           }
         },
         "type": "object",
         "required": [
-          "name",
-          "source_id",
-          "source_site",
           "id",
-          "created_date",
-          "updated_date"
+          "name",
+          "industry",
+          "size",
+          "location",
+          "description",
+          "vector_context"
         ],
-        "title": "CompanyResponse"
+        "title": "CompanyDetail"
       },
-      "EmploymentType": {
+      "CompanyRead": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "industry": {
+            "type": "string",
+            "title": "Industry"
+          },
+          "size": {
+            "type": "string",
+            "title": "Size"
+          },
+          "location": {
+            "type": "string",
+            "title": "Location"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "website": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website"
+          },
+          "slogan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slogan"
+          },
+          "company_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CompanyType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "country": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CountryEnum"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "addresses": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Addresses"
+          },
+          "benefits": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Benefits"
+          },
+          "working_days": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Working Days"
+          },
+          "overtime_policy": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overtime Policy"
+          },
+          "vector_context": {
+            "type": "string",
+            "title": "Vector Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "industry",
+          "size",
+          "location",
+          "description",
+          "vector_context"
+        ],
+        "title": "CompanyRead"
+      },
+      "CompanyType": {
         "type": "string",
         "enum": [
-          "Full-time",
-          "Part-time",
-          "Contract",
-          "Internship",
-          "Unknown"
+          "Product",
+          "Outsourcing",
+          "Consulting",
+          "Agency",
+          "Non-Profit",
+          "Other"
         ],
-        "title": "EmploymentType"
+        "title": "CompanyType"
+      },
+      "ConsultantHistoryItem": {
+        "properties": {
+          "user_input": {
+            "type": "string",
+            "title": "User Input"
+          },
+          "output": {
+            "type": "string",
+            "title": "Output"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_input",
+          "output"
+        ],
+        "title": "ConsultantHistoryItem"
+      },
+      "ConsultantMode": {
+        "type": "string",
+        "enum": [
+          "MARKET_ANALYSIS",
+          "PERSONAL_STANDARD_EVALUATION",
+          "JOB_RECOMMEND",
+          "DEEP_ANALYSIS_EVALUATION"
+        ],
+        "title": "ConsultantMode"
+      },
+      "ConsulteeProfileRead": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "first_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Name"
+          },
+          "last_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Name"
+          },
+          "birthday": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Birthday"
+          },
+          "biography": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Biography"
+          },
+          "goal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "title": "ConsulteeProfileRead"
+      },
+      "ConsulteeProfileUpdate": {
+        "properties": {
+          "first_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Name"
+          },
+          "last_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Name"
+          },
+          "birthday": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Birthday"
+          },
+          "biography": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Biography"
+          },
+          "goal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal"
+          }
+        },
+        "type": "object",
+        "title": "ConsulteeProfileUpdate"
+      },
+      "CountryEnum": {
+        "type": "string",
+        "enum": [
+          "Vietnam",
+          "India",
+          "China",
+          "Japan",
+          "South Korea",
+          "Singapore",
+          "Taiwan",
+          "United States",
+          "Canada",
+          "United Kingdom",
+          "Germany",
+          "Netherlands",
+          "Sweden",
+          "France",
+          "Ireland",
+          "Poland",
+          "Australia",
+          "New Zealand"
+        ],
+        "title": "CountryEnum"
+      },
+      "CrawlWebsite": {
+        "type": "string",
+        "enum": [
+          "ITViec",
+          "TopDev",
+          "ITJobs",
+          "VietnamWorks",
+          "FPTJobs"
+        ],
+        "title": "CrawlWebsite"
+      },
+      "Currency": {
+        "type": "string",
+        "enum": [
+          "VND",
+          "USD",
+          "EUR",
+          "JPY",
+          "SGD"
+        ],
+        "title": "Currency"
       },
       "HTTPValidationError": {
         "properties": {
@@ -621,401 +1273,693 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
-      "JobCreate": {
+      "JobDetail": {
         "properties": {
-          "title": {
-            "type": "string",
-            "title": "Title"
-          },
-          "source_id": {
-            "type": "string",
-            "title": "Source Id"
-          },
-          "source_site": {
-            "type": "string",
-            "title": "Source Site"
-          },
-          "url": {
-            "type": "string",
-            "title": "Url"
-          },
-          "salary_min": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Salary Min"
-          },
-          "salary_max": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Salary Max"
-          },
-          "salary_currency": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/SalaryCurrency"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": "VND"
-          },
-          "salary_raw": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Salary Raw"
-          },
-          "seniority": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/Seniority"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": "Unknown"
-          },
-          "remote_policy": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/RemotePolicy"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": "Unknown"
-          },
-          "employment_type": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/EmploymentType"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": "Unknown"
-          },
-          "description": {
-            "type": "string",
-            "title": "Description"
-          },
-          "requirements": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requirements"
-          },
-          "posting_time": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Posting Time"
-          },
-          "expiry_time": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Expiry Time"
-          },
-          "raw_metadata": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Metadata"
-          },
-          "is_active": {
-            "type": "boolean",
-            "title": "Is Active",
-            "default": true
-          },
-          "content_hash": {
-            "type": "string",
-            "title": "Content Hash"
-          },
-          "company_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Company Id"
-          }
-        },
-        "type": "object",
-        "required": [
-          "title",
-          "source_id",
-          "source_site",
-          "url",
-          "description",
-          "content_hash",
-          "company_id"
-        ],
-        "title": "JobCreate"
-      },
-      "JobResponse": {
-        "properties": {
-          "title": {
-            "type": "string",
-            "title": "Title"
-          },
-          "source_id": {
-            "type": "string",
-            "title": "Source Id"
-          },
-          "source_site": {
-            "type": "string",
-            "title": "Source Site"
-          },
-          "url": {
-            "type": "string",
-            "title": "Url"
-          },
-          "salary_min": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Salary Min"
-          },
-          "salary_max": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Salary Max"
-          },
-          "salary_currency": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/SalaryCurrency"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": "VND"
-          },
-          "salary_raw": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Salary Raw"
-          },
-          "seniority": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/Seniority"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": "Unknown"
-          },
-          "remote_policy": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/RemotePolicy"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": "Unknown"
-          },
-          "employment_type": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/EmploymentType"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": "Unknown"
-          },
-          "description": {
-            "type": "string",
-            "title": "Description"
-          },
-          "requirements": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requirements"
-          },
-          "posting_time": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Posting Time"
-          },
-          "expiry_time": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Expiry Time"
-          },
-          "raw_metadata": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Metadata"
-          },
-          "is_active": {
-            "type": "boolean",
-            "title": "Is Active",
-            "default": true
-          },
-          "content_hash": {
-            "type": "string",
-            "title": "Content Hash"
-          },
           "id": {
-            "type": "string",
-            "format": "uuid",
+            "type": "integer",
             "title": "Id"
           },
           "company_id": {
-            "type": "string",
-            "format": "uuid",
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Company Id"
           },
-          "created_date": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created Date"
+          "company_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company Name"
           },
-          "updated_date": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "job_description": {
+            "type": "string",
+            "title": "Job Description"
+          },
+          "expired_date": {
             "type": "string",
             "format": "date-time",
-            "title": "Updated Date"
+            "title": "Expired Date"
+          },
+          "seniority": {
+            "$ref": "#/components/schemas/SeniorityLevel"
+          },
+          "min_salary": {
+            "type": "string",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Min Salary"
+          },
+          "max_salary": {
+            "type": "string",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Max Salary"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "working_hours": {
+            "type": "string",
+            "title": "Working Hours"
+          },
+          "working_model": {
+            "$ref": "#/components/schemas/WorkingModel"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CrawlWebsite"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "company": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CompanyRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SkillRead"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "responsibilities": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Responsibilities"
+          },
+          "required_qualifications": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Required Qualifications"
+          },
+          "nice_to_have": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nice To Have"
+          },
+          "domains": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Domains"
           }
         },
         "type": "object",
         "required": [
-          "title",
-          "source_id",
-          "source_site",
-          "url",
-          "description",
-          "content_hash",
           "id",
-          "company_id",
-          "created_date",
-          "updated_date"
+          "title",
+          "job_description",
+          "expired_date",
+          "seniority",
+          "min_salary",
+          "max_salary",
+          "currency",
+          "working_hours",
+          "working_model",
+          "url"
         ],
-        "title": "JobResponse"
+        "title": "JobDetail"
       },
-      "RemotePolicy": {
+      "JobRead": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "company_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company Id"
+          },
+          "company_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company Name"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "job_description": {
+            "type": "string",
+            "title": "Job Description"
+          },
+          "expired_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expired Date"
+          },
+          "seniority": {
+            "$ref": "#/components/schemas/SeniorityLevel"
+          },
+          "min_salary": {
+            "type": "string",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Min Salary"
+          },
+          "max_salary": {
+            "type": "string",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Max Salary"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "working_hours": {
+            "type": "string",
+            "title": "Working Hours"
+          },
+          "working_model": {
+            "$ref": "#/components/schemas/WorkingModel"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CrawlWebsite"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "job_description",
+          "expired_date",
+          "seniority",
+          "min_salary",
+          "max_salary",
+          "currency",
+          "working_hours",
+          "working_model",
+          "url"
+        ],
+        "title": "JobRead"
+      },
+      "JobSearchResult": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "company_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company Id"
+          },
+          "company_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company Name"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "job_description": {
+            "type": "string",
+            "title": "Job Description"
+          },
+          "expired_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expired Date"
+          },
+          "seniority": {
+            "$ref": "#/components/schemas/SeniorityLevel"
+          },
+          "min_salary": {
+            "type": "string",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Min Salary"
+          },
+          "max_salary": {
+            "type": "string",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Max Salary"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "working_hours": {
+            "type": "string",
+            "title": "Working Hours"
+          },
+          "working_model": {
+            "$ref": "#/components/schemas/WorkingModel"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CrawlWebsite"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "company": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CompanyRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SkillRead"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "responsibilities": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Responsibilities"
+          },
+          "required_qualifications": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Required Qualifications"
+          },
+          "nice_to_have": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nice To Have"
+          },
+          "domains": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Domains"
+          },
+          "score": {
+            "type": "number",
+            "title": "Score",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "job_description",
+          "expired_date",
+          "seniority",
+          "min_salary",
+          "max_salary",
+          "currency",
+          "working_hours",
+          "working_model",
+          "url"
+        ],
+        "title": "JobSearchResult"
+      },
+      "JobStatus": {
         "type": "string",
         "enum": [
-          "Remote",
-          "Hybrid",
-          "Onsite",
-          "Unknown"
+          "Open",
+          "Closed",
+          "Draft",
+          "Expired"
         ],
-        "title": "RemotePolicy"
+        "title": "JobStatus"
       },
-      "SalaryCurrency": {
-        "type": "string",
-        "enum": [
-          "VND",
-          "USD"
+      "SemanticSearchRequest": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "title": "Query"
+          },
+          "seniority": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/SeniorityLevel"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seniority"
+          },
+          "working_model": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/WorkingModel"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Working Model"
+          },
+          "min_salary": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Salary"
+          },
+          "limit": {
+            "type": "integer",
+            "maximum": 30.0,
+            "minimum": 5.0,
+            "title": "Limit",
+            "default": 15
+          }
+        },
+        "type": "object",
+        "required": [
+          "query"
         ],
-        "title": "SalaryCurrency"
+        "title": "SemanticSearchRequest"
       },
-      "Seniority": {
+      "SeniorityLevel": {
         "type": "string",
         "enum": [
           "Intern",
           "Fresher",
           "Junior",
-          "Middle",
+          "Mid",
           "Senior",
           "Lead",
           "Manager",
+          "Director",
+          "Executive",
           "Unknown"
         ],
-        "title": "Seniority"
+        "title": "SeniorityLevel"
+      },
+      "SkillRead": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "category"
+        ],
+        "title": "SkillRead"
+      },
+      "Token": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token"
+        ],
+        "title": "Token"
+      },
+      "UserPublic": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "is_verified": {
+            "type": "boolean",
+            "title": "Is Verified"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "is_superuser": {
+            "type": "boolean",
+            "title": "Is Superuser"
+          },
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username"
+          },
+          "last_login": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Login"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "is_verified",
+          "is_active",
+          "is_superuser"
+        ],
+        "title": "UserPublic"
+      },
+      "UserRegister": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 255,
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 8,
+            "title": "Password"
+          },
+          "username": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "UserRegister"
       },
       "ValidationError": {
         "properties": {
@@ -1056,6 +2000,27 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "WorkingModel": {
+        "type": "string",
+        "enum": [
+          "Onsite",
+          "Hybrid",
+          "Remote",
+          "Other"
+        ],
+        "title": "WorkingModel"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {},
+            "tokenUrl": "/api/v1/accounts/sessions/"
+          }
+        }
       }
     }
   }

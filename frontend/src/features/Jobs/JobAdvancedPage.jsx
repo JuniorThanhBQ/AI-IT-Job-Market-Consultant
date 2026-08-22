@@ -168,7 +168,7 @@ export default function JobAdvancedPage() {
                   }}
                   className="border-slate-200 dark:border-slate-800 rounded-full px-6 py-5 text-xs font-black text-slate-600 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-slate-900 flex items-center gap-1.5 cursor-pointer"
                 >
-                  Hãy thử chức năng tư vấn chi tiết
+                  {t("semantic_search_example")}
                 </Button>
               </div>
             </form>

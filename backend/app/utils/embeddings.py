@@ -19,7 +19,7 @@ def get_gemini_api_key() -> str:
     return _client_manager._get_api_key()
 
 
-def _normalize_model_name(model_name: str) -> GeminiModel:
+def normalize_model_name(model_name: str) -> GeminiModel:
     if not model_name:
         return GeminiModel.GEMINI_EMBEDDING_001
     clean = model_name.strip()
@@ -39,7 +39,7 @@ async def generate_embedding_async(
     cache_key = (text, model_name)
     if cache_key in _embedding_cache:
         return _embedding_cache[cache_key]
-    model = _normalize_model_name(model_name)
+    model = normalize_model_name(model_name)
     val = await _embedding_service.generate_embedding_async(text, model=model)
     if len(_embedding_cache) >= 1024:
         _embedding_cache.pop(next(iter(_embedding_cache)))
@@ -53,7 +53,7 @@ def generate_embedding(
     cache_key = (text, model_name)
     if cache_key in _embedding_cache:
         return _embedding_cache[cache_key]
-    model = _normalize_model_name(model_name)
+    model = normalize_model_name(model_name)
     val = _embedding_service.generate_embedding(text, model=model)
     if len(_embedding_cache) >= 1024:
         _embedding_cache.pop(next(iter(_embedding_cache)))

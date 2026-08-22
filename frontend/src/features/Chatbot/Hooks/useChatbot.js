@@ -85,7 +85,7 @@ export function useChatbot() {
 
     const userText = inputMessage.trim();
     if (hasXSS(userText) || hasSQLInjection(userText)) {
-      setError("Unsafe input detected.");
+      setError("Invalid input.");
       return;
     }
     setInputMessage("");

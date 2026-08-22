@@ -3,30 +3,32 @@ from datetime import datetime
 
 from sqlmodel import Field, SQLModel
 
+from app.utils.validators import SafeEmailStr, SafeStr
+
 
 class UserRegister(SQLModel):
-    email: str = Field(max_length=255)
-    password: str = Field(min_length=8, max_length=40)
-    username: str | None = Field(default=None, max_length=255)
+    email: SafeEmailStr = Field(max_length=255)
+    password: SafeStr = Field(min_length=8, max_length=40)
+    username: SafeStr | None = Field(default=None, max_length=255)
 
 
 class UserCreate(SQLModel):
-    email: str = Field(max_length=255)
-    password: str = Field(min_length=8, max_length=40)
-    username: str | None = Field(default=None, max_length=255)
+    email: SafeEmailStr = Field(max_length=255)
+    password: SafeStr = Field(min_length=8, max_length=40)
+    username: SafeStr | None = Field(default=None, max_length=255)
     is_active: bool = True
 
 
 class UserUpdate(SQLModel):
-    email: str | None = Field(default=None, max_length=255)
+    email: SafeEmailStr | None = Field(default=None, max_length=255)
     is_active: bool | None = None
-    username: str | None = Field(default=None, max_length=255)
-    password: str | None = Field(default=None, min_length=8, max_length=40)
+    username: SafeStr | None = Field(default=None, max_length=255)
+    password: SafeStr | None = Field(default=None, min_length=8, max_length=40)
 
 
 class NewPassword(SQLModel):
-    token: str
-    new_password: str = Field(min_length=8, max_length=40)
+    token: SafeStr
+    new_password: SafeStr = Field(min_length=8, max_length=40)
 
 
 class UserPublic(SQLModel):

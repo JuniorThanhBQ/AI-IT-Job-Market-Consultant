@@ -3,11 +3,12 @@ from typing import Any
 from pydantic import BaseModel
 
 from app.core.enums import ActionType, ConsultantMode
+from app.utils.validators import SafeStr
 
 
 class AIChatbotRequest(BaseModel):
     intent: ConsultantMode
-    user_input: str
+    user_input: SafeStr
 
 
 class AgentServicesRequest(BaseModel):
