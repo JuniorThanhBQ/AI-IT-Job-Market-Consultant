@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump the python-packages group with 4 updates. PR [#79](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/79) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * Pre-release: alpha version 1.1.0 with some major change in backend and frontend [SECURITY-RISK]. PR [#52](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/52) by [@JuniorThanhBQ](https://github.com/JuniorThanhBQ).
 * ⬆ Bump the python-packages group across 1 directory with 3 updates. PR [#42](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/42) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Update coverage[toml] requirement from >=7.6.0 to >=7.15.3. PR [#43](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/43) by [@dependabot[bot]](https://github.com/apps/dependabot).
