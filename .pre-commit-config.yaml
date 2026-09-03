@@ -9,6 +9,7 @@ repos:
         args:
           - --unsafe
       - id: check-added-large-files
+        args: [--maxkb=1024]
         exclude: ^notebooks/
       - id: check-merge-conflict
       - id: check-ast

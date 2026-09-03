@@ -241,12 +241,6 @@ pnpm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
-AGENTS.md
-AGENTS-HISTORY.md
-.agents/
-
-**/crawl_website_information/**/*.html
-
 test-results/
 
 # Rclone config credentials

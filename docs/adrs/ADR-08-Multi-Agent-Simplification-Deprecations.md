@@ -6,15 +6,18 @@ Accepted
 ## Context
 The system was originally designed with a three-agent LangGraph network: `MarketAnalysisAgent`, `PersonalizationAgent`, and `RecommendationAgent`. These agents were intended to analyze markets, personalize profiles, and recommend job postings sequentially.
 
-In practice, the front-end user experience (chatbot and dashboards) only utilizes the `MARKET_ANALYSIS` intent. Running personalization and recommendation subagents introduced significant request latency, high token usage, and extra API orchestration code, while being completely unused by the active front-end features.
+In practice, the front-end user experience only utilizes the `MARKET_ANALYSIS` intent. Running personalization and recommendation subagents can cause request latency, high token usage, and extra API orchestration code while being completely unused by the active front-end features.
 
 ## Decision
-1. **Agent Deprecation:** Completely delete the `personalization_agent` and `recommendation_agent` source folders from the `backend/agents/subagents/` directory. Remove their imports and registrations from `orchestrator.py`.
+Temporarily halt multi-agent development. Focus on AI Agents for market analysis using the ReAct framework:
+
+1. **Agent Deprecation:** Delete `personalization_agent` and `recommendation_agent` source folders from the `backend/agents/subagents/` directory. Remove their imports and registrations from `orchestrator.py`.
 2. **Intent Pipeline Fallback Routing:** Update the `INTENT_PIPELINES` map inside `graph.py` to route all secondary intents (`PERSONAL_STANDARD_EVALUATION`, `JOB_RECOMMEND`, and `DEEP_ANALYSIS_EVALUATION`) to the active `market_analysis` agent.
+3. **Focus on AI Agent market analysis:** The development of an AI agent for market analysis is prioritized until the entire system is operating stably.
 
 ## Rationale
 1. **Reduced Code Complexity:** Deleting unused folders reduces codebase maintenance costs, decreases testing surface area, and keeps the project structure clean.
-2. **Backward Compatibility:** Mapping the unused intents to the single active agent prevents backend runtime crashes if an API request (e.g. from historical chat database logs or client test suites) executes with legacy intent tags.
+2. **Backward Compatibility:** Mapping the unused intents to the single active agent prevents backend runtime crashes if an API request executes with legacy intent tags.
 
 ## Consequences
 ### Positive

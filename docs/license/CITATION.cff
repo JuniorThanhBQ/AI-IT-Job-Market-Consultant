@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "The citation metadata is provided below."
+title: "AI-IT-Job-Market-Consultant"
+abstract: "Despite the trend of digital transformation and the rapid development of artificial intelligence (AI), candidates in the information technology (IT) industry still face difficulties in finding and evaluating job postings that are suitable for their personal career goals. Traditional methods such as periodic surveys or manual information lookup are facing limitations due to the scale of recruitment data in practice. To address the problem, this study proposes an IT job market analysis system capable of automating the process of exploiting recruitment data from ITViec, TopDev, ITJobs and VietnamWorks platforms. The key components of the system are AI agents and distributed task queues (Celery). The AI agent uses the ReAct framework, supported by RAG techniques and hybrid retrieval based on vector search and BM25 algorithms. Celery schedules back ground jobs to collect job postings using the Adaptive Playwright crawler from the Crawlee library, embedding via gemini-embedding-001, and backing up with Rclone. Experimental results showed that the system processed 1927 recruit ments per exploit, the completeness of the dataset reached 93%, and the average embedding delay was 757 ms. The hybrid retrieval technique achieved a mean query document cosine similarity of 0.56 and a mean latency of 3.27 s. Analysis results from AI agents are usually over 300 words with a minimum response latency of 10 seconds. Thus, this study indicates the potential of applying AI agents in IT job analysis and consulting using daily updated data."
+authors:
+  - family-names: "Văn"
+    given-names: "Trung Thành"
+    orcid: "https://orcid.org/0009-0001-1808-3583"
+    affiliation: "Ho Chi Minh City Open University, Faculty of Information Technology"
+version: "1.0.0"
+date-released: "2026-09-03"
+license:
+  - "MPL-2.0"
+  - "MIT"
+repository-code: "https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant"
+url: "https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant"
+keywords:
+  - "artificial-intelligence"
+  - "ai-agent"
+  - "job-market"
+  - "career-consultant"
+  - "recruitment-data"

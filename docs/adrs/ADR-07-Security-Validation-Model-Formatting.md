@@ -4,12 +4,12 @@
 Accepted
 
 ## Context
-Our FastAPI application accepts user-submitted profiles, biographies, career goals, and chat queries. This exposes the backend database and internal shell systems to cross-site scripting (XSS), SQL injection (SQLi), and command injection attacks. To prevent malicious input, we need a centralized input security validation framework.
+FastAPI application accepts user-submitted profiles, biographies, career goals, and chat queries. This exposes the backend database and internal shell systems to cross-site scripting (XSS), SQL injection (SQLi), and command injection attacks. To prevent malicious input, it need a centralized input security validation framework.
 
-At the same time, we use SQLModel/SQLAlchemy for our database models. In SQLModel, establishing relationships between models (e.g. Job, Skills, Company) requires using quoted string type annotations (like `list["Job"]`) to prevent circular import loops. However, our code formatting tool (Ruff) automatically cleans type annotations at lint/format time, resolving quotes and breaking the lazy-loaded registry at runtime, which crashes the server.
+At the same time, the project use SQLModel/SQLAlchemy for database models. In SQLModel, establishing relationships between models requires using quoted string type annotations to prevent circular import loops. However, our code formatting tool (Ruff) automatically cleans type annotations at lint/format time, resolving quotes and breaking the lazy-loaded registry at runtime, which crashes the server.
 
 ## Decision
-1. **Security Validation Wrapper:** Implement custom validation types `SafeStr` and `SafeEmailStr` using regex filters (detecting standard HTML tags, SQL keywords, and command sequences) and the `email-validator` library. Substitute standard `str` and `EmailStr` validations in all Pydantic schemas with these new types.
+1. **Security Validation Wrapper:** Implement custom validation types `SafeStr` and `SafeEmailStr` using regex filters and the `email-validator` library. Substitute standard `str` and `EmailStr` validations in all Pydantic schemas with these new types.
 2. **Ruff Model Exclusion:** Update the `pyproject.toml` tool configuration to completely exclude `**/models.py` files from formatting checks.
 
 ## Rationale
