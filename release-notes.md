@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump fast-uri from 3.1.5 to 3.1.7 in /frontend. PR [#83](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/83) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump nltk from 3.10.0 to 3.10.3. PR [#81](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/81) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the github-actions group with 2 updates. PR [#78](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/78) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the python-packages group with 4 updates. PR [#79](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/79) by [@dependabot[bot]](https://github.com/apps/dependabot).
