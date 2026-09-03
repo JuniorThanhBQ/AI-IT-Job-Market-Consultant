@@ -115,7 +115,6 @@ AIJMC utilizes three cloud platforms Vercel, Render, and Supabase to operate its
 
 ## VI. Documentation
 - [ADR](docs/adrs/)
-- [AIJMC AI Coding Disclosure (important)](docs/references/aijmc_ai_coding_disclosure.md)
 - [AIJMC Legal Aspect](docs/references/aijmc_legal_aspect.md)
 - [AIJMC Project License](docs/license/)
 - [API Documentation](docs/apis/)
@@ -159,7 +158,6 @@ More showcases here: [Feature Showcase](docs/showcase/feature/) | [Non-Feature S
 ## VIII. Project Structure
 ```text
 AI-IT-Job-Market-Consultant/
-├── AGENTS.md
 ├── LICENSE
 ├── Makefile
 ├── README.md
@@ -206,7 +204,6 @@ AI-IT-Job-Market-Consultant/
 │   ├── stage-report/
 │   └── testing/
 ├── frontend/
-│   ├── AGENTS.md
 │   ├── Dockerfile
 │   ├── README.md
 │   ├── components.json
