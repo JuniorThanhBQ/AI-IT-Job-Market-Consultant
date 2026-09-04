@@ -43,8 +43,7 @@ def main() -> None:
 
     seen: set[Path] = set()
     for p in sorted(Path(".").rglob("*")):
-        if p.name in target_names and p.is_dir():
-            if not any(parent in seen for parent in p.parents):
+        if p.name in target_names and p.is_dir() and not any(parent in seen for parent in p.parents):
                 seen.add(p)
                 remove(p, args.dry_run)
 

@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import ClassVar
 
-import pandas as pd
+import pandas as pd # type: ignore[import-untyped]
 
 from scripts.test_case_report.config import ISSUE_TITLE_PREFIX, TestCase
 
