@@ -8,6 +8,7 @@ CACHE_DIRS: set[str] = {
     ".ruff_cache",
     ".mypy_cache",
     "agents.egg-info",
+    ".vercel"
 }
 
 DIST_DIRS: set[str] = {

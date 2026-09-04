@@ -88,10 +88,10 @@ services:
     restart: "no"
     build:
       context: .
-      dockerfile: celery/Dockerfile
+      dockerfile: celery_app/Dockerfile
     volumes:
       - ./backend/app:/app/backend/app
-      - ./celery:/app/celery
+      - ./celery_app:/app/celery_app
       - ./database:/app/backend/database
       - ./scripts:/app/scripts
 
@@ -99,10 +99,10 @@ services:
     restart: "no"
     build:
       context: .
-      dockerfile: celery/Dockerfile
+      dockerfile: celery_app/Dockerfile
     volumes:
       - ./backend/app:/app/backend/app
-      - ./celery:/app/celery
+      - ./celery_app:/app/celery_app
       - ./database:/app/backend/database
       - ./scripts:/app/scripts
 
@@ -110,10 +110,10 @@ services:
     restart: "no"
     build:
       context: .
-      dockerfile: celery/Dockerfile
+      dockerfile: celery_app/Dockerfile
     volumes:
       - ./backend/app:/app/backend/app
-      - ./celery:/app/celery
+      - ./celery_app:/app/celery_app
       - ./scripts:/app/scripts
 
   redis:

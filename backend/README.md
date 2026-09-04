@@ -41,4 +41,4 @@ Available in local/dev mode:
 ## Notes
 - Entry point: `backend/app/main.py`
 - Main router: `backend/app/modules/routers.py`
-- Full platform also includes the sibling `celery/` workers and the frontend app.
+- Full platform also includes the sibling `celery_app/` workers and the frontend app.

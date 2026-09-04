@@ -21,7 +21,7 @@ members = [
 
 [[package]]
 name = "ai-it-job-market-consultant"
-version = "1.0.0"
+version = "1.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "httpx" },
@@ -687,7 +687,7 @@ wheels = [
 [[package]]
 name = "celery-app"
 version = "1.0.0"
-source = { editable = "celery" }
+source = { editable = "celery_app" }
 dependencies = [
     { name = "aiohttp" },
     { name = "asyncpg" },

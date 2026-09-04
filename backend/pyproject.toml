@@ -56,7 +56,7 @@ module = "celery.*,crawl4ai.*,crawlee.*,rank_bm25"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = "celery_app,celery.tests.*"
+module = "celery_app.tests.*"
 ignore_errors = true
 
 

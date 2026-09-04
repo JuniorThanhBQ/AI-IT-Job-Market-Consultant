@@ -178,7 +178,7 @@ AI-IT-Job-Market-Consultant/
 │   ├── database/
 │   ├── scripts/
 │   └── tests/
-├── celery/
+├── celery_app/
 │   ├── Dockerfile
 │   ├── README.md
 │   ├── pyproject.toml

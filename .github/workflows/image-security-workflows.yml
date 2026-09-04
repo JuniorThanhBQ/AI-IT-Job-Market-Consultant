@@ -1,0 +1,88 @@
+name: Image security check periodic workflow
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * 4'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+  pull-requests: read
+
+jobs:
+  scan-staging-images:
+    name: Pull and Scan Docker Images
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Pull Backend Image
+        env:
+          IMAGE: ${{ secrets.DOCKER_IMAGE_BACKEND }}
+        run: docker pull "$IMAGE"
+
+      - name: Pull Frontend Image
+        env:
+          IMAGE: ${{ secrets.DOCKER_IMAGE_FRONTEND }}
+        run: docker pull "$IMAGE"
+
+      - name: Pull Celery Image
+        env:
+          IMAGE: ${{ secrets.DOCKER_IMAGE_CELERY }}
+        run: docker pull "$IMAGE"
+
+      - name: Scan Backend Image Security (Trivy)
+        id: scan_backend
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          image-ref: ${{ secrets.DOCKER_IMAGE_BACKEND }}
+          scan-type: 'image'
+          scanners: 'vuln,secret,misconfig'
+          severity: 'HIGH,CRITICAL'
+          format: 'table'
+          exit-code: '1'
+          timeout: '20m'
+
+      - name: Scan Frontend Image Security (Trivy)
+        id: scan_frontend
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          image-ref: ${{ secrets.DOCKER_IMAGE_FRONTEND }}
+          scan-type: 'image'
+          scanners: 'vuln,secret,misconfig'
+          severity: 'HIGH,CRITICAL'
+          format: 'table'
+          exit-code: '1'
+          timeout: '20m'
+
+      - name: Scan Celery Image Security (Trivy)
+        id: scan_celery
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          image-ref: ${{ secrets.DOCKER_IMAGE_CELERY }}
+          scan-type: 'image'
+          scanners: 'vuln,secret,misconfig'
+          severity: 'HIGH,CRITICAL'
+          format: 'table'
+          exit-code: '1'
+          timeout: '20m'
+
+      - name: Evaluate Scan Results
+        if: steps.scan_backend.outcome == 'failure' || steps.scan_frontend.outcome == 'failure' || steps.scan_celery.outcome == 'failure'
+        run: exit 1

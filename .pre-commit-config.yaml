@@ -1,9 +1,7 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
     hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
       - id: check-toml
       - id: check-yaml
         args:
@@ -17,25 +15,27 @@ repos:
       - id: check-json
       - id: check-executables-have-shebangs
       - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.48.0
+    rev: d43b6c087ac471e2ea7b8af622ff15f05c0c365b  # frozen: v0.15.1
     hooks:
       - id: typos
         args: [--force-exclude]
 
   - repo: https://github.com/hadolint/hadolint
-    rev: v2.15.1
+    rev: 2eece55955ced00200be9729e9728cb7dacca505  # frozen: v2.15.1
     hooks:
       - id: hadolint-docker
 
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.30.0
+    rev: 2ca41cc1372d1e939a6a879f18cdc19fc1cac1ce  # frozen: v8.30.0
     hooks:
       - id: gitleaks
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
+    rev: f12edd9c7be1c20cfa42420fd0e6df71e42b51ea  # frozen: v4.0.0-alpha.8
     hooks:
       - id: prettier
         files: ^frontend/.*\.(js|jsx|ts|tsx|css|json)$
@@ -64,10 +64,10 @@ repos:
         pass_filenames: false
 
       - id: frontend-lint-typecheck
-        name: Frontend Linter & Type Check (ESLint)
+        name: ESLint
         entry: npm --prefix frontend run lint
         language: system
-        types_or: [javascript, jsx]
+        types_or: [ts, tsx, javascript, jsx]
         pass_filenames: false
 
       - id: add-release-date
@@ -77,15 +77,8 @@ repos:
         files: ^release-notes\.md$
         pass_filenames: false
 
-      - id: pytest-backend
-        name: Run Backend Unit Tests
-        entry: uv run --project backend pytest -m "not e2e"
-        language: system
-        pass_filenames: false
-        always_run: true
-
   - repo: https://github.com/bridgecrewio/checkov
-    rev: 3.3.12
+    rev: 48dbc906f2ce7c0772cc8f106318831dee575de6  # frozen: 3.3.16
     hooks:
       - id: checkov
         name: Checkov Docker Compose Lint
@@ -95,13 +88,13 @@ repos:
           - yaml
 
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.29.0
+    rev: cef8b8350da46d8114c7e6b7272aebdccdf193ce  # frozen: v1.30.0
     hooks:
       - id: zizmor
         args: ["--min-severity", "high"]
 
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: v9.26.0
+    rev: 25d0a52aa8bc0fc242613346792dc8d726c13347  # frozen: v9.26.0
     hooks:
       - id: commitlint
         stages: [commit-msg]

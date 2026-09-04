@@ -47,7 +47,7 @@ jobs:
         run: uv sync --locked
 
       - name: Run tests
-        run: uv run --project backend pytest celery/tests || echo "No tests found"
+        run: uv run --project backend pytest celery_app/tests || echo "No tests found"
 
   test-frontend:
     name: Test Frontend (Node.js)
