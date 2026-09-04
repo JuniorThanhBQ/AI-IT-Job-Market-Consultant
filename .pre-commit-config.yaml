@@ -69,13 +69,12 @@ repos:
         language: system
         types_or: [ts, tsx, javascript, jsx]
         pass_filenames: false
-
-      - id: add-release-date
-        name: Add date to latest release header
-        entry: uv run python scripts/add_latest_release_date.py
+     
+      - id: commitlint
+        name: commitlint
+        entry: npx --prefix frontend commitlint --config frontend/commitlint.config.js --edit
+        stages: [commit-msg]
         language: system
-        files: ^release-notes\.md$
-        pass_filenames: false
 
   - repo: https://github.com/bridgecrewio/checkov
     rev: 48dbc906f2ce7c0772cc8f106318831dee575de6  # frozen: 3.3.16
@@ -92,10 +91,3 @@ repos:
     hooks:
       - id: zizmor
         args: ["--min-severity", "high"]
-
-  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: 25d0a52aa8bc0fc242613346792dc8d726c13347  # frozen: v9.26.0
-    hooks:
-      - id: commitlint
-        stages: [commit-msg]
-        additional_dependencies: ['@commitlint/config-conventional']

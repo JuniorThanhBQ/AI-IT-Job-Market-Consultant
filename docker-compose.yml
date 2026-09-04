@@ -90,7 +90,6 @@ services:
   db:
     image: pgvector/pgvector:0.8.6-pg18@sha256:691673308c99d2161ba298736f3147f1f22d79de2fb7ec93ae9b4afcab870b62
     container_name: app-db
-    command: postgres -c max_connections=200
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -106,6 +105,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
+    command: postgres -c max_connections=${POSTGRES_DB_MAX_CONNECTIONS-100}
 
   rabbitmq:
     image: rabbitmq:3.13-management@sha256:e582c0bc7766f3342496d8485efb5a1df782b5ce3886ad017e2eaae442311f69
@@ -153,7 +153,7 @@ services:
       - RABBITMQ_PORT=${RABBITMQ_PORT?Variable not set}
       - RABBITMQ_USER=${RABBITMQ_USER?Variable not set}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD?Variable not set}
-      - RCLONE_CONFIG=/app/celery_app/rclone.conf
+      - RCLONE_CONFIG=${RCLONE_CONFIG_PATH-/app/celery_app/rclone.conf}
       - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
       - SMTP_HOST=${SMTP_HOST?Variable not set}
       - SMTP_USER=${SMTP_USER?Variable not set}

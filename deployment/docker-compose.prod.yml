@@ -155,7 +155,7 @@ services:
           memory: 512M
         reservations:
           memory: 256M
-  
+
   ngrok:
     restart: always
     security_opt:

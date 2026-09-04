@@ -224,7 +224,6 @@ AI-IT-Job-Market-Consultant/
 │   ├── crawler_data/
 │   └── notebooks_results/
 └── scripts/
-    ├── add_latest_release_date.py
     ├── clean_temporary_files.py
     ├── create_staging_env.sh
     ├── generate_secret_key.py
