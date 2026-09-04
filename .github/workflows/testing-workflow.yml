@@ -1,7 +1,7 @@
 name: Testing Workflow
 
 on:
-  workflow_call:
+  workflow_call: {}
 
 concurrency:
   group: testing-pipeline-${{ github.workflow }}-${{ github.ref }}

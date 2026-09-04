@@ -1,12 +1,12 @@
 ---
 name: 'Type: Maintenance'
-about: These issues/pull requests are about reviewing/refactoring the project
+about: These issues/pull requests are about refactoring the project
 title: '[Maintenance] '
 labels: ['Type: Maintenance']
 assignees: [JuniorThanhBQ]
 ---
 
-## Maintenance / Refactoring Request
+## Maintenance and Refactoring Request
 
 ## Scope of Maintenance
 *What needs to be reviewed, refactored, updated, or cleaned up?*
@@ -20,10 +20,10 @@ assignees: [JuniorThanhBQ]
 ## Objective
 *What is the main goal or benefit of this maintenance task?*
 
-## Proposed Changes / Details
+## Proposed Changes
 *Detail how the work should be done. Provide specifications, class names, or files to modify if known.*
 
-## Testing & Verification Plan
+## Testing and Verification Plan
 *How will we verify that these changes do not introduce regressions? (e.g. unit tests, manual QA)*
 - [ ] Unit Tests
 - [ ] Integration Tests

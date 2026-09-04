@@ -1,4 +1,4 @@
-name: "CodeQL config - backend/frontend monorepo"
+name: "CodeQL configuration"
 
 paths:
   - backend

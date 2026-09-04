@@ -1,10 +1,10 @@
 # Contributing
 
-Thank you for your interest in contributing to this project. We welcome help from the community.
+Thank you for your interest in contributing to this project. I welcome help from the community.
 
 ## Discussions First
 
-For large changes, such as new features, major refactoring, or important design changes, please open a GitHub Discussion first. This helps the team review the idea before you spend a lot of time on implementation.
+For large changes, such as new features, major refactoring, or important design changes, please open a GitHub Discussion first. This helps me review the idea before you spend a lot of time on implementation.
 
 For small and simple changes, you can go directly to a pull request. This includes:
 
@@ -30,10 +30,8 @@ When you submit a pull request, please:
 
 ## Automated Code and AI
 
-You may use AI tools and other automation to help with your work. However, contributions should still include meaningful human review, judgment, and context.
-
-If the human effort in a pull request is lower than the effort needed for review, please do not submit it. We want contributions that are useful and clear.
+You can use AI tools and other automation to help with your work. However, contributions should still include meaningful human review, judgment, and context.
 
 ## Questions?
 
-If you have questions, please open a GitHub Discussion or contact the maintainers.
+If you have questions, please open a GitHub Discussion or contact me.

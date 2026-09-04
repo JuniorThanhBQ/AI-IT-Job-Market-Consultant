@@ -1,7 +1,7 @@
 name: Lint Workflow
 
 on:
-  workflow_call:
+  workflow_call: {}
 
 concurrency:
   group: lint-pipeline-${{ github.workflow }}-${{ github.ref }}
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   lint-backend:
-    name: Lint Backend (Pylint)
+    name: Lint Backend with Pylint
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -28,10 +28,10 @@ jobs:
         run: uv sync --locked
 
       - name: Run Pylint
-        run: uv run --with pylint pylint backend/app/ --fail-under=8.0 || true
+        run: uv run --with pylint pylint backend/app/ --fail-under=7.0
 
   lint-frontend:
-    name: Lint Frontend (ESLint)
+    name: Lint Frontend with ESLint
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -50,7 +50,7 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npm run lint || true
+        run: npm run lint
 
 
   lint-docker-compose:

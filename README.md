@@ -228,6 +228,5 @@ AI-IT-Job-Market-Consultant/
     ├── create_staging_env.sh
     ├── generate_secret_key.py
     ├── compose/
-    ├── release/
     └── security/
 ```
