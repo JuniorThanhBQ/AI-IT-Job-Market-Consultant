@@ -48,7 +48,6 @@ async def process_detail_page(
     soup: BeautifulSoup,
     url: str,
     session_factory,
-    config: dict | None = None,
 ) -> None:
     context.log.info(f"Processing VietnamWorks detail page: {url}")
 

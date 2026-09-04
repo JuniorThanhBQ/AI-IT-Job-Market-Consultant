@@ -10,8 +10,7 @@ logger = logging.getLogger(__name__)
 
 class VietnamworksCrawlerFactory(BaseCrawlerFactory):
     async def process_detail(self, context, soup, url, session_factory):
-        config = self._load_config()
-        await process_detail_page(context, soup, url, session_factory, config)
+        await process_detail_page(context, soup, url, session_factory)
 
     async def process_company(self, context, soup, url, session_factory):
         await process_company_page(context, soup, url, session_factory)

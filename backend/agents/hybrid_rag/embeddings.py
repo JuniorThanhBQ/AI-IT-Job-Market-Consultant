@@ -1,9 +1,8 @@
 import uuid
 from typing import Any
 
-from sqlmodel import Session
-
 from app.modules.consultee_profile import repository as profile_repo
+from sqlmodel import Session
 
 
 def build_user_profile(db: Session, user_id: uuid.UUID) -> dict | None:

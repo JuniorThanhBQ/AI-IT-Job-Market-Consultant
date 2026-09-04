@@ -9,13 +9,13 @@ from crawlee.fingerprint_suite import (
     HeaderGeneratorOptions,
 )
 
-_fingerprint_generator = DefaultFingerprintGenerator(
+fingerprint_generator = DefaultFingerprintGenerator(
     header_options=HeaderGeneratorOptions(locales=["vi-VN", "en-US"])
 )
 
 
 def generate_session_fingerprint() -> dict:
-    fp = _fingerprint_generator.generate()
+    fp = fingerprint_generator.generate()
 
     return {
         "user_agent": fp.navigator.userAgent,
@@ -51,13 +51,13 @@ class CustomRenderingTypePredictor(RenderingTypePredictor):
             "vietnamworks.com": True,
         }
 
-    def _domain(self, url: str) -> str:
+    def domain(self, url: str) -> str:
         return urlparse(url).netloc.removeprefix("www.")
 
     def predict(self, request: Request) -> RenderingTypePrediction:
-        domain = self._domain(request.url)
-        for known_domain, is_dynamic in self._cache.items():
-            if domain == known_domain or domain.endswith("." + known_domain):
+        domain = self.domain(request.url)
+        for knowndomain, is_dynamic in self._cache.items():
+            if domain == knowndomain or domain.endswith("." + knowndomain):
                 return RenderingTypePrediction(
                     rendering_type="client only" if is_dynamic else "static",
                     detection_probability_recommendation=0.0 if is_dynamic else 0.2,
@@ -70,7 +70,7 @@ class CustomRenderingTypePredictor(RenderingTypePredictor):
     def store_result(
         self, request: Request, rendering_type: Literal["static", "client only"]
     ) -> None:
-        domain = self._domain(request.url)
+        domain = self.domain(request.url)
         if domain in {"vietnamworks.com"}:
             return
         self._cache[domain] = rendering_type == "client only"

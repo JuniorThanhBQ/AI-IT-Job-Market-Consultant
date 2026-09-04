@@ -1,18 +1,6 @@
-# Celery Service
+# AIJMC Celery Distributed Task Queue
 
-This package contains the background worker and scheduler for the AI IT Job Market Consultant platform. It runs Celery tasks for crawling, job refreshes, database backups, and email reporting.
-
-## What is in this folder
-
-- `celery_app.py` - Celery application instance, task registration, and beat schedule
-- `tools/adaptive_crawler/` - adaptive crawler workflow entrypoints
-- `tools/crawl4ai_crawler/` - crawl4ai-based crawling implementation
-- `tools/crawler_update_tool/` - job update workflow for refreshing existing records
-- `tools/backup_tool/` - backup pipeline used by the scheduled backup task
-- `tools/email_report_tool/` - email reporting task definitions
-- `scripts/` - worker startup helpers and utility scripts
-- `tests/` - application-level tests for the Celery service
-- `Dockerfile` - container image for the worker runtime
+AIJMC's asynchronous background task system, featuring four primary tasks: data mining, recruitment news updates, periodic backups, and task notifications.
 
 ## Registered tasks
 
@@ -20,7 +8,7 @@ The app registers the following tasks:
 
 - `run_crawler_task` - executes the adaptive crawler workflow once per day at 00:00
 - `run_crawl4ai_task` - executes the crawl4ai crawler once per day at 02:30
-- `run_jobs_update_task` - refreshes job data every 30 minutes
+- `run_jobs_update_task` - refreshes job data every 2 hours
 - `run_database_backup_task` - runs the database backup pipeline every 3 hours
 
 The email reporting tools are imported into the Celery app so their tasks are available to the worker.
@@ -30,31 +18,83 @@ The email reporting tools are imported into the Celery app so their tasks are av
 - Broker: RabbitMQ via `settings.rabbitmq.RABBITMQ_URL`
 - Result backend: RPC
 - Timezone: `Asia/Ho_Chi_Minh`
-- Beat schedule file: temporary directory location managed by Celery
+- Beat schedule file: temporary directory location managed by Docker volume
 - Worker concurrency: derived from the startup helper and falls back to CPU count
 
-## Local development
+## Makefile supports:
 
-From the repository root, install the workspace environment and start the worker:
-
+Run backup restore Docker (requires CMD=[list|backup|restore|restore-override])":
 ```bash
-uv sync --package celery-app
-cd celery
-celery -A celery_app worker --loglevel=info
+make backup-restore-docker
 ```
 
-To run the scheduler as well:
-
+Run Celery adaptive crawler task manually in Docker container:
 ```bash
-celery -A celery_app beat --loglevel=info
+make run-crawler-celery
 ```
 
-A helper script is also available for launching the worker with adaptive concurrency:
-
+Run Celery jobs update task manually in Docker container:
 ```bash
-sh scripts/start_worker.sh
+make run-crawler-update
 ```
 
-## Container usage
+Run Celery crawl4ai task manually in Docker container:
+```bash
+make run-crawlfourai-celery
+```
 
-The Docker image builds the Celery runtime and starts the worker entrypoint by default. It includes the dependencies needed for crawling and reporting tasks.
+## Celery folder structure
+
+```text
+celery_app/
+├── Dockerfile
+├── README.md
+├── celery_app.py
+├── pyproject.toml
+├── rclone.conf
+├── rclone.conf.example
+├── scripts/
+│   ├── backup_restore_runner.py
+│   ├── get_concurrency.py
+│   └── start_worker.sh
+├── tests/
+├── tools/
+│   ├── adaptive_crawler/
+│   │   ├── config_crawler.py
+│   │   ├── crawler.py
+│   │   ├── helpers.py
+│   │   ├── crawler_adapter/
+│   │   │   ├── base_adapter.py
+│   │   │   ├── itjobs_adapter.py
+│   │   │   ├── itviec_adapter.py
+│   │   │   ├── topdev_adapter.py
+│   │   │   └── vietnamworks_adapter.py
+│   │   ├── crawler_factory/
+│   │   │   ├── base_factory.py
+│   │   │   ├── itjobs_factory/
+│   │   │   ├── itviec_factory/
+│   │   │   ├── topdev_factory/
+│   │   │   └── vietnamworks_factory/
+│   │   └── crawler_repository/
+│   │       ├── company_repository.py
+│   │       └── job_repository.py
+│   ├── backup_tool/
+│   │   ├── backup_helpers.py
+│   │   ├── backup_services.py
+│   │   └── db_transactions.py
+│   ├── crawl4ai_crawler/
+│   │   ├── adapter.py
+│   │   ├── config_crawler.py
+│   │   └── crawler.py
+│   ├── crawler_update_tool/
+│   │   ├── job_updater.py
+│   │   └── updater_services.py
+│   └── email_report_tool/
+│       ├── email_templates.html
+│       └── tasks.py
+└── utils/
+    ├── backup_utils.py
+    ├── itviec_utils.py
+    ├── text_parser.py
+    └── topdev_utils.py
+```

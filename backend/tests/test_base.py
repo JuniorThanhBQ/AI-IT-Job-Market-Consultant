@@ -1,7 +1,6 @@
+from app.main import app
 from fastapi import FastAPI
 from sqlmodel import Session
-
-from app.main import app
 
 
 class TestBase:

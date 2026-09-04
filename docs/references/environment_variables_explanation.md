@@ -63,6 +63,9 @@ This document provides a comprehensive reference for configuration variables def
 | `CRAWLER_MAX_REQUESTS_PER_CRAWL` | `integer` | Safety cap on the total count of web requests or pages fetched during an individual crawl execution. |
 | `CRAWLER_MAX_REQUEST_RETRIES` | `integer` | Maximum number of retry attempts for failed network requests, page load timeouts, or transient HTTP errors. |
 | `CRAWLER_REQUEST_HANDLER_TIMEOUT_SECONDS` | `integer` | Maximum seconds allowed for an individual HTTP request or page handler execution before timing out. |
+| `CRAWLER_UPDATE_BATCH_SIZE` | `integer` | Number of open jobs retrieved and evaluated in parallel per batch during the scheduled job status update workflow. |
+| `CRAWLER_UPDATE_MIN_DELAY_SECONDS` | `float` | Minimum random jitter delay between consecutive job URL status verification checks. |
+| `CRAWLER_UPDATE_MAX_DELAY_SECONDS` | `float` | Maximum random jitter delay between consecutive job URL status verification checks. |
 | `CRAWLER_MIN_DELAY_SECONDS` | `float` | Minimum random jitter delay between consecutive scraping requests to avoid triggering anti-bot rate limits. |
 | `CRAWLER_MAX_DELAY_SECONDS` | `float` | Maximum random jitter delay between consecutive scraping requests. |
 | `CRAWLER_BROWSER_TYPE` | `chromium` \| `firefox` \| `webkit` | Underlying browser engine launched by Playwright and Crawl4AI. |

@@ -2,12 +2,11 @@ import json
 import logging
 from typing import Any, cast
 
-from sqlalchemy import func, select
-from sqlmodel import Session
-
 from app.core.db import engine
 from app.core.enums import JobStatus
 from app.modules.job.models import Job, JobSkill, Skills
+from sqlalchemy import func, select
+from sqlmodel import Session
 
 logger = logging.getLogger(__name__)
 

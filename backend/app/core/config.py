@@ -99,10 +99,19 @@ class CrawlerSettings(BaseModel):
     CRAWLER_MAX_REQUESTS_PER_CRAWL: int = 1500
     CRAWLER_MAX_REQUEST_RETRIES: int = 2
     CRAWLER_REQUEST_HANDLER_TIMEOUT_SECONDS: int = 120
+    CRAWLER_UPDATE_BATCH_SIZE: int = 50
+    CRAWLER_UPDATE_MIN_DELAY_SECONDS: float = 0.5
+    CRAWLER_UPDATE_MAX_DELAY_SECONDS: float = 1.5
     CRAWLER_MIN_DELAY_SECONDS: float = 2.5
     CRAWLER_MAX_DELAY_SECONDS: float = 5.0
     CRAWLER_BROWSER_TYPE: str = "chromium"
     CRAWLER_HEADLESS: bool = True
+    ITVIEC_LINK: str = "https://itviec.com/it-jobs"
+    TOPDEV_LINK: str = "https://topdev.vn/jobs/search?job_categories_ids=2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C67"
+    ITJOBS_LINK: str = (
+        "https://www.itjobs.com.vn/vi/search?Text=&FunctionalLevelKey=&CityId="
+    )
+    VIETNAMWORKS_LINK: str = "https://www.vietnamworks.com/viec-lam?q=it&g=5&j=35.28.27.31.25.29.36.34.30.33.26.32.38&sorting=lasted"
 
 
 class SMTPSettings(BaseModel):
@@ -160,10 +169,17 @@ NESTED_SETTINGS_MAP: dict[str, tuple[type[BaseModel], list[str]]] = {
             "CRAWLER_MAX_REQUESTS_PER_CRAWL",
             "CRAWLER_MAX_REQUEST_RETRIES",
             "CRAWLER_REQUEST_HANDLER_TIMEOUT_SECONDS",
+            "CRAWLER_UPDATE_BATCH_SIZE",
+            "CRAWLER_UPDATE_MIN_DELAY_SECONDS",
+            "CRAWLER_UPDATE_MAX_DELAY_SECONDS",
             "CRAWLER_MIN_DELAY_SECONDS",
             "CRAWLER_MAX_DELAY_SECONDS",
             "CRAWLER_BROWSER_TYPE",
             "CRAWLER_HEADLESS",
+            "ITVIEC_LINK",
+            "TOPDEV_LINK",
+            "ITJOBS_LINK",
+            "VIETNAMWORKS_LINK",
         ],
     ),
     "smtp": (

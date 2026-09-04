@@ -8,22 +8,22 @@ from typing import Any
 
 from app.utils.utils import clean_field
 
-_SKILL_CATEGORIES_CACHE: dict[str, list[str]] | None = None
+SKILL_CATEGORIES_CACHE: dict[str, list[str]] | None = None
 
 
-def _get_skill_taxonomy() -> dict[str, list[str]]:
-    global _SKILL_CATEGORIES_CACHE
-    if _SKILL_CATEGORIES_CACHE is None:
+def get_skill_taxonomy() -> dict[str, list[str]]:
+    global SKILL_CATEGORIES_CACHE
+    if SKILL_CATEGORIES_CACHE is None:
         json_path = Path(__file__).parent.parent / "resources" / "skill_categories.json"
         if json_path.exists():
             try:
-                with open(json_path, "r", encoding="utf-8") as f:
-                    _SKILL_CATEGORIES_CACHE = json.load(f)
+                with open(json_path, encoding="utf-8") as f:
+                    SKILL_CATEGORIES_CACHE = json.load(f)
             except Exception:
-                _SKILL_CATEGORIES_CACHE = {}
+                SKILL_CATEGORIES_CACHE = {}
         else:
-            _SKILL_CATEGORIES_CACHE = {}
-    return _SKILL_CATEGORIES_CACHE
+            SKILL_CATEGORIES_CACHE = {}
+    return SKILL_CATEGORIES_CACHE
 
 
 class JobAdapterBase:
@@ -32,7 +32,7 @@ class JobAdapterBase:
         if not skill_name:
             return "Technical"
         clean = skill_name.strip().lower()
-        taxonomy = _get_skill_taxonomy()
+        taxonomy = get_skill_taxonomy()
 
         for category, terms in taxonomy.items():
             for term in terms:

@@ -4,14 +4,14 @@ import uuid
 from collections.abc import AsyncGenerator
 from typing import Any, cast
 
-from sqlmodel import Session, select
-
 from agents.hybrid_rag.retriever import build_rag_context
 from agents.subagents.market_analysis_agent.tools import (
     execute_market_consultant_stream,
 )
 from agents.supervisor.graph import Intent
 from agents.supervisor.orchestrator import execute_agent_flow
+from sqlmodel import Session, select
+
 from app.core.enums import ConsultantMode
 from app.modules.consultant import repository as consultant_repo
 from app.modules.consultant.models import ConsultantHistory

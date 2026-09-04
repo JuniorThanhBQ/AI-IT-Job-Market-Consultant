@@ -1,10 +1,9 @@
 import logging
 from collections.abc import AsyncGenerator
 
-from google.genai import types
-
 from app.google_genai import FlashModelService, GenAIClientManager, GenAIConfig
 from app.google_genai.prompts.templates import get_prompt_template
+from google.genai import types
 
 logger = logging.getLogger(__name__)
 

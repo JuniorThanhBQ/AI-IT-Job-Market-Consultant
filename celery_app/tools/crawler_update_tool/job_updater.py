@@ -3,10 +3,14 @@ import logging
 from typing import Any
 
 import aiohttp
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from tools.adaptive_crawler.config_crawler import DATABASE_URL
+from tools.adaptive_crawler.config_crawler import (
+    CRAWLER_UPDATE_BATCH_SIZE,
+    DATABASE_URL,
+)
 from tools.adaptive_crawler.crawler_repository.job_repository import JobRepository
 from tools.adaptive_crawler.helpers import generate_session_fingerprint
 
@@ -20,10 +24,10 @@ async def update_jobs_workflow() -> dict[str, Any]:
     session_factory = async_sessionmaker(
         engine, class_=AsyncSession, expire_on_commit=False
     )
-    batch_size = 50
     offset = 0
-    fp = generate_session_fingerprint()
-    headers = fp["extra_http_headers"]
+    batch_size = CRAWLER_UPDATE_BATCH_SIZE
+    finger_print = generate_session_fingerprint()
+    headers = finger_print["extra_http_headers"]
 
     try:
         async with session_factory() as db_session:
@@ -38,12 +42,10 @@ async def update_jobs_workflow() -> dict[str, Any]:
                     if not jobs_batch:
                         if all_modified_job_ids:
                             logger.info(
-                                f"Check and update all Jobs completed. Total modifications: {len(all_modified_job_ids)} jobs (IDs: {all_modified_job_ids})"
+                                f"Total modifications: {len(all_modified_job_ids)} jobs (IDs: {all_modified_job_ids})"
                             )
                         else:
-                            logger.info(
-                                "Check and update all Jobs completed. No modifications detected."
-                            )
+                            logger.info("No modifications detected.")
                         break
 
                     logger.info(
@@ -52,28 +54,22 @@ async def update_jobs_workflow() -> dict[str, Any]:
                     tasks = [process_job(job, http_session, repo) for job in jobs_batch]
                     results = await asyncio.gather(*tasks, return_exceptions=True)
 
-                    for job, res in zip(jobs_batch, results):
-                        if (
-                            not isinstance(res, Exception)
-                            and res is True
-                            and job.id is not None
-                        ):
-                            all_modified_job_ids.append(job.id)
+                    has_modifications = False
+                    for job, result in zip(jobs_batch, results, strict=False):
+                        if result is True:
+                            has_modifications = True
+                            if job.id is not None:
+                                all_modified_job_ids.append(job.id)
 
-                    has_modifications = any(
-                        res is True for res in results if not isinstance(res, Exception)
-                    )
                     if has_modifications:
                         try:
                             await db_session.commit()
-                        except Exception as e:
+                        except (SQLAlchemyError, RuntimeError) as e:
                             logger.error(
                                 f"Unable to do commit batch offset {offset}: {e}"
                             )
                             await db_session.rollback()
-
                     offset += batch_size
-
             return {
                 "status": "success",
                 "modified_jobs_count": len(all_modified_job_ids),

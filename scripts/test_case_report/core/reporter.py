@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from scripts.test_case_report.config import (
     ISSUE_LABELS,

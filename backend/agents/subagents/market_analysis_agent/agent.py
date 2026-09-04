@@ -2,6 +2,8 @@ import json
 import logging
 from typing import Any, cast
 
+from app.google_genai import GenAIClientManager, GenAIConfig
+from app.google_genai.prompts.templates import get_prompt_template
 from google import genai
 from google.genai import types
 
@@ -12,8 +14,6 @@ from agents.subagents.market_analysis_agent.tools import (
     execute_top_skills_chart,
 )
 from agents.supervisor.state import AgentState
-from app.google_genai import GenAIClientManager, GenAIConfig
-from app.google_genai.prompts.templates import get_prompt_template
 
 logger = logging.getLogger(__name__)
 

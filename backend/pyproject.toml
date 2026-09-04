@@ -87,6 +87,10 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "**/cli.py" = ["T201"]
 "scripts/*.py" = ["T201"]
+"celery_app/scripts/*.py" = ["T201"]
+"tests/**" = ["ARG001"]
+"celery_app/tests/**" = ["ARG001"]
+"celery_app/tools/email_report_tool/tasks.py" = ["ARG001"]
 
 [tool.ruff.lint.pyupgrade]
 keep-runtime-typing = true

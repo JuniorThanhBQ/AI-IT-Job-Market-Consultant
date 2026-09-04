@@ -2,13 +2,12 @@ import json
 import logging
 from typing import Any, cast
 
-from sqlalchemy import func, select, text
-from sqlmodel import Session
-
 from app.core.db import engine
 from app.core.enums import JobStatus
 from app.modules.company.models import Company
 from app.modules.job.models import Job
+from sqlalchemy import func, select, text
+from sqlmodel import Session
 
 logger = logging.getLogger(__name__)
 

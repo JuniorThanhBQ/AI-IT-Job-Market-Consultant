@@ -1,13 +1,12 @@
 from collections.abc import Generator
 
 import pytest
+from app.core.deps import get_db
+from app.main import app
 from fastapi.testclient import TestClient
 from sqlalchemy import event
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
-
-from app.core.deps import get_db
-from app.main import app
 
 
 @pytest.fixture(name="db_session")

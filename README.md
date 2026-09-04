@@ -119,6 +119,7 @@ AIJMC utilizes three cloud platforms Vercel, Render, and Supabase to operate its
 - [AIJMC Project License](docs/license/)
 - [API Documentation](docs/apis/)
 - [Architecture](docs/architectures/)
+- [Commitment using AI in AIJMC (important)](docs/references/aijmc_ai_coding_disclosure.md)
 - [References](docs/references/)
 - [Software Requirements Specification](docs/srs/)
 
@@ -187,7 +188,8 @@ AI-IT-Job-Market-Consultant/
 │   ├── rclone.conf.example
 │   ├── scripts/
 │   ├── tests/
-│   └── tools/
+│   ├── tools/
+│   └── utils/
 ├── database/
 │   ├── README
 │   ├── alembic.ini

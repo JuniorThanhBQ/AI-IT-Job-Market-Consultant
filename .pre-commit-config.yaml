@@ -44,14 +44,14 @@ repos:
     hooks:
       - id: local-ruff-check
         name: ruff check
-        entry: uv run ruff check --force-exclude --fix --exit-non-zero-on-fix
+        entry: uv run ruff check --config backend/pyproject.toml --force-exclude --fix --exit-non-zero-on-fix
         require_serial: true
         language: system
         types: [python]
 
       - id: local-ruff-format
         name: ruff format
-        entry: uv run ruff format --force-exclude --exit-non-zero-on-format
+        entry: uv run ruff format --config backend/pyproject.toml --force-exclude --exit-non-zero-on-format
         require_serial: true
         language: system
         types: [python]
@@ -69,7 +69,7 @@ repos:
         language: system
         types_or: [ts, tsx, javascript, jsx]
         pass_filenames: false
-     
+
       - id: commitlint
         name: commitlint
         entry: npx --prefix frontend commitlint --config frontend/commitlint.config.js --edit

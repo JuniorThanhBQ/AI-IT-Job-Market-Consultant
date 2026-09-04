@@ -23,13 +23,11 @@ from tools.adaptive_crawler.crawler_adapter.base_adapter import JobAdapterBase
 def crawl4ai_adapter_company(raw_data: dict[str, Any]) -> Company:
     company_name = (raw_data.get("company_name") or "Unknown Company").strip()
     location = (raw_data.get("location") or "Vietnam").strip()
-
     company_type = map_company_type("Product")
     company_industry = "Information Technology"
     company_size = "Unknown"
     company_country = map_country("Vietnam")
     company_desc = ""
-
     raw_bens = raw_data.get("benefits") or []
     benefits = (
         parse_to_list(raw_bens)
@@ -37,7 +35,6 @@ def crawl4ai_adapter_company(raw_data: dict[str, Any]) -> Company:
         else parse_to_list(str(raw_bens))
     )
     benefits = [clean_html_text(b).strip() for b in benefits if clean_html_text(b)]
-
     comp_vector_context = JobAdapterBase.build_company_vector_context(
         name=company_name,
         slogan="",
@@ -70,23 +67,18 @@ def crawl4ai_adapter(raw_data: dict[str, Any], source_url: str) -> Job:
     title = (raw_data.get("title") or "Unknown Title").strip()
     job_desc = clean_html_text(raw_data.get("description") or "")
     location = (raw_data.get("location") or "Vietnam").strip()
-
     now = datetime.now(UTC)
     expired_date = (now + timedelta(days=30)).replace(tzinfo=None)
-
     raw_salary = (raw_data.get("salary") or "Thỏa Thuận").strip()
     min_salary, max_salary, parsed_curr_str = JobAdapterBase.parse_salary(raw_salary)
     currency = map_currency(parsed_curr_str)
-
     seniority = map_seniority_level(title, "")
     working_model = map_working_model("On-site")
     working_hours = map_working_hours("Toàn thời gian")
-
     reqs = raw_data.get("requirements") or []
     required_qualifications = (
         parse_to_list(reqs) if isinstance(reqs, list) else parse_to_list(str(reqs))
     )
-
     raw_skills = raw_data.get("skills") or []
     skills_list = (
         parse_to_list(raw_skills)
@@ -94,7 +86,6 @@ def crawl4ai_adapter(raw_data: dict[str, Any], source_url: str) -> Job:
         else parse_to_list(str(raw_skills))
     )
     skills = JobAdapterBase.process_skills(skills_list)
-
     nice_to_have = raw_data.get("nice_to_have") or []
     nice_to_have = [clean_html_text(n) for n in nice_to_have if clean_html_text(n)]
     url = (raw_data.get("apply_url") or source_url).strip()
@@ -102,13 +93,11 @@ def crawl4ai_adapter(raw_data: dict[str, Any], source_url: str) -> Job:
     content_hash = JobAdapterBase.calculate_content_hash(
         title, company_obj.name, job_desc, location
     )
-
     skills_str, req_str = (
         ", ".join([s.name for s in skills]),
         "\n".join(required_qualifications),
     )
     nice_str = "\n".join(nice_to_have) if nice_to_have else ""
-
     job_vector_context = process_job_vector_context(
         title=title,
         company_name=company_obj.name,

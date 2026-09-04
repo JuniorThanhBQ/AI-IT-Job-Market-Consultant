@@ -4,19 +4,11 @@ import json
 import logging
 import os
 import shutil
-import tempfile
 from pathlib import Path
 
 from app.core.config import settings
-from utils.backup_utils import (
-    calculate_sha256,
-    pipeline_lock,
-    run_cmd,
-)
+from utils.backup_utils import calculate_sha256, run_cmd
 
-from tools.backup_tool.db_transactions import (
-    restore_override as db_restore_override,
-)
 from tools.backup_tool.db_transactions import (
     verify_backup as db_verify_backup,
 )
@@ -96,17 +88,17 @@ async def enforce_retention_policy():
 
     try:
         files = json.loads(stdout)
-    except Exception as e:
-        logger.warning(f"Failed to parse rclone output: {e}")
+    except Exception as exc:
+        logger.warning(f"Failed to parse rclone output: {exc}")
         return
 
-    dump_files = [f for f in files if f.get("Name", "").endswith(".dump.gz")]
-    dump_files.sort(key=lambda x: x.get("ModTime", ""))
+    dump_files = [item for item in files if item.get("Name", "").endswith(".dump.gz")]
+    dump_files.sort(key=lambda item: item.get("ModTime", ""))
     if len(dump_files) > max_stacks:
         to_delete = dump_files[: len(dump_files) - max_stacks]
         logger.info(f"Deleting {len(to_delete)} oldest backup files from GDrive...")
-        for f in to_delete:
-            filename = f["Name"]
+        for file_info in to_delete:
+            filename = file_info["Name"]
             sha_filename = f"{filename}.sha256"
 
             logger.info(f"Deleting remote file: {filename}")
@@ -124,42 +116,14 @@ async def enforce_retention_policy():
                 logger.warning(f"Failed to delete remote file {sha_filename}: {stderr}")
 
 
-async def list_remote_backups() -> list[dict]:
-    remote_path = settings.backup.RCLONE_REMOTE_PATH
-    code, stdout, stderr = await run_cmd(["rclone", "lsjson", remote_path])
-    if code != 0:
-        if "directory not found" in stderr.lower():
-            return []
-        raise RuntimeError(f"Failed to list remote backups: {stderr}")
-    try:
-        files = json.loads(stdout)
-        dump_files = [f for f in files if f.get("Name", "").endswith(".dump.gz")]
-        dump_files.sort(key=lambda x: x.get("ModTime", ""), reverse=True)
-        return dump_files
-    except Exception as e:
-        raise RuntimeError(f"Failed to parse rclone JSON output: {e}")
-
-
-async def check_rclone_login() -> tuple[bool, str]:
-    if not shutil.which("rclone"):
-        return False, "rclone executable not found on system PATH."
-
-    remote_path = settings.backup.RCLONE_REMOTE_PATH
-    remote_name = remote_path.split(":")[0]
-
-    code, stdout, stderr = await run_cmd(["rclone", "about", f"{remote_name}:"])
-    if code != 0:
-        return False, stderr or f"rclone exited with code {code}"
-    return True, ""
-
-
-async def _download_and_decompress_backup(temp_dir: Path) -> Path | None:
-    remote_path = settings.backup.RCLONE_REMOTE_PATH
-    backups = await list_remote_backups()
+async def download_and_decompress_backup(
+    temp_dir: Path, backups: list[dict]
+) -> Path | None:
     if not backups:
         logger.error("No backups found on Google Drive.")
         return None
 
+    remote_path = settings.backup.RCLONE_REMOTE_PATH
     latest_filename = backups[0]["Name"]
     latest_sha_filename = f"{latest_filename}.sha256"
 
@@ -192,61 +156,15 @@ async def _download_and_decompress_backup(temp_dir: Path) -> Path | None:
 
     logger.info("Checksum validation passed.")
     decompressed_dump = temp_dir / latest_filename.replace(".gz", "")
-    with gzip.open(local_dump, "rb") as f_in:
-        with open(decompressed_dump, "wb") as f_out:
-            shutil.copyfileobj(f_in, f_out)
+    with gzip.open(local_dump, "rb") as f_in, open(decompressed_dump, "wb") as f_out:
+        shutil.copyfileobj(f_in, f_out)
 
     return decompressed_dump
 
 
-async def _verify_latest_backup_impl(temp_dir: Path) -> bool:
+async def verify_latest_backup_impl(temp_dir: Path, backups: list[dict]) -> bool:
     logger.info("Starting verification pipeline for latest backup...")
-    decompressed_dump = await _download_and_decompress_backup(temp_dir)
+    decompressed_dump = await download_and_decompress_backup(temp_dir, backups)
     if not decompressed_dump:
         return False
     return await db_verify_backup(decompressed_dump)
-
-
-async def verify_latest_backup(temp_dir: Path) -> bool:
-    with pipeline_lock("verify"):
-        return await _verify_latest_backup_impl(temp_dir)
-
-
-async def restore_override(temp_dir: Path) -> bool:
-    decompressed_dump = await _download_and_decompress_backup(temp_dir)
-    if not decompressed_dump:
-        return False
-
-    logger.info("Verifying backup integrity on temporary database before override.")
-    verified = await db_verify_backup(decompressed_dump)
-    if not verified:
-        logger.error(
-            "Pre-restore backup verification failed. Aborting restore override."
-        )
-        return False
-
-    logger.info(
-        "Pre-restore verification passed. Proceeding with database restore override."
-    )
-    return await db_restore_override(decompressed_dump)
-
-
-async def run_backup_pipeline() -> bool:
-    logger.info("Starting Database Backup and Verification Pipeline")
-    with pipeline_lock("backup"), tempfile.TemporaryDirectory() as temp_dir_str:
-        temp_dir = Path(temp_dir_str)
-        try:
-            dump_path, sha_path = await backup_db(temp_dir)
-            await upload_to_gdrive(dump_path, sha_path)
-            await enforce_retention_policy()
-
-            success = await _verify_latest_backup_impl(temp_dir)
-            if success:
-                logger.info("Backup pipeline healthcheck status: SUCCESS")
-                return True
-            else:
-                logger.error("Backup pipeline healthcheck status: FAILED")
-                return False
-        except Exception:
-            logger.exception("Backup pipeline failed")
-            return False

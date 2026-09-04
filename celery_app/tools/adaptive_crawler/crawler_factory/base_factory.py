@@ -31,7 +31,7 @@ from ..config_crawler import (
 from ..helpers import CustomRenderingTypePredictor, generate_session_fingerprint
 
 
-async def _open_queue(site_name: str, storage_client) -> RequestQueue:
+async def open_queue(site_name: str, storage_client) -> RequestQueue:
     return await RequestQueue.open(
         name=f"rq-{site_name}", storage_client=storage_client
     )
@@ -53,7 +53,7 @@ class BaseCrawlerFactory(ABC):
     async def process_list(self, context, soup, url, config=None):
         pass
 
-    def _load_config(self) -> dict:
+    def load_config(self) -> dict:
         module = sys.modules[self.__module__]
         module_file = module.__file__
         if not module_file:
@@ -65,7 +65,7 @@ class BaseCrawlerFactory(ABC):
 
         if os.path.exists(config_path) and os.path.getsize(config_path) > 0:
             try:
-                with open(config_path, "r", encoding="utf-8") as f:
+                with open(config_path, encoding="utf-8") as f:
                     return json.load(f)
             except Exception:
                 return {
@@ -84,7 +84,7 @@ class BaseCrawlerFactory(ABC):
             "settings": {"wait_for_networkidle": False},
         }
 
-    def _matches_rules(self, url: str, label: str, rule_cfg: dict) -> bool:
+    def matches_rules(self, url: str, label: str, rule_cfg: dict) -> bool:
         if label in rule_cfg.get("labels", []):
             return True
 
@@ -133,15 +133,13 @@ class BaseCrawlerFactory(ABC):
                 return
 
             soup = BeautifulSoup(html_content, "html.parser")
-
-            config = self._load_config()
+            config = self.load_config()
             rules = config.get("rules", {})
             settings = config.get("settings", {})
-
-            is_detail = self._matches_rules(
+            is_detail = self.matches_rules(
                 url, context.request.label or "", rules.get("detail", {})
             )
-            is_company = self._matches_rules(
+            is_company = self.matches_rules(
                 url, context.request.label or "", rules.get("company", {})
             )
 
@@ -157,7 +155,6 @@ class BaseCrawlerFactory(ABC):
                     context.log.warning(
                         f"Timeout/Error waiting for page load, falling back to initial HTML: {e}"
                     )
-
             if is_detail:
                 await self.process_detail(context, soup, url, session_factory)
                 self.existing_urls.add(url)
@@ -194,27 +191,17 @@ class BaseCrawlerFactory(ABC):
         storage_client: RedisStorageClient | None = None,
         event_manager: LocalEventManager | None = None,
     ) -> AdaptivePlaywrightCrawler:
-        async with session_factory() as session:
-            from tools.adaptive_crawler.crawler_repository.job_repository import (
-                JobRepository,
-            )
-
-            repo = JobRepository(session)
-            urls = await repo.get_all_urls()
-            self.existing_urls = set(urls)
-
         predictor = CustomRenderingTypePredictor()
         site_name = self.__class__.__name__.lower().replace("crawlerfactory", "")
-
         if storage_client is None:
             storage_client = RedisStorageClient(connection_string=REDIS_URL)
 
         if event_manager is None:
             event_manager = LocalEventManager.from_config()
 
-        request_queue = await _open_queue(site_name, storage_client)
+        request_queue = await open_queue(site_name, storage_client)
         await request_queue.drop()
-        request_queue = await _open_queue(site_name, storage_client)
+        request_queue = await open_queue(site_name, storage_client)
 
         crawler = AdaptivePlaywrightCrawler.with_beautifulsoup_static_parser(
             max_requests_per_crawl=MAX_REQUESTS_PER_CRAWL,
@@ -247,7 +234,6 @@ class BaseCrawlerFactory(ABC):
             storage_client=storage_client,
             event_manager=event_manager,
         )
-
         handler = self.get_handler(session_factory)
         crawler.router.default_handler(handler)
         crawler.error_handler(self.handle_error)

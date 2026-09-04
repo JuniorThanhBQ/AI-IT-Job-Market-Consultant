@@ -98,7 +98,7 @@ docker-lint:
 	docker run --rm -i hadolint/hadolint < celery_app/Dockerfile
 
 lint: docker-lint
-	uv run --project backend ruff check backend celery_app
+	uv run --project backend ruff check --config backend/pyproject.toml backend celery_app
 	uv run --project backend mypy backend/app celery_app
 	uv run --project backend typos
 	uv run --project backend pylint --rcfile=backend/pyproject.toml backend celery_app/tools celery_app/scripts celery_app/utils
@@ -121,7 +121,7 @@ test-backend:
 	uv run --project backend pytest backend/tests --cov=app --cov-report=term-missing
 
 test-celery:
-	uv run --project backend pytest celery_app/tests --cov=celery_app/tools --cov=celery_app/utils --cov-report=term-missing
+	uv run --project backend pytest celery_app/tests --cov=celery_app/tools/backup_tool --cov=celery_app/tools/crawl4ai_crawler --cov=celery_app/tools/crawler_update_tool --cov=celery_app/tools/email_report_tool --cov-report=term-missing
 
 test-frontend:
 	npm --prefix frontend audit --audit-level=critical

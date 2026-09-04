@@ -1,7 +1,7 @@
 [project]
 name = "celery-app"
-version = "1.0.0"
-description = "Celery background worker and scheduler for IT Job Market Consultant"
+version = "1.1.0"
+description = "Celery background worker and scheduler for AIJMC"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [

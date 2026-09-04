@@ -20,7 +20,7 @@ class JobRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def _acquire_advisory_lock(self, lock_key: str) -> None:
+    async def acquire_advisory_lock(self, lock_key: str) -> None:
         try:
             bind = self.session.get_bind()
             if bind and getattr(bind.dialect, "name", "") == "postgresql":
@@ -85,7 +85,7 @@ class JobRepository:
 
         job_url_clean = job.url.strip()
         lock_key = f"job:{job_url_clean.lower()}"
-        await self._acquire_advisory_lock(lock_key)
+        await self.acquire_advisory_lock(lock_key)
 
         temp_company = job.company
         temp_skills = job.skills

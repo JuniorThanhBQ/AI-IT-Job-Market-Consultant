@@ -2,12 +2,11 @@ import asyncio
 import os
 import tempfile
 
-import tools.email_report_tool.tasks  # noqa: F401 # pylint: disable=unused-import
 from app.core.config import settings
 from celery import Celery
 from celery.schedules import crontab
 from tools.adaptive_crawler.crawler import main as run_crawler_main
-from tools.backup_tool.service import run_backup_pipeline
+from tools.backup_tool.backup_services import run_backup_pipeline
 from tools.crawl4ai_crawler.crawler import run_crawl4ai_main
 from tools.crawler_update_tool.job_updater import update_jobs_workflow
 
@@ -15,6 +14,7 @@ app = Celery(
     "jobs_crawler",
     broker=settings.rabbitmq.RABBITMQ_URL,
     backend="rpc://",
+    include=["tools.email_report_tool.tasks"],
 )
 
 app.conf.update(
@@ -35,21 +35,22 @@ app.conf.beat_schedule = {
     "run-crawler-every-day": {
         "task": "celery_app.run_crawler_task",
         "schedule": crontab(hour=0, minute=0),
-        "options": {"expires": 21600},
+        "options": {"expires": 43200},
     },
     "run-crawler-update-every-hours": {
         "task": "celery_app.run_jobs_update_task",
         "schedule": crontab(minute=0, hour="*/1"),
-        "options": {"expires": 720},
+        "options": {"expires": 1800},
     },
     "run-crawl4ai-every-day": {
         "task": "celery_app.run_crawl4ai_task",
         "schedule": crontab(hour=2, minute=30),
-        "options": {"expires": 21600},
+        "options": {"expires": 10800},
     },
     "run-database-backup-every-3-hours": {
         "task": "celery_app.run_database_backup_task",
         "schedule": crontab(minute=0, hour="*/3"),
+        "options": {"expires": 10800},
     },
 }
 

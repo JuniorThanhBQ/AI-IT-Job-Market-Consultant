@@ -27,3 +27,4 @@ pythonpath = [".", "backend", "celery_app"]
 
 [tool.mypy]
 exclude = ["venv", ".venv", "alembic"]
+ignore_missing_imports = true

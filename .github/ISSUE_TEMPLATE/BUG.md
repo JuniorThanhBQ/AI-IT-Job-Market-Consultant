@@ -36,4 +36,4 @@ Steps to reproduce the behavior:
 *   **Additional Tools/Context:**
 
 ## Additional Reminder
-Please write this problem in test-case-report.xlsx if you found it outside of test case coverage.  
+Please write this problem in test-case-report.xlsx if you found it outside of test case coverage.

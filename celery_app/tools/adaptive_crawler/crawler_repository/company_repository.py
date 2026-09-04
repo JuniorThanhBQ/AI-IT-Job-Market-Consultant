@@ -16,7 +16,7 @@ class CompanyRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def _acquire_advisory_lock(self, lock_key: str) -> None:
+    async def acquire_advisory_lock(self, lock_key: str) -> None:
         try:
             bind = self.session.get_bind()
             if bind and getattr(bind.dialect, "name", "") == "postgresql":
@@ -47,7 +47,7 @@ class CompanyRepository:
 
         company_name_clean = company.name.strip()
         lock_key = f"company:{company_name_clean.lower()}"
-        await self._acquire_advisory_lock(lock_key)
+        await self.acquire_advisory_lock(lock_key)
 
         existing = await self.get_by_name(company_name_clean)
 
