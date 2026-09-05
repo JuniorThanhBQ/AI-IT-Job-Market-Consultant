@@ -1,6 +1,6 @@
 [project]
 name = "backend"
-version = "1.0.0"
+version = "2.0.0"
 description = "AI IT Jobs Market Consultant platform used UV to manage backend packages"
 readme = "README.md"
 requires-python = ">=3.14"
@@ -59,8 +59,6 @@ ignore_missing_imports = true
 module = "celery_app.tests.*"
 ignore_errors = true
 
-
-
 [tool.ruff]
 target-version = "py314"
 exclude = ["alembic", "**/models.py"]
@@ -115,7 +113,6 @@ packages = ["app", "agents"]
 [tool.pytest.ini_options]
 pythonpath = ["..", "."]
 testpaths = ["tests"]
-
 
 [tool.pylint.messages_control]
 disable = [

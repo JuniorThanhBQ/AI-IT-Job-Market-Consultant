@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email - {{ project_name }}</title>
+    <link rel="stylesheet" href="/static/css/email_verification.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .email-wrapper {
+            width: 100%;
+            background-color: #f8f9fa;
+            padding: 40px 15px;
+            box-sizing: border-box;
+        }
+        .email-card {
+            max-width: 560px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 36px 32px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .brand-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .brand-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0d6efd;
+            margin: 0 0 6px 0;
+        }
+        .brand-subtitle {
+            font-size: 14px;
+            color: #6c757d;
+            margin: 0;
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 16px;
+        }
+        .message-body {
+            font-size: 15px;
+            color: #495057;
+            margin-bottom: 28px;
+        }
+        .action-container {
+            text-align: center;
+            margin: 32px 0;
+        }
+        .btn-verify {
+            display: inline-block;
+            background-color: #0d6efd;
+            color: #ffffff !important;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 6px;
+        }
+        .expire-note {
+            font-size: 13px;
+            color: #6c757d;
+            background-color: #f1f3f5;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+        }
+        .link-fallback {
+            font-size: 13px;
+            color: #6c757d;
+            word-break: break-all;
+            margin-bottom: 24px;
+        }
+        .link-fallback a {
+            color: #0d6efd;
+        }
+        .email-footer {
+            border-top: 1px solid #e9ecef;
+            padding-top: 20px;
+            font-size: 12px;
+            color: #adb5bd;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-card">
+            <div class="brand-header">
+                <h1 class="brand-title">{{ project_name }}</h1>
+                <p class="brand-subtitle">Email Verification</p>
+            </div>
+            <div class="greeting">
+                Hello {{ username }},
+            </div>
+            <div class="message-body">
+                Thank you for signing up for {{ project_name }}. Please confirm your email address by clicking the button below:
+            </div>
+            <div class="action-container">
+                <a href="{{ link }}" class="btn-verify" target="_blank" rel="noopener noreferrer">Verify Email Address</a>
+            </div>
+            <div class="expire-note">
+                This verification link will expire in {{ valid_hours }} hours. If you did not create an account, you can safely ignore this email.
+            </div>
+            <div class="link-fallback">
+                If the button above does not work, copy and paste the following URL into your browser:<br>
+                <a href="{{ link }}">{{ link }}</a>
+            </div>
+            <div class="email-footer">
+                &copy; {{ project_name }}. All rights reserved.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

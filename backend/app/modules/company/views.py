@@ -17,8 +17,8 @@ def get_company_service(session: SessionDep) -> CompanyService:
 @router.get("/", response_model=list[CompanyRead])
 def list_companies_endpoint(
     _current_user: CurrentUser,  # pylint: disable=unused-argument
-    name: str | None = Query(default=None, description="Filter by company name"),
-    industry: str | None = Query(default=None, description="Filter by industry"),
+    name: str | None = Query(default=None),
+    industry: str | None = Query(default=None),
     company_type: CompanyType | None = Query(
         default=None, description="Filter by company type"
     ),

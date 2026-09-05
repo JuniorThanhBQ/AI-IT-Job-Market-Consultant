@@ -1,4 +1,4 @@
-.PHONY: app-check backup-restore backup-restore-docker clean coverage-xml db-migrate db-migrate-docker db-migration db-migration-docker dev-app-build dev-app-down dev-backend dev-frontend docker-lint generate-secret help install lint pre-commit-autoupdate pre-commit-check prod-app-build prod-app-down radon-check run-crawlfourai-celery run-crawler-celery run-crawler-update test test-backend test-celery test-frontend test-report
+.PHONY: app-check backup-restore backup-restore-docker clean coverage-xml db-migrate db-migrate-docker db-migration db-migration-docker dev-app-build dev-app-down dev-backend dev-frontend docker-init-admin docker-lint generate-secret help init-admin install lint pre-commit-autoupdate pre-commit-check prod-app-build prod-app-down radon-check remake-rclone-config run-crawlfourai-celery run-crawler-celery run-crawler-update test test-backend test-celery test-frontend test-report
 .DEFAULT_GOAL := help
 
 help:
@@ -6,6 +6,8 @@ help:
 	@echo "  make help                       - Show the list of supported commands"
 	@echo "  make clean                      - Cleaning unused files (optional CLEAN_TYPE=\"...\" like --dist --dry-run )"
 	@echo "  make generate-secret            - Generate a secure random SECRET_KEY"
+	@echo "  make init-admin                 - Create initial superuser admin account locally"
+	@echo "  make docker-init-admin          - Create initial superuser admin account in backend container"
 	@echo "  make install                    - Install dependencies for both backend and frontend"
 	@echo "  make dev-backend                - Run backend development local"
 	@echo "  make dev-frontend               - Run frontend development local"
@@ -19,6 +21,7 @@ help:
 	@echo "  make db-migration-docker        - Generate a new database migration in backend container (requires MSG=\"...\")"
 	@echo "  make backup-restore             - Run backup restore locally (requires CMD=[list|backup|restore|restore-override])"
 	@echo "  make backup-restore-docker      - Run backup restore Docker (requires CMD=[list|backup|restore|restore-override])"
+	@echo "  make remake-rclone-config       - Regenerate or sync rclone.conf from local system to celery_app"
 	@echo "  make run-crawler-celery         - Run Celery adaptive crawler task manually in Docker container"
 	@echo "  make run-crawler-update         - Run Celery jobs update task manually in Docker container"
 	@echo "  make run-crawlfourai-celery     - Run Celery crawl4ai task manually in Docker container"
@@ -75,11 +78,20 @@ db-migration:
 db-migration-docker:
 	docker compose exec backend alembic -c database/alembic.ini revision --autogenerate -m "$(MSG)"
 
+init-admin:
+	uv run --project backend python -c "from app.core.auth import create_admin_account; create_admin_account()"
+
+docker-init-admin:
+	docker compose exec backend python -c "from app.core.auth import create_admin_account; create_admin_account()"
+
 backup-restore:
 	uv run --project backend python celery_app/scripts/backup_restore_runner.py "$(CMD)"
 
 backup-restore-docker:
 	docker compose exec celery-worker-default python celery_app/scripts/backup_restore_runner.py "$(CMD)"
+
+remake-rclone-config:
+	uv run python scripts/remake_rclone_config.py
 
 run-crawler-celery:
 	docker compose exec celery-worker-crawler celery -A celery_app call celery_app.run_crawler_task

@@ -65,7 +65,7 @@ See the detailed meaning of each environment variable at [Environment Variables 
 
 ### Application startup steps
 
-1. First, you must make sure all the "Application Requirements" are met. After that, open bash to run the code below (stand in the AI-IT-Job-Market-Consultant folder):
+1. First, you must make sure all the "Application Requirements" are met. After that, open bash to run the code below (you must stand in the AI-IT-Job-Market-Consultant folder):
 
 ```bash
   make install
@@ -77,8 +77,9 @@ See the detailed meaning of each environment variable at [Environment Variables 
   make generate-secret
 ```
 
-Also, you need to configure the rclone.conf in the celery folder with the standard rclone.conf.example (This is crucial if you want the backup task to work).
-See how to configure rclone.conf at [Rclone Configuration Tutorial](docs/references/rclone_configuration_tutorial.md)
+> [!Warning]
+> Also, you need to configure `rclone.conf` in the celery folder with the standard `rclone.conf.example` (crucial for database backup and restore operations). See how to configure `rclone.conf` at [Rclone Configuration Tutorial](docs/references/rclone_configuration_tutorial.md).
+
 
 3. Third, you will run Docker and build the Docker image in development mode:
 
@@ -119,7 +120,6 @@ AIJMC utilizes three cloud platforms Vercel, Render, and Supabase to operate its
 - [AIJMC Project License](docs/license/)
 - [API Documentation](docs/apis/)
 - [Architecture](docs/architectures/)
-- [Commitment using AI in AIJMC (important)](docs/references/aijmc_ai_coding_disclosure.md)
 - [References](docs/references/)
 - [Software Requirements Specification](docs/srs/)
 

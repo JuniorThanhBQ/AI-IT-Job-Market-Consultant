@@ -3,32 +3,28 @@ from datetime import datetime
 
 from sqlmodel import Field, SQLModel
 
-from app.utils.validators import SafeEmailStr, SafeStr
+from app.utils.validators import SafeEmailStr, SafePasswordStr, SafeStr
 
 
 class UserRegister(SQLModel):
     email: SafeEmailStr = Field(max_length=255)
-    password: SafeStr = Field(min_length=8, max_length=40)
+    password: SafePasswordStr = Field(min_length=8, max_length=40)
+    confirm_password: SafePasswordStr = Field(min_length=8, max_length=40)
     username: SafeStr | None = Field(default=None, max_length=255)
 
 
-class UserCreate(SQLModel):
-    email: SafeEmailStr = Field(max_length=255)
-    password: SafeStr = Field(min_length=8, max_length=40)
-    username: SafeStr | None = Field(default=None, max_length=255)
-    is_active: bool = True
+class PasswordReset(SQLModel):
+    old_password: SafeStr = Field(min_length=8, max_length=40)
+    new_password: SafePasswordStr = Field(min_length=8, max_length=40)
+    confirm_new_password: SafePasswordStr = Field(min_length=8, max_length=40)
 
 
-class UserUpdate(SQLModel):
-    email: SafeEmailStr | None = Field(default=None, max_length=255)
-    is_active: bool | None = None
-    username: SafeStr | None = Field(default=None, max_length=255)
-    password: SafeStr | None = Field(default=None, min_length=8, max_length=40)
-
-
-class NewPassword(SQLModel):
+class VerificationConfirm(SQLModel):
     token: SafeStr
-    new_password: SafeStr = Field(min_length=8, max_length=40)
+
+
+class VerificationRequest(SQLModel):
+    email: SafeEmailStr
 
 
 class UserPublic(SQLModel):
@@ -39,11 +35,6 @@ class UserPublic(SQLModel):
     is_superuser: bool
     username: str | None = None
     last_login: datetime | None = None
-
-
-class UsersPublic(SQLModel):
-    data: list[UserPublic]
-    count: int
 
 
 class Token(SQLModel):

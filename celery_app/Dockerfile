@@ -49,7 +49,9 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
-RUN groupadd -r -g 10001 app && useradd -r -u 10001 -g app app && chown app:app /app
+RUN groupadd -r -g 10001 app \
+    && useradd -r -m -u 10001 -g app app \
+    && chown -R app:app /app /home/app
 
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
 

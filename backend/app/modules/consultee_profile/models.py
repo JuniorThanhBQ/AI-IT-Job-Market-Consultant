@@ -23,7 +23,6 @@ class ConsulteeEmbedding(EmbeddingModel, table=True):
     profile_id: int = Field(
         foreign_key="consultee_profiles.id", unique=True, index=True, ondelete="CASCADE"
     )
-
     profile: ConsulteeProfile = Relationship(
         sa_relationship=relationship(
             "ConsulteeProfile",
@@ -31,7 +30,6 @@ class ConsulteeEmbedding(EmbeddingModel, table=True):
             uselist=False,
         )
     )
-
     __table_args__ = (
         Index(
             "idx_consultee_embeddings_embedding_hnsw",
@@ -83,6 +81,10 @@ class ConsulteeProfile(BaseModel, table=True):
             lazy="select",
         )
     )
+
+    def __str__(self) -> str:
+        parts = [p for p in (self.last_name, self.first_name) if p]
+        return " ".join(parts) if parts else f"Profile #{self.id}"
 
     @field_validator("first_name", "last_name")
     @classmethod
@@ -139,6 +141,10 @@ class CurriculumVitae(BaseModel, table=True):
         )
     )
 
+    def __str__(self) -> str:
+        position = self.job_position or "Unspecified"
+        return f"{self.profile_id} - {position}"
+
     @field_validator("projects", check_fields=False)
     @classmethod
     def validate_projects_limit(
@@ -175,6 +181,9 @@ class CurriculumVitaeProject(BaseModel, table=True):
             back_populates="projects",
         )
     )
+
+    def __str__(self) -> str:
+        return f"{self.cv_id} - {self.name} - {self.role}"
 
     @model_validator(mode="after")
     def validate_project_dates(self):

@@ -27,9 +27,13 @@ class EmailData:
 
 
 def render_email_template(*, template_name: str, context: dict[str, Any]) -> str:
-    template_str = (
-        Path(__file__).parent / "email-templates" / "build" / template_name
-    ).read_text()
+    template_path = Path(__file__).parent.parent / "templates" / template_name
+    if not template_path.is_file():
+        template_path = (
+            Path(__file__).parent / "email-templates" / "build" / template_name
+        )
+
+    template_str = template_path.read_text(encoding="utf-8")
     html_content = Template(template_str).render(context)
     return html_content
 
@@ -44,11 +48,13 @@ def send_email(
         raise ValueError("no provided configuration for email variables")
     if not settings.smtp.EMAILS_FROM_EMAIL:
         raise ValueError("emails_from_email is not configured")
+
     message = emails.message.Message(
         subject=subject,
         html=html_content,
         mail_from=(settings.smtp.EMAILS_FROM_NAME, settings.smtp.EMAILS_FROM_EMAIL),
     )
+
     smtp_options = {"host": settings.smtp.SMTP_HOST, "port": settings.smtp.SMTP_PORT}
     if settings.smtp.SMTP_TLS:
         smtp_options["tls"] = True
@@ -58,6 +64,7 @@ def send_email(
         smtp_options["user"] = settings.smtp.SMTP_USER
     if settings.smtp.SMTP_PASSWORD:
         smtp_options["password"] = settings.smtp.SMTP_PASSWORD
+
     response = message.send(to=email_to, smtp=smtp_options)
     logger.info(f"send email result: {response}")
 
@@ -107,8 +114,25 @@ def generate_new_account_email(
     return EmailData(html_content=html_content, subject=subject)
 
 
-def generate_password_reset_token(email: str) -> str:
-    delta = timedelta(hours=settings.EMAIL_RESET_TOKEN_EXPIRE_HOURS)
+def generate_verification_email(email_to: str, username: str, token: str) -> EmailData:
+    project_name = settings.PROJECT_NAME
+    subject = f"{project_name} - Verify your email"
+    link = f"{settings.NEXT_PUBLIC_BASE_URL}/accounts/verification/?token={token}"
+    html_content = render_email_template(
+        template_name="email/email_verification.html",
+        context={
+            "project_name": settings.PROJECT_NAME,
+            "username": username,
+            "email": email_to,
+            "valid_hours": settings.EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS,
+            "link": link,
+        },
+    )
+    return EmailData(html_content=html_content, subject=subject)
+
+
+def generate_verification_token(email: str) -> str:
+    delta = timedelta(hours=settings.EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS)
     now = datetime.now(UTC)
     expires = now + delta
     exp = expires.timestamp()
@@ -120,7 +144,7 @@ def generate_password_reset_token(email: str) -> str:
     return encoded_jwt
 
 
-def verify_password_reset_token(token: str) -> str | None:
+def verify_verification_token(token: str) -> str | None:
     try:
         decoded_token = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]

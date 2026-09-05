@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class ITViecCrawlerFactory(BaseCrawlerFactory):
     async def process_detail(self, context, soup, url, session_factory):
-        config = self._load_config()
+        config = self.load_config()
         await process_detail_page(context, soup, url, session_factory, config)
 
     async def process_company(self, context, soup, url, session_factory):

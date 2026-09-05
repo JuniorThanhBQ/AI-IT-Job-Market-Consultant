@@ -28,6 +28,12 @@ Run backup restore Docker (requires CMD=[list|backup|restore|restore-override])"
 make backup-restore-docker
 ```
 
+Regenerate or sync rclone.conf from local system to celery_app:
+```bash
+make remake-rclone-config
+```
+*(If your token expires or returns `invalid_grant`, reconnect first on your host machine via `rclone config reconnect gdrive:` then run `make remake-rclone-config`)*
+
 Run Celery adaptive crawler task manually in Docker container:
 ```bash
 make run-crawler-celery

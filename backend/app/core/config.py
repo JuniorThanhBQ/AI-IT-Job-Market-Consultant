@@ -213,7 +213,7 @@ class Settings(BaseSettings):
         extra="allow",
         secrets_dir="/run/secrets" if Path("/run/secrets").is_dir() else None,
     )
-    API_V1_STR: str = "/api/v1"
+    API_V2_STR: str = "/api/v2"
     SECRET_KEY: str = ""
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     FRONTEND_HOST: str = "http://localhost:5173"
@@ -240,6 +240,8 @@ class Settings(BaseSettings):
     CELERY_WORKER_MAX_TASKS_PER_CHILD: int = 50
     GEMINI_API_KEY: list[str] | str = []
     EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
+    EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS: int = 48
+    NEXT_PUBLIC_BASE_URL: str = "http://localhost:8081/api/v2"
     EMAIL_TEST_USER: EmailStr = "test@example.com"
     FIRST_SUPERUSER: EmailStr = "admin@example.com"
     FIRST_SUPERUSER_PASSWORD: str = ""

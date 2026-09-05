@@ -20,7 +20,6 @@ class CompanyEmbedding(EmbeddingModel, table=True):
     company_id: int = Field(
         foreign_key="companies.id", unique=True, index=True, ondelete="CASCADE"
     )
-
     company: Company = Relationship(
         sa_relationship=relationship(
             "Company",
@@ -28,7 +27,6 @@ class CompanyEmbedding(EmbeddingModel, table=True):
             uselist=False,
         )
     )
-
     __table_args__ = (
         Index(
             "idx_company_embeddings_embedding_hnsw",
@@ -62,8 +60,10 @@ class Company(BaseModel, table=True):
     overtime_policy: str | None = Field(default=None)
     vector_context: str
 
-    __table_args__ = ()
+    def __str__(self) -> str:
+        return f"{self.name} - {self.industry}"
 
+    __table_args__ = ()
     jobs: list["Job"] = Relationship(
         sa_relationship=relationship(
             "Job",

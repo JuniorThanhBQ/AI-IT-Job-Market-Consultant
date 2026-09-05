@@ -1,5 +1,5 @@
 export const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8081/api/v1";
+  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8081/api/v2";
 
 async function fetchClient(
   endpoint,
