@@ -11,6 +11,38 @@ if TYPE_CHECKING:
     from app.modules.job.schemas import JobRead
 
 
+class CompanyCreate(BaseModel):
+    name: SafeStr = Field(max_length=255)
+    industry: SafeStr = Field(max_length=255)
+    size: SafeStr = Field(max_length=255)
+    location: SafeStr = Field(max_length=255)
+    description: SafeStr
+    website: SafeStr | None = Field(default=None, max_length=255)
+    slogan: SafeStr | None = Field(default=None, max_length=255)
+    company_type: CompanyType | None = Field(default=CompanyType.PRODUCT)
+    country: CountryEnum | None = Field(default=CountryEnum.VIETNAM)
+    addresses: list[SafeStr] | None = None
+    benefits: list[SafeStr] | None = None
+    working_days: SafeStr | None = Field(default=None, max_length=255)
+    overtime_policy: SafeStr | None = Field(default=None, max_length=255)
+
+
+class CompanyUpdate(BaseModel):
+    name: SafeStr | None = Field(default=None, max_length=255)
+    industry: SafeStr | None = Field(default=None, max_length=255)
+    size: SafeStr | None = Field(default=None, max_length=255)
+    location: SafeStr | None = Field(default=None, max_length=255)
+    description: SafeStr | None = None
+    website: SafeStr | None = Field(default=None, max_length=255)
+    slogan: SafeStr | None = Field(default=None, max_length=255)
+    company_type: CompanyType | None = None
+    country: CountryEnum | None = None
+    addresses: list[SafeStr] | None = None
+    benefits: list[SafeStr] | None = None
+    working_days: SafeStr | None = Field(default=None, max_length=255)
+    overtime_policy: SafeStr | None = Field(default=None, max_length=255)
+
+
 class CompanyRead(BaseModel):
     id: int
     name: str
