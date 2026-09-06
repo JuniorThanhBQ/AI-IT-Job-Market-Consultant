@@ -5,28 +5,30 @@ from app.modules.job.models import Job
 
 
 class BM25Index:
-    _bm25: BM25Okapi | None = None
-    _job_ids: list[int] = []
+    bm25: BM25Okapi | None = None
+    job_ids: list[int] = []
 
     @classmethod
     def build(cls, session: Session) -> None:
         results = session.exec(select(Job.id, Job.vector_context)).all()
         if not results:
-            cls._job_ids = []
-            cls._bm25 = None
+            cls.job_ids = []
+            cls.bm25 = None
             return
-        cls._job_ids = [row[0] for row in results if row[0] is not None]
+        cls.job_ids = [row[0] for row in results if row[0] is not None]
         corpus = [row[1].lower().split() for row in results]
-        cls._bm25 = BM25Okapi(corpus)
+        cls.bm25 = BM25Okapi(corpus)
 
     @classmethod
     def search(cls, query: str, top_n: int = 30) -> list[tuple[int, float]]:
-        if cls._bm25 is None or not cls._job_ids:
+        if cls.bm25 is None or not cls.job_ids:
             return []
         tokens = query.lower().split()
-        scores = cls._bm25.get_scores(tokens)
-        indexed = sorted(enumerate(scores), key=lambda x: x[1], reverse=True)[:top_n]
-        return [(cls._job_ids[i], score) for i, score in indexed if score > 0.0]
+        scores = cls.bm25.get_scores(tokens)
+        indexed = sorted(enumerate(scores), key=lambda item: item[1], reverse=True)[
+            :top_n
+        ]
+        return [(cls.job_ids[index], score) for index, score in indexed if score > 0.0]
 
     @classmethod
     def refresh(cls, session: Session) -> None:

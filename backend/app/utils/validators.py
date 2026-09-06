@@ -1,3 +1,4 @@
+import math
 import re
 import shlex
 from datetime import UTC, date, datetime, timedelta
@@ -123,17 +124,15 @@ def validate_email_address(value: str) -> str:
     return value
 
 
-SafeStr = Annotated[
-    str,
-    AfterValidator(validate_xss),
-    AfterValidator(validate_sql_injection),
-    AfterValidator(validate_command_injection),
-]
-
-SafeEmailStr = Annotated[
-    SafeStr,
-    AfterValidator(validate_email_address),
-]
+def vector_validator(vector: object) -> bool:
+    if not isinstance(vector, list) or len(vector) == 0:
+        return False
+    for item in vector:
+        if not isinstance(item, (int, float)):
+            return False
+        if isinstance(item, float) and (math.isnan(item) or math.isinf(item)):
+            return False
+    return True
 
 
 def validate_password_strength(value: str) -> str:
@@ -151,6 +150,18 @@ def validate_password_strength(value: str) -> str:
         raise ValueError("Password must contain at least one special character.")
     return value
 
+
+SafeStr = Annotated[
+    str,
+    AfterValidator(validate_xss),
+    AfterValidator(validate_sql_injection),
+    AfterValidator(validate_command_injection),
+]
+
+SafeEmailStr = Annotated[
+    SafeStr,
+    AfterValidator(validate_email_address),
+]
 
 SafePasswordStr = Annotated[
     SafeStr,

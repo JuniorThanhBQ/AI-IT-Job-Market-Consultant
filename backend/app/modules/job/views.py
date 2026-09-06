@@ -80,12 +80,9 @@ async def job_hybrid_search(
     _current_user: CurrentUser,
     session: SessionDep,
 ) -> list[JobSearchResult]:
-    return await job_service.semantic_search(
+    return await job_service.hybrid_search(
         session=session,
         query=body.query,
-        seniority=body.seniority,
-        working_model=body.working_model,
-        min_salary=body.min_salary,
         limit=body.limit,
     )
 

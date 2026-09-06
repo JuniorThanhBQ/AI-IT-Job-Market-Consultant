@@ -7,7 +7,6 @@ from sqlmodel import Session
 
 from app.core.enums import SeniorityLevel, WorkingModel
 from app.modules.company import repository as company_repo
-from app.modules.consultant import repository as consultant_repo
 from app.modules.job import repository as job_repo
 from app.modules.job.exceptions import (
     InvalidSalaryRangeError,
@@ -26,7 +25,9 @@ from app.modules.job.schemas import (
 )
 from app.modules.user.models import User
 from app.modules.user.schemas import MessageResponse
+from app.tools.hybrid_retrieval import get_hybrid_candidates
 from app.utils.embeddings import generate_embedding_async
+from app.utils.job_utils import built_semantic_results, resolve_enum_value
 from app.utils.vector_utils import build_job_vector_context
 
 
@@ -66,23 +67,21 @@ def list_jobs(
     return [JobRead.model_validate(j) for j in jobs]
 
 
-async def semantic_search(
+async def hybrid_search(
     *,
     session: Session,
     query: str,
-    seniority: list[SeniorityLevel] | None = None,
-    working_model: list[WorkingModel] | None = None,
-    min_salary: Decimal | None = None,
     limit: int = 15,
 ) -> list[JobSearchResult]:
     start_time = time.time()
     embedding = await generate_embedding_async(query)
     embedding_latency = time.time() - start_time
-    candidates, retrieval_latency, rrf_latency = consultant_repo.get_hybrid_candidates(
+    candidates, retrieval_latency, rrf_latency = get_hybrid_candidates(
         session=session,
         user_query=query,
         user_vector=embedding,
         limit=limit * 2,
+        safe=True,
     )
     top_candidates = candidates[:limit]
     results: list[JobSearchResult] = []
@@ -115,30 +114,14 @@ async def semantic_search(
     job_repo.create_semantic_search_log(
         session=session,
         query=query,
-        results=[
-            {
-                "embedding_latency": embedding_latency,
-                "retrieval_latency": retrieval_latency,
-                "rrf_latency": rrf_latency,
-            }
-        ]
-        + [
-            {
-                "job_id": job.id,
-                "score": float(max(0.0, round(1.0 - float(distance), 4))),
-                "distance": float(distance),
-            }
-            for job, company, distance in top_candidates
-        ],
+        results=built_semantic_results(
+            embedding_latency=embedding_latency,
+            retrieval_latency=retrieval_latency,
+            rrf_latency=rrf_latency,
+            top_candidates=top_candidates,
+        ),
         latency=latency,
-        request_meta={
-            "limit": limit,
-            "seniority": [s.value for s in seniority] if seniority else None,
-            "working_model": [wm.value for wm in working_model]
-            if working_model
-            else None,
-            "min_salary": float(min_salary) if min_salary is not None else None,
-        },
+        request_meta={},
     )
 
     results.sort(key=lambda x: x.score, reverse=True)
@@ -203,21 +186,12 @@ def update_job(
         else:
             company = None
 
-    seniority_value = (
-        update_dict["seniority"].value
-        if "seniority" in update_dict and update_dict["seniority"] is not None
-        else (job.seniority.value if job.seniority else None)
+    seniority_value = resolve_enum_value(update_dict, "seniority", job.seniority)
+    currency_value = resolve_enum_value(update_dict, "currency", job.currency)
+    working_model_value = resolve_enum_value(
+        update_dict, "working_model", job.working_model
     )
-    currency_value = (
-        update_dict["currency"].value
-        if "currency" in update_dict and update_dict["currency"] is not None
-        else (job.currency.value if job.currency else None)
-    )
-    working_model_value = (
-        update_dict["working_model"].value
-        if "working_model" in update_dict and update_dict["working_model"] is not None
-        else (job.working_model.value if job.working_model else None)
-    )
+
     update_dict["vector_context"] = build_job_vector_context(
         title=update_dict.get("title", job.title),
         company_name=company.name if company else None,

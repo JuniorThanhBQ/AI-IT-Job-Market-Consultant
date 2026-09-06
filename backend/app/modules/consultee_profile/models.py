@@ -131,7 +131,7 @@ class CurriculumVitae(BaseModel, table=True):
             uselist=False,
         )
     )
-    projects: list[CurriculumVitaeProject] = Relationship(
+    projects: list["CurriculumVitaeProject"] = Relationship( # noqa: UP037
         sa_relationship=relationship(
             "CurriculumVitaeProject",
             back_populates="cv",

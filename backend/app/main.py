@@ -24,7 +24,7 @@ from app.core.middlewares import (
 )
 from app.db import base as _db_base  # noqa: F401
 from app.modules.routers import api_router
-from app.modules.shared.bm25 import BM25Index
+from app.tools.hybrid_retrieval import BM25Index
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("app").setLevel(logging.INFO)

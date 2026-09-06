@@ -1,3 +1,6 @@
+from collections.abc import Sequence
+from typing import Any
+
 from fastapi import HTTPException, status
 
 from app.core.enums import SeniorityLevel, WorkingModel
@@ -47,3 +50,40 @@ def parse_working_models(values: list[str] | None) -> list[WorkingModel] | None:
                     detail=f"Invalid working model: '{item_stripped}'",
                 )
     return parsed
+
+
+def resolve_enum_value(
+    update_dict: dict[str, Any], key: str, fallback: Any | None
+) -> str | None:
+    if key in update_dict and update_dict[key] is not None:
+        value = update_dict[key]
+        return str(getattr(value, "value", value))
+    if fallback:
+        return str(getattr(fallback, "value", fallback))
+    return None
+
+
+def built_semantic_results(
+    *,
+    embedding_latency: float,
+    retrieval_latency: float,
+    rrf_latency: float,
+    top_candidates: Sequence[tuple[Any, Any, float]],
+) -> list[dict[str, Any]]:
+    metrics: dict[str, Any] = {
+        "embedding_latency": embedding_latency,
+        "retrieval_latency": retrieval_latency,
+        "rrf_latency": rrf_latency,
+    }
+    results: list[dict[str, Any]] = [metrics]
+    for item in top_candidates:
+        job = item[0]
+        distance = item[2]
+        results.append(
+            {
+                "job_id": job.id,
+                "score": float(max(0.0, round(1.0 - float(distance), 4))),
+                "distance": float(distance),
+            }
+        )
+    return results
