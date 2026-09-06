@@ -59,7 +59,7 @@ def list_jobs(
     )
 
 
-@router.get("/{id}", response_model=JobDetail)
+@router.get("/{id}/", response_model=JobDetail)
 def get_job(
     id: int,
     _current_user: CurrentUser,
@@ -74,8 +74,8 @@ def get_job(
         ) from exc
 
 
-@router.post("/semantic-search/", response_model=list[JobSearchResult])
-async def semantic_search(
+@router.post("/hybrid/", response_model=list[JobSearchResult])
+async def job_hybrid_search(
     body: SemanticSearchRequest,
     _current_user: CurrentUser,
     session: SessionDep,
@@ -111,7 +111,7 @@ def create_job(
         ) from exc
 
 
-@router.patch("/{id}", response_model=JobDetail)
+@router.patch("/{id}/", response_model=JobDetail)
 def update_job(
     id: int,
     *,
@@ -137,7 +137,7 @@ def update_job(
         ) from exc
 
 
-@router.delete("/{id}", response_model=MessageResponse)
+@router.delete("/{id}/", response_model=MessageResponse)
 def delete_job(
     id: int,
     *,

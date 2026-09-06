@@ -1,6 +1,6 @@
-from app.google_genai.base import BaseModelService
-from app.google_genai.client import GenAIClientManager
-from app.google_genai.models import GeminiModel
+from app.genai.base import BaseModelService
+from app.genai.client import GenAIClientManager
+from app.genai.models import GeminiModel
 
 
 class FlashModelService(BaseModelService):
@@ -8,6 +8,8 @@ class FlashModelService(BaseModelService):
         self, client_manager: GenAIClientManager, models: list[str] | None = None
     ):
         model_list = models or [
+            GeminiModel.GEMINI_3_8_FLASH.value,
+            GeminiModel.GEMINI_3_7_FLASH.value,
             GeminiModel.GEMINI_3_6_FLASH.value,
             GeminiModel.GEMINI_3_5_FLASH.value,
             GeminiModel.GEMINI_2_5_FLASH.value,

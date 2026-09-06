@@ -1,3 +1,5 @@
+import uuid
+from datetime import datetime
 from typing import Any
 
 from pydantic import BaseModel
@@ -25,5 +27,13 @@ class ConsultantResponse(BaseModel):
 
 
 class ConsultantHistoryItem(BaseModel):
+    id: uuid.UUID | None = None
     user_input: str
     output: str
+    consultant_mode: ConsultantMode | None = None
+    created_at: datetime | None = None
+
+
+class ConsultantHistoryClearResponse(BaseModel):
+    status: str
+    cleared_count: int

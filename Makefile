@@ -1,4 +1,4 @@
-.PHONY: app-check backup-restore backup-restore-docker clean coverage-xml db-migrate db-migrate-docker db-migration db-migration-docker dev-app-build dev-app-down dev-backend dev-frontend docker-init-admin docker-lint generate-secret help init-admin install lint pre-commit-autoupdate pre-commit-check prod-app-build prod-app-down radon-check remake-rclone-config run-crawlfourai-celery run-crawler-celery run-crawler-update test test-backend test-celery test-frontend test-report
+.PHONY: app-check backup-restore backup-restore-docker clean coverage-xml db-migrate db-migrate-docker db-migration db-migration-docker dev-app-build dev-app-down dev-backend dev-frontend docker-init-admin docker-lint export-fastapi-openapi generate-secret help init-admin install lint pre-commit-autoupdate pre-commit-check prod-app-build prod-app-down radon-check remake-rclone-config run-crawlfourai-celery run-crawler-celery run-crawler-update test test-backend test-celery test-frontend test-report
 .DEFAULT_GOAL := help
 
 help:
@@ -6,6 +6,7 @@ help:
 	@echo "  make help                       - Show the list of supported commands"
 	@echo "  make clean                      - Cleaning unused files (optional CLEAN_TYPE=\"...\" like --dist --dry-run )"
 	@echo "  make generate-secret            - Generate a secure random SECRET_KEY"
+	@echo "  make export-fastapi-openapi     - Export FastAPI Swagger OpenAPI JSON spec (optional NAME=\"...\")"
 	@echo "  make init-admin                 - Create initial superuser admin account locally"
 	@echo "  make docker-init-admin          - Create initial superuser admin account in backend container"
 	@echo "  make install                    - Install dependencies for both backend and frontend"
@@ -43,6 +44,9 @@ clean:
 
 generate-secret:
 	uv run python scripts/generate_secret_key.py
+
+export-fastapi-openapi:
+	uv run --project backend python scripts/generate_openapi.py $(if $(NAME),--name "$(NAME)",)
 
 install:
 	uv sync --all-packages

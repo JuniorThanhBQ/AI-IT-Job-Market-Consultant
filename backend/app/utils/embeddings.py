@@ -1,9 +1,9 @@
 import logging
 
-from app.google_genai.client import GenAIClientManager
-from app.google_genai.configs import GenAIConfig
-from app.google_genai.embedding import EmbeddingService
-from app.google_genai.models import GeminiModel
+from app.genai.client import GenAIClientManager
+from app.genai.configs import GenAIConfig
+from app.genai.embedding import EmbeddingService
+from app.genai.models import GeminiModel
 
 logger = logging.getLogger(__name__)
 

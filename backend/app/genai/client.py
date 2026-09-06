@@ -3,18 +3,18 @@ import secrets
 
 from google import genai
 
-from app.google_genai.configs import GenAIConfig
+from app.genai.configs import GenAIConfig
 
 
 class GenAIClientManager:
-    _instance = None
-    _clients: dict[str, genai.Client] = {}
-    _vertex_client: genai.Client | None = None
+    instance = None
+    clients: dict[str, genai.Client] = {}
+    vertex_client: genai.Client | None = None
 
     def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
+        if cls.instance is None:
+            cls.instance = super().__new__(cls)
+        return cls.instance
 
     def __init__(self, config: GenAIConfig):
         if not hasattr(self, "config"):
@@ -29,9 +29,9 @@ class GenAIClientManager:
             if stripped.startswith("[") and stripped.endswith("]"):
                 try:
                     keys = json.loads(stripped)
-                except Exception as e:
+                except Exception:
                     raise ValueError(
-                        f"GEMINI_API_KEY in .env is configured as a list, but has a syntax/JSON error: {e}. Raw value: {keys}"
+                        "GEMINI_API_KEY in .env is configured as a list, but has a syntax/JSON error."
                     )
             else:
                 return keys
@@ -41,11 +41,11 @@ class GenAIClientManager:
 
     def get_client(self) -> genai.Client:
         if self.config.use_vertex:
-            if self._vertex_client is None:
-                self._vertex_client = genai.Client(vertexai=True)
-            return self._vertex_client
+            if self.vertex_client is None:
+                self.vertex_client = genai.Client(vertexai=True)
+            return self.vertex_client
 
         api_key = self._get_api_key()
-        if api_key not in self._clients:
-            self._clients[api_key] = genai.Client(api_key=api_key)
-        return self._clients[api_key]
+        if api_key not in self.clients:
+            self.clients[api_key] = genai.Client(api_key=api_key)
+        return self.clients[api_key]

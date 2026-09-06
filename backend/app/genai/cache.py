@@ -3,7 +3,7 @@ from typing import Any
 
 from google.genai import types
 
-from app.google_genai.client import GenAIClientManager
+from app.genai.client import GenAIClientManager
 
 logger = logging.getLogger(__name__)
 

@@ -43,7 +43,7 @@ def list_companies(
     )
 
 
-@router.get("/{id}", response_model=CompanyDetail)
+@router.get("/{id}/", response_model=CompanyDetail)
 def get_company(
     id: int,
     _current_user: CurrentUser,
@@ -78,7 +78,7 @@ def create_company(
         ) from exc
 
 
-@router.patch("/{id}", response_model=CompanyRead)
+@router.patch("/{id}/", response_model=CompanyRead)
 def update_company(
     id: int,
     *,
@@ -104,7 +104,7 @@ def update_company(
         ) from exc
 
 
-@router.delete("/{id}", response_model=MessageResponse)
+@router.delete("/{id}/", response_model=MessageResponse)
 def delete_company(
     id: int,
     *,

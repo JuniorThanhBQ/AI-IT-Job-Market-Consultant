@@ -66,7 +66,7 @@ backend/
 │   ├── fixtures/
 │   │   ├── __init__.py
 │   │   └── initial_data.py
-│   ├── google_genai/
+│   ├── genai/
 │   ├── modules/
 │   │   ├── __init__.py
 │   │   ├── routers.py

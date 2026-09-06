@@ -3,7 +3,7 @@ import uuid
 from typing import Any, cast
 
 from sqlalchemy.orm import selectinload
-from sqlmodel import Session, select
+from sqlmodel import Session, or_, select
 
 from app.core.enums import ConsultantMode
 from app.modules.company.models import Company
@@ -98,3 +98,36 @@ def create_history(
     session.commit()
     session.refresh(history)
     return history
+
+
+def get_history_by_user_id(
+    *, session: Session, user_id: uuid.UUID
+) -> list[ConsultantHistory]:
+    stmt = (
+        select(ConsultantHistory)
+        .where(ConsultantHistory.user_id == user_id)
+        .where(ConsultantHistory.user_input != "")
+        .where(ConsultantHistory.output != "")
+        .order_by(cast(Any, ConsultantHistory.id))
+    )
+    return list(session.exec(stmt).all())
+
+
+def clear_history_by_user_id(*, session: Session, user_id: uuid.UUID) -> int:
+    stmt = (
+        select(ConsultantHistory)
+        .where(ConsultantHistory.user_id == user_id)
+        .where(
+            or_(
+                ConsultantHistory.user_input != "",
+                ConsultantHistory.output != "",
+            )
+        )
+    )
+    histories = list(session.exec(stmt).all())
+    for h in histories:
+        h.user_input = ""
+        h.output = ""
+        session.add(h)
+    session.commit()
+    return len(histories)
