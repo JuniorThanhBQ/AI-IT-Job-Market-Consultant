@@ -15,9 +15,9 @@ export default function TOSNav({ onScrollToSection }) {
   ];
 
   return (
-    <aside className="lg:w-80 shrink-0">
-      <div className="lg:sticky lg:top-28 bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-[2rem] p-6 backdrop-blur-md flex flex-col gap-4 shadow-sm">
-        <h2 className="text-xs font-bold text-slate-400 dark:text-slate-505 uppercase tracking-widest">
+    <aside className="hidden lg:block lg:w-80 shrink-0">
+      <div className="lg:sticky lg:top-28 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 flex flex-col gap-4 shadow-sm">
+        <h2 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
           Navigation
         </h2>
         <nav className="flex flex-col gap-2">
@@ -25,7 +25,7 @@ export default function TOSNav({ onScrollToSection }) {
             <button
               key={item.key}
               onClick={() => onScrollToSection(item.key)}
-              className="text-left py-2 px-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-850 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all text-xs font-bold uppercase tracking-wider cursor-pointer"
+              className="text-left py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-[#285872] dark:hover:text-sky-400 transition-all text-xs font-bold uppercase tracking-wider cursor-pointer"
             >
               {item.label}
             </button>

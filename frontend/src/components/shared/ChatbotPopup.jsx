@@ -29,6 +29,7 @@ export default function ChatbotPopup() {
     handleClearHistory,
     handleSend,
     router,
+    getLoadingMessage,
   } = useChatbot();
 
   if (!isAuthenticated) return null;
@@ -218,7 +219,10 @@ export default function ChatbotPopup() {
                     {streamingMessage ? (
                       <MarkdownRenderer content={streamingMessage} />
                     ) : (
-                      <Loader2 className="w-4 h-4 animate-spin text-[#285872]" />
+                      <div className="flex items-center gap-2 text-xs text-slate-400">
+                        <Loader2 className="w-4 h-4 animate-spin text-[#285872]" />
+                        <span>{getLoadingMessage()}</span>
+                      </div>
                     )}
                   </div>
                 </div>

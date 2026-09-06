@@ -2,11 +2,22 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthProvider";
-import { profileApi } from "@/configs/apis";
+import { APIS } from "@/configs/apis";
 import { useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { validateProfile } from "@/utils/field_validator";
+
+export const profileApi = {
+  getProfile: () => APIS.getMyProfile(),
+  updateProfile: (data) => APIS.updateMyProfile(data),
+  getCv: () => APIS.getMyCv(),
+  updateCv: (data) => APIS.updateMyCv(data),
+  getCvProjects: () => APIS.getMyCvProjects(),
+  createCvProject: (data) => APIS.createCvProject(data),
+  updateCvProject: (projectId, data) => APIS.updateCvProject(projectId, data),
+  deleteCvProject: (projectId) => APIS.deleteCvProject(projectId),
+};
 
 export function useProfile() {
   const { user, authLoading, setUser } = useAuth();

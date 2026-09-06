@@ -1,8 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthProvider";
-import { jobApi } from "@/configs/apis";
+import { APIS } from "@/configs/apis";
 import { useRouter } from "@/i18n/routing";
 import { hasXSS, hasSQLInjection } from "@/utils/field_validator";
+
+export const jobApi = {
+  getJobs: (params = {}) => APIS.getJobs(params),
+  getJobDetails: (id) => APIS.getJobDetails(id),
+  createJob: (data) => APIS.createJob(data),
+  updateJob: (id, data) => APIS.updateJob(id, data),
+  deleteJob: (id) => APIS.deleteJob(id),
+  hybridSearch: (payload) => APIS.hybridSearchJobs(payload),
+  semanticSearch: (payload) => APIS.hybridSearchJobs(payload),
+};
 
 export function useJobExplorer() {
   const { user, logout, loading: authLoading } = useAuth();

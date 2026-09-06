@@ -1,48 +1,76 @@
-# AI-IT-Job-Market-Consultant - Frontend
+# AIJMC Next.js Frontend
 
-This is the user-facing web application for the **AI IT Job Market Consultant (AIJMC)** platform. It provides interactive dashboards, job search interfaces, and a consultation chatbot.
+A key component of the AIJMC system that acts as an intermediary between the user interface and the backend, forwarding business requests.
 
----
+## Architectural and Technology Decisions
 
-## I. Architectural Decisions & Tech Stack
+- Framework: Next.js (JavaScript-based).
+- UI Components: Tailwind CSS is used to design modular, accessible UI components. Additionally, buttons and interactive elements utilize the Shadcn UI library for ease of management.
+- Web Server: Requests are forwarded via Nginx, incorporating security protocols, rate limiting, and caching.
+- Host header injection risks are mitigated by securing Nginx's host forwarding scope.
 
-Following the system's Architecture Decision Records (ADRs):
+## Note
+The `next-intl` library is used for Vietnamese-English localization, with translation files located in the `src/messages` directory. Currently, the system supports only Vietnamese and English.
 
-- **Core Framework:** **Next.js (React App Router)** (ADR-06) written in **JavaScript**.
-- **Styling & Components:** Styled with **Tailwind CSS** and modular, accessible UI components from **Shadcn UI**.
-- **Web Server (Production):** Proxy-passed through **Nginx** (ADR-01) with hardened security protocols.
-  - H2C smuggling vulnerabilities are mitigated by disabling empty protocol upgrades.
-  - Host header injection risks are prevented by securing the Nginx Host forwarding scope.
-- **Linting & Validation:** Configured with ESLint and automatic validation gates in our GitHub Actions pipeline (ADR-04) to block syntax errors and formatting discrepancies before deployment.
-
----
-
-## II. Development Workflow
-
-### 1. Local Setup & Execution
-
-Ensure you have Node.js (v20+) installed. Inside the `frontend/` directory:
-
-```bash
-$ npm ci
-$ npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser to inspect the application. The dev server supports hot module replacement (HMR).
-
-### 2. Building for Production
-
-Verify that the production build compiles successfully:
-
-```bash
-$ npm run build
-$ npm run start
-```
-
-### 3. Code Linting & Formatting
-
-Run ESLint to inspect quality warnings:
-
-```bash
-$ npm run lint
+## Frontend Structure
+```text
+frontend/
+├── Dockerfile
+├── README.md
+├── commitlint.config.js
+├── components.json
+├── eslint.config.mjs
+├── jsconfig.json
+├── next.config.mjs
+├── nginx.conf
+├── package.json
+├── playwright.config.ts
+├── postcss.config.mjs
+├── public/
+│   └── vercel.svg
+├── src/
+│   ├── app/
+│   │   ├── [locale]/
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.jsx
+│   │   └── page.jsx
+│   ├── assets/
+│   │   └── CloudinaryAssetsUrl.js
+│   ├── components/
+│   │   ├── layouts/
+│   │   ├── shared/
+│   │   └── ui/
+│   ├── configs/
+│   │   └── apis.js
+│   ├── context/
+│   │   └── AuthProvider.jsx
+│   ├── features/
+│   │   ├── AuthPage/
+│   │   ├── Chatbot/
+│   │   ├── Companies/
+│   │   ├── HomePage/
+│   │   ├── Jobs/
+│   │   ├── Overview/
+│   │   ├── Profile/
+│   │   └── TOS/
+│   ├── i18n/
+│   │   ├── request.js
+│   │   └── routing.js
+│   ├── lib/
+│   │   └── utils.js
+│   ├── messages/
+│   │   ├── en.json
+│   │   └── vi.json
+│   ├── utils/
+│   │   ├── const.js
+│   │   ├── enumMapper.js
+│   │   ├── field_validator.js
+│   │   ├── homepage_utils.js
+│   │   ├── navigation.js
+│   │   └── url.js
+│   └── proxy.js
+└── tests/
+    ├── cloudinary.spec.ts
+    └── router.spec.ts
 ```

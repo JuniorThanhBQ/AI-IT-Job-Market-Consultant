@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthProvider";
-import { profileApi } from "@/configs/apis";
+import { profileApi } from "@/features/Profile/hooks/useProfile";
 import { useRouter } from "@/i18n/routing";
 
 export function useOverviewData() {

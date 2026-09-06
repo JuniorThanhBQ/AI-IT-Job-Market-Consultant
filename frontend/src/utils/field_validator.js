@@ -73,12 +73,27 @@ export function validateLogin(email, password, t) {
   return null;
 }
 
-export function validateRegister(email, username, password, t) {
+export function validateRegister(
+  email,
+  username,
+  password,
+  confirmPassword,
+  t,
+) {
   const cleanEmail = (email || "").trim();
   const cleanUsername = (username || "").trim();
   const cleanPassword = (password || "").trim();
-  if (!cleanEmail || !cleanUsername || !cleanPassword) {
+  const cleanConfirmPassword = (confirmPassword || "").trim();
+  if (
+    !cleanEmail ||
+    !cleanUsername ||
+    !cleanPassword ||
+    !cleanConfirmPassword
+  ) {
     return t ? t("validation_fill_fields") : "Please fill in all fields.";
+  }
+  if (cleanPassword !== cleanConfirmPassword) {
+    return t ? t("validation_password_mismatch") : "Passwords do not match.";
   }
   if (!isValidUsername(cleanUsername)) {
     return t

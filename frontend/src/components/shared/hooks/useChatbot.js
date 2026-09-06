@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
-import { consultantApi, chatbotAPI } from "@/configs/apis";
+import { consultantApi, chatbotAPI } from "@/features/Chatbot/Hooks/useChatbot";
 import { hasXSS, hasSQLInjection } from "@/utils/field_validator";
 
 export function useChatbot() {
@@ -87,37 +87,9 @@ export function useChatbot() {
         throw new Error();
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let done = false;
-      let textBuffer = "";
-      let accumulatedText = "";
-
-      while (!done) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
-        if (value) {
-          const chunkStr = decoder.decode(value, { stream: !done });
-          textBuffer += chunkStr;
-          const lines = textBuffer.split("\n");
-          textBuffer = lines.pop() || "";
-
-          for (const line of lines) {
-            if (!line.trim()) continue;
-
-            try {
-              const parsed = JSON.parse(line);
-              if (parsed.type === "chunk" && parsed.text) {
-                accumulatedText += parsed.text;
-                setStreamingMessage(accumulatedText);
-              }
-            } catch (e) {
-              console.warn("JSON parse error on stream line:", e);
-            }
-          }
-        }
-      }
-      setMessages((prev) => [...prev, { role: "bot", text: accumulatedText }]);
+      const data = await response.json();
+      const reply = data.final_result || data.output || data.result || "";
+      setMessages((prev) => [...prev, { role: "bot", text: reply }]);
       setStreamingMessage("");
     } catch (err) {
       setMessages((prev) => [
@@ -128,6 +100,39 @@ export function useChatbot() {
       setLoading(false);
       setTimeout(() => chatInputRef.current?.focus(), 50);
     }
+  };
+
+  const [secondsElapsed, setSecondsElapsed] = useState(0);
+
+  useEffect(() => {
+    let intervalId;
+    if (loading && !streamingMessage) {
+      intervalId = setInterval(() => {
+        setSecondsElapsed((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+      setSecondsElapsed(0);
+    };
+  }, [loading, streamingMessage]);
+
+  const getLoadingMessage = () => {
+    if (secondsElapsed < 5) {
+      return t("loading_processing");
+    }
+    if (secondsElapsed > 10 && secondsElapsed <= 20) {
+      return t("loading_large_input");
+    }
+    if (secondsElapsed > 20 && secondsElapsed <= 30) {
+      return t("loading_heavy_payload");
+    }
+    if (secondsElapsed > 30) {
+      return t("loading_almost_there");
+    }
+    return t("loading_default");
   };
 
   return {
@@ -153,5 +158,6 @@ export function useChatbot() {
     chatInputRef,
     handleClearHistory,
     handleSend,
+    getLoadingMessage,
   };
 }

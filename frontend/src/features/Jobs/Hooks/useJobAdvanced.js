@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { jobApi } from "@/configs/apis";
+import { jobApi } from "./useJobExplorer";
 import { hasXSS, hasSQLInjection } from "@/utils/field_validator";
 
 export function useJobAdvanced() {

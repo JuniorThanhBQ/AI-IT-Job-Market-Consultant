@@ -50,7 +50,15 @@ async function fetchClient(
     }
 
     if (!response.ok) {
-      const error = new Error(data?.detail || "An error occurred");
+      let msg = "An error occurred";
+      if (typeof data?.detail === "string") {
+        msg = data.detail;
+      } else if (Array.isArray(data?.detail)) {
+        msg = data.detail.map((e) => e?.msg || String(e)).join(", ");
+      } else if (data?.message) {
+        msg = data.message;
+      }
+      const error = new Error(msg);
       error.status = response.status;
       error.data = data;
       throw error;
@@ -75,7 +83,12 @@ async function fetchClient(
   }
 }
 
-export const authApi = {
+export const APIS = {
+  register: (payload) =>
+    fetchClient("/accounts/", {
+      method: "POST",
+      body: payload,
+    }),
   login: (email, password) => {
     const params = new URLSearchParams();
     params.append("username", email);
@@ -86,26 +99,112 @@ export const authApi = {
       isFormUrlEncoded: true,
     });
   },
-  register: (email, username, password) =>
-    fetchClient("/accounts/", {
-      method: "POST",
-      body: { email, username, password },
+  resetPassword: (payload) =>
+    fetchClient("/accounts/password/", {
+      method: "PATCH",
+      body: payload,
     }),
-};
+  verifyEmailGet: (token) =>
+    fetchClient(`/accounts/verification/?token=${encodeURIComponent(token)}`),
+  verifyEmail: (payload) =>
+    fetchClient("/accounts/verification/", {
+      method: "POST",
+      body: payload,
+    }),
+  sendVerificationEmail: (payload) =>
+    fetchClient("/accounts/verification/email/", {
+      method: "POST",
+      body: payload,
+    }),
 
-export const userApi = {
-  getMe: () => fetchClient("/users/my-profile/"),
-  updateMe: (data) =>
-    fetchClient("/users/my-profile/", { method: "PATCH", body: data }),
-};
+  getMyProfile: () => fetchClient("/users/profile/"),
+  updateMyProfile: (payload) =>
+    fetchClient("/users/profile/", {
+      method: "PATCH",
+      body: payload,
+    }),
+  getMyCv: () => fetchClient("/users/profile/cv/"),
+  updateMyCv: (payload) =>
+    fetchClient("/users/profile/cv/", {
+      method: "PATCH",
+      body: payload,
+    }),
+  getMyCvProjects: () => fetchClient("/users/profile/cv/projects/"),
+  createCvProject: (payload) =>
+    fetchClient("/users/profile/cv/projects/", {
+      method: "POST",
+      body: payload,
+    }),
+  updateCvProject: (projectId, payload) =>
+    fetchClient(`/users/profile/cv/projects/${projectId}/`, {
+      method: "PATCH",
+      body: payload,
+    }),
+  deleteCvProject: (projectId) =>
+    fetchClient(`/users/profile/cv/projects/${projectId}/`, {
+      method: "DELETE",
+    }),
 
-export const profileApi = {
-  getProfile: () => fetchClient("/users/my-profile/"),
-  updateProfile: (data) =>
-    fetchClient("/users/my-profile/", { method: "PATCH", body: data }),
-};
+  getAgentHistory: (params = {}) => {
+    const cleanedParams = {};
+    Object.keys(params).forEach((key) => {
+      if (
+        params[key] !== undefined &&
+        params[key] !== null &&
+        params[key] !== ""
+      ) {
+        cleanedParams[key] = params[key];
+      }
+    });
+    const queryString = new URLSearchParams(cleanedParams).toString();
+    return fetchClient(
+      queryString
+        ? `/consultants/agent-history/?${queryString}`
+        : "/consultants/agent-history/",
+    );
+  },
+  clearAgentHistory: () =>
+    fetchClient("/consultants/agent-history/", {
+      method: "DELETE",
+    }),
+  executeAgent: (payload) =>
+    fetchClient("/consultants/agent/", {
+      method: "POST",
+      body: payload,
+    }),
 
-export const jobApi = {
+  getCompanies: (params = {}) => {
+    const cleanedParams = {};
+    Object.keys(params).forEach((key) => {
+      if (
+        params[key] !== undefined &&
+        params[key] !== null &&
+        params[key] !== ""
+      ) {
+        cleanedParams[key] = params[key];
+      }
+    });
+    const queryString = new URLSearchParams(cleanedParams).toString();
+    return fetchClient(
+      queryString ? `/companies/?${queryString}` : "/companies/",
+    );
+  },
+  createCompany: (payload) =>
+    fetchClient("/companies/", {
+      method: "POST",
+      body: payload,
+    }),
+  getCompanyDetails: (id) => fetchClient(`/companies/${id}/`),
+  updateCompany: (id, payload) =>
+    fetchClient(`/companies/${id}/`, {
+      method: "PATCH",
+      body: payload,
+    }),
+  deleteCompany: (id) =>
+    fetchClient(`/companies/${id}/`, {
+      method: "DELETE",
+    }),
+
   getJobs: (params = {}) => {
     const cleanedParams = {};
     Object.keys(params).forEach((key) => {
@@ -118,38 +217,46 @@ export const jobApi = {
       }
     });
     const queryString = new URLSearchParams(cleanedParams).toString();
-    return fetchClient(`/jobs/?${queryString}`);
+    return fetchClient(queryString ? `/jobs/?${queryString}` : "/jobs/");
   },
-  getJobDetails: (id) => fetchClient(`/jobs/${id}`),
-  semanticSearch: (payload) =>
-    fetchClient("/jobs/search/semantic", { method: "POST", body: payload }),
-};
-
-export const consultantApi = {
-  processChatbotIntent: (intent, userInput) =>
-    fetchClient("/consultants/chatbot/intents", {
+  createJob: (payload) =>
+    fetchClient("/jobs/", {
       method: "POST",
-      body: { intent, user_input: userInput },
+      body: payload,
     }),
-  getHistory: () => fetchClient("/consultants/history"),
-  clearHistory: () => fetchClient("/consultants/history", { method: "DELETE" }),
+  getJobDetails: (id) => fetchClient(`/jobs/${id}/`),
+  updateJob: (id, payload) =>
+    fetchClient(`/jobs/${id}/`, {
+      method: "PATCH",
+      body: payload,
+    }),
+  deleteJob: (id) =>
+    fetchClient(`/jobs/${id}/`, {
+      method: "DELETE",
+    }),
+  hybridSearchJobs: (payload) =>
+    fetchClient("/jobs/hybrid/", {
+      method: "POST",
+      body: payload,
+    }),
 };
 
-export const companyApi = {
-  getCompanyDetails: (id) => fetchClient(`/companies/${id}`),
+export const authApi = {
+  login: (email, password) => APIS.login(email, password),
+  register: (email, username, password, confirmPassword) =>
+    APIS.register({
+      email,
+      username,
+      password,
+      confirm_password: confirmPassword || password,
+    }),
+  resetPassword: (payload) => APIS.resetPassword(payload),
+  verifyEmailGet: (token) => APIS.verifyEmailGet(token),
+  verifyEmail: (payload) => APIS.verifyEmail(payload),
+  sendVerificationEmail: (payload) => APIS.sendVerificationEmail(payload),
 };
 
-export const chatbotAPI = (intent, userInput) => {
-  const token = localStorage.getItem("token");
-  return fetch(`${BASE_URL}/consultants/chatbot/intents`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      intent,
-      user_input: userInput,
-    }),
-  });
+export const userApi = {
+  getMe: () => APIS.getMyProfile(),
+  updateMe: (data) => APIS.updateMyProfile(data),
 };
