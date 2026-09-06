@@ -13,6 +13,12 @@ class AIChatbotRequest(BaseModel):
     user_input: SafeStr
 
 
+class AIAgentResponse(BaseModel):
+    final_result: str
+    latency: float
+    iterations: int
+
+
 class AgentServicesRequest(BaseModel):
     intent: ConsultantMode
     action_type: ActionType

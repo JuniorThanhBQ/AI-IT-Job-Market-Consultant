@@ -1,1 +1,22 @@
-{}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIAgentResponse",
+  "description": "Standard JSON response schema for the market analysis AI agent",
+  "type": "object",
+  "properties": {
+    "final_result": {
+      "type": "string",
+      "description": "Complete professional Markdown analysis synthesized by the agent"
+    },
+    "latency": {
+      "type": "number",
+      "description": "Execution latency in seconds"
+    },
+    "iterations": {
+      "type": "integer",
+      "description": "Number of tool iterations executed by the agent"
+    }
+  },
+  "required": ["final_result", "latency", "iterations"],
+  "additionalProperties": false
+}

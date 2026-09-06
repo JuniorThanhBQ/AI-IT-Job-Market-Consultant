@@ -82,6 +82,7 @@ backend/
 │   ├── templates/
 │   │   ├── __init__.py
 │   │   └── index.html
+|   ├── tools/
 │   └── utils/
 │       ├── __init__.py
 │       ├── embeddings.py
