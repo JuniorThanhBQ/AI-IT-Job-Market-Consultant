@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: agilepathway/label-checker@c3d16ad512e7cea5961df85ff2486bb774caf3c5 # v1.6.65
+      - uses: agilepathway/label-checker@460a27b5895276b6b87d3c77bc3ef0262a3008df # v1.6.70
         with:
           any_of: "Type: Documentation,Type: Maintenance,Type: Enhancement, Type: Release - Tag"
           repo_token: ${{ secrets.GITHUB_TOKEN }}
