@@ -87,7 +87,7 @@ jobs:
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
         with:
           context: .
-          file: celery/Dockerfile
+          file: celery_app/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ai-it-job-market-consultant-celery:${{ github.sha }} # zizmor: ignore[secrets-outside-env]
           cache-from: type=gha,scope=celery

@@ -1,12 +1,11 @@
+import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
-from fastapi.openapi.utils import get_openapi
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.routing import APIRoute
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -15,7 +14,6 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.requests import Request
 
 from app.admin import init_admin
-from app.core.auth import authenticate_admin
 from app.core.config import settings
 from app.core.db import engine
 from app.core.middlewares import (
@@ -26,8 +24,10 @@ from app.core.middlewares import (
 )
 from app.db import base as _db_base  # noqa: F401
 from app.modules.routers import api_router
-from app.modules.shared.bm25 import BM25Index
-from app.modules.user.models import User
+from app.tools.hybrid_retrieval import BM25Index
+
+logging.basicConfig(level=logging.INFO)
+logging.getLogger("app").setLevel(logging.INFO)
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:
@@ -40,7 +40,7 @@ redoc_url = None if settings.ENVIRONMENT == "production" else "/redoc"
 openapi_url = (
     None
     if settings.ENVIRONMENT == "production"
-    else f"{settings.API_V1_STR}/openapi.json"
+    else f"{settings.API_V2_STR}/openapi.json"
 )
 
 
@@ -53,6 +53,7 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
+    version="2.0",
     debug=settings.ENVIRONMENT != "production",
     openapi_url=openapi_url,
     docs_url=docs_url,
@@ -62,34 +63,39 @@ app = FastAPI(
 )
 
 init_admin(app)
-app_dir = Path(__file__).resolve().parent
 
+app_dir = Path(__file__).resolve().parent
 static_dir = app_dir / "static"
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
-
 templates_dir = app_dir / "templates"
 templates = Jinja2Templates(directory=templates_dir)
 
+if settings.trusted_hosts_list:
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.trusted_hosts_list)
+else:
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost"])
 
-if settings.ENVIRONMENT == "production":
+app.add_middleware(StructuredLoggingMiddleware)
+app.add_middleware(ExceptionHandlerMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(ProcessTimeMiddleware)
+app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
 
-    @app.get(f"{settings.API_V1_STR}/openapi.json", include_in_schema=False)
-    def get_open_api_endpoint(_: User = Depends(authenticate_admin)):
-        return get_openapi(title=app.title, version=app.version, routes=app.routes)
+if settings.all_cors_origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.all_cors_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-    @app.get("/docs", include_in_schema=False)
-    def get_swagger_documentation(_: User = Depends(authenticate_admin)):
-        return get_swagger_ui_html(
-            openapi_url=f"{settings.API_V1_STR}/openapi.json",
-            title=f"{app.title} - Swagger UI",
-        )
+app.include_router(api_router, prefix=settings.API_V2_STR)
 
-    @app.get("/redoc", include_in_schema=False)
-    def get_redoc_documentation(_: User = Depends(authenticate_admin)):
-        return get_redoc_html(
-            openapi_url=f"{settings.API_V1_STR}/openapi.json",
-            title=f"{app.title} - ReDoc",
-        )
+
+@app.get("/health", include_in_schema=False)
+def health_check() -> dict[str, str]:
+    return {"status": "ok"}
 
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
@@ -101,33 +107,8 @@ def home_page(request: Request) -> HTMLResponse:
     )
 
 
-if settings.all_cors_origins:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.all_cors_origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon() -> RedirectResponse:
+    return RedirectResponse(
+        url="https://res.cloudinary.com/dfolk8pz2/image/upload/v1786037265/AIJ-removebg-preview_xk5pz1.png"
     )
-
-app.add_middleware(StructuredLoggingMiddleware)
-app.add_middleware(ExceptionHandlerMiddleware)
-
-if settings.trusted_hosts_list:
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.trusted_hosts_list)
-else:
-    app.add_middleware(
-        TrustedHostMiddleware,
-        allowed_hosts=["localhost", "http://localhost:3000", "http://localhost:8000"],
-    )
-
-app.add_middleware(SecurityHeadersMiddleware)
-app.add_middleware(ProcessTimeMiddleware)
-app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
-
-app.include_router(api_router, prefix=settings.API_V1_STR)
-
-
-@app.get("/health", include_in_schema=False)
-def health_check() -> dict[str, str]:
-    return {"status": "ok"}

@@ -37,6 +37,9 @@ class Skills(SQLModel, table=True):
     name: str = Field(index=True, unique=True)
     category: str
 
+    def __str__(self) -> str:
+        return self.name
+
     jobs: list["Job"] = Relationship(  # noqa: UP037
         sa_relationship=relationship(
             "Job",
@@ -141,6 +144,9 @@ class Job(BaseModel, table=True):
             lazy="select",
         )
     )
+
+    def __str__(self) -> str:
+        return self.title
 
     @property
     def company_name(self) -> str | None:

@@ -4,9 +4,12 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, cast
 
+from pydantic import ValidationInfo, field_validator
 from sqlalchemy import DateTime
-from sqlalchemy.orm import relationship
-from sqlmodel import Field, Relationship, SQLModel
+from sqlalchemy.orm import relationship, validates
+from sqlmodel import Field, Relationship, Session, SQLModel, select
+
+from app.core.db import engine
 
 if TYPE_CHECKING:
     from app.modules.consultant.models import ConsultantHistory
@@ -23,6 +26,9 @@ class UserBase(SQLModel):
         default=None,
         sa_type=cast(Any, DateTime(timezone=True)),
     )
+
+    def __str__(self) -> str:
+        return self.username or self.email
 
 
 class User(UserBase, table=True):
@@ -50,3 +56,36 @@ class User(UserBase, table=True):
             lazy="joined",
         )
     )
+
+    @validates("is_superuser")
+    def validate_superuser_assignment(self, key: str, value: bool) -> bool:
+        if value:
+            try:
+                with Session(engine) as session:
+                    existing = session.exec(
+                        select(User).where(User.is_superuser == True)  # noqa: E712
+                    ).first()
+                    current_id = getattr(self, "id", None)
+                    if existing and (current_id is None or existing.id != current_id):
+                        raise ValueError("Only one account can be a superuser.")
+            except Exception as e:
+                if isinstance(e, ValueError):
+                    raise
+        return value
+
+    @field_validator("is_superuser")
+    @classmethod
+    def validate_single_superuser(cls, value: bool, info: ValidationInfo) -> bool:
+        if value:
+            try:
+                with Session(engine) as session:
+                    existing = session.exec(
+                        select(cls).where(cls.is_superuser == True)  # noqa: E712
+                    ).first()
+                    current_id = info.data.get("id") if info.data else None
+                    if existing and (current_id is None or existing.id != current_id):
+                        raise ValueError("Only one account can be a superuser.")
+            except Exception as e:
+                if isinstance(e, ValueError):
+                    raise
+        return value

@@ -7,6 +7,12 @@ services:
       - backend
     env_file:
       - .env
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      backend-init:
+        condition: service_completed_successfully
     environment:
       - DOMAIN=${DOMAIN}
       - FRONTEND_HOST=${FRONTEND_HOST?Variable not set}
@@ -99,6 +105,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
+    command: postgres -c max_connections=${POSTGRES_DB_MAX_CONNECTIONS-100}
 
   rabbitmq:
     image: rabbitmq:3.13-management@sha256:e582c0bc7766f3342496d8485efb5a1df782b5ce3886ad017e2eaae442311f69
@@ -118,7 +125,7 @@ services:
   celery-worker-default:
     image: '${DOCKER_IMAGE_CELERY?Variable not set}:${TAG-latest}'
     container_name: app-celery-worker-default
-    command: ["/app/celery/scripts/start_worker.sh", "-Q", "celery"]
+    command: ["/app/celery_app/scripts/start_worker.sh", "-Q", "celery"]
     networks:
       - backend
       - frontend
@@ -135,7 +142,7 @@ services:
     env_file:
       - .env
     environment:
-      - PYTHONPATH=/app/backend:/app/celery
+      - PYTHONPATH=/app/backend:/app/celery_app
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=${POSTGRES_PORT?Variable not set}
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
@@ -146,7 +153,7 @@ services:
       - RABBITMQ_PORT=${RABBITMQ_PORT?Variable not set}
       - RABBITMQ_USER=${RABBITMQ_USER?Variable not set}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD?Variable not set}
-      - RCLONE_CONFIG=/app/celery/rclone.conf
+      - RCLONE_CONFIG=${RCLONE_CONFIG_PATH-/app/celery_app/rclone.conf}
       - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
       - SMTP_HOST=${SMTP_HOST?Variable not set}
       - SMTP_USER=${SMTP_USER?Variable not set}
@@ -158,7 +165,7 @@ services:
   celery-worker-crawler:
     image: '${DOCKER_IMAGE_CELERY?Variable not set}:${TAG-latest}'
     container_name: app-celery-worker-crawler
-    command: ["/app/celery/scripts/start_worker.sh", "-Q", "crawler"]
+    command: ["/app/celery_app/scripts/start_worker.sh", "-Q", "crawler"]
     shm_size: '1gb'
     networks:
       - backend
@@ -176,7 +183,7 @@ services:
     env_file:
       - .env
     environment:
-      - PYTHONPATH=/app/backend:/app/celery
+      - PYTHONPATH=/app/backend:/app/celery_app
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_DB=${POSTGRES_DB}
@@ -187,7 +194,7 @@ services:
       - RABBITMQ_PORT=${RABBITMQ_PORT?Variable not set}
       - RABBITMQ_USER=${RABBITMQ_USER?Variable not set}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD?Variable not set}
-      - RCLONE_CONFIG=/app/celery/rclone.conf
+      - RCLONE_CONFIG=/app/celery_app/rclone.conf
       - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
       - CELERY_WORKER_CONCURRENCY=1
       - SMTP_HOST=${SMTP_HOST}
@@ -215,7 +222,7 @@ services:
     env_file:
       - .env
     environment:
-      - PYTHONPATH=/app/backend:/app/celery
+      - PYTHONPATH=/app/backend:/app/celery_app
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=${POSTGRES_PORT?Variable not set}
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
@@ -226,7 +233,7 @@ services:
       - RABBITMQ_PORT=${RABBITMQ_PORT?Variable not set}
       - RABBITMQ_USER=${RABBITMQ_USER?Variable not set}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD?Variable not set}
-      - RCLONE_CONFIG=/app/celery/rclone.conf
+      - RCLONE_CONFIG=/app/celery_app/rclone.conf
       - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
     volumes:
       - celery-beat-data:/var/run/celery

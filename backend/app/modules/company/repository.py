@@ -12,6 +12,11 @@ def get_company_by_id(*, session: Session, company_id: int) -> Company | None:
     return session.get(Company, company_id)
 
 
+def get_company_by_name(*, session: Session, name: str) -> Company | None:
+    statement = select(Company).where(Company.name == name)
+    return session.exec(statement).first()
+
+
 def list_companies(
     *,
     session: Session,
@@ -33,3 +38,26 @@ def list_companies(
     stmt = stmt.offset(skip).limit(limit)
     result = session.exec(stmt)
     return list(result.all())
+
+
+def create_company(*, session: Session, data: dict[str, Any]) -> Company:
+    company = Company(**data)
+    session.add(company)
+    session.commit()
+    session.refresh(company)
+    return company
+
+
+def update_company(
+    *, session: Session, company: Company, data: dict[str, Any]
+) -> Company:
+    company.sqlmodel_update(data)
+    session.add(company)
+    session.commit()
+    session.refresh(company)
+    return company
+
+
+def delete_company(*, session: Session, company: Company) -> None:
+    session.delete(company)
+    session.commit()

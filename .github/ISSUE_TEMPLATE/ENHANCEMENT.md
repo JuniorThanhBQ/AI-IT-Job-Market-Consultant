@@ -20,7 +20,7 @@ assignees: [JuniorThanhBQ]
 ## Alternatives you've considered
 *A clear and concise description of any alternative solutions or features you've considered.*
 
-## Mockups / Screenshots (if applicable)
+## Mockups or Screenshots (optional)
 *Add visual aids or architecture diagrams to help explain your design.*
 
 ## Additional Context

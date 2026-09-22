@@ -61,30 +61,7 @@ export default function JobAdvancedPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-50 dark:bg-slate-955 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-300 pb-12">
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.03] dark:opacity-[0.05] mix-blend-overlay">
-        <svg className="w-full h-full">
-          <filter id="noiseFilter">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.75"
-              numOctaves="3"
-              stitchTiles="stitch"
-            />
-          </filter>
-          <rect width="100%" height="100%" filter="url(#noiseFilter)" />
-        </svg>
-      </div>
-      <motion.div
-        animate={{
-          x: [0, 20, -10, 0],
-          y: [0, -30, 20, 0],
-          scale: [1, 1.05, 0.98, 1],
-        }}
-        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[60vw] h-[60vw] bg-[#285872]/5 dark:bg-[#285872]/8 rounded-full blur-[140px] pointer-events-none z-0"
-      />
-
+    <div className="relative min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-300 pb-20">
       <AnimatePresence mode="wait">
         {!hasSearched ? (
           <motion.div
@@ -168,7 +145,7 @@ export default function JobAdvancedPage() {
                   }}
                   className="border-slate-200 dark:border-slate-800 rounded-full px-6 py-5 text-xs font-black text-slate-600 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-slate-900 flex items-center gap-1.5 cursor-pointer"
                 >
-                  Hãy thử chức năng tư vấn chi tiết
+                  {t("semantic_search_example")}
                 </Button>
               </div>
             </form>

@@ -6,7 +6,7 @@ from typing import Any, cast
 from sqlmodel import Session, select
 
 from app.core.enums import JobStatus, SeniorityLevel, WorkingModel
-from app.modules.job.models import Job, SemanticSearchLog
+from app.modules.job.models import Job, SemanticSearchLog, Skills
 
 
 def get_job_by_id(*, session: Session, job_id: int) -> Job | None:
@@ -43,6 +43,45 @@ def list_jobs(
     stmt = stmt.offset(skip).limit(limit)
     result = session.exec(stmt)
     return list(result.all())
+
+
+def create_job(
+    *, session: Session, data: dict[str, Any], skill_ids: list[int] | None = None
+) -> Job:
+    job = Job(**data)
+    if skill_ids:
+        skills = session.exec(
+            select(Skills).where(cast(Any, Skills.id).in_(skill_ids))
+        ).all()
+        job.skills = list(skills)
+    session.add(job)
+    session.commit()
+    session.refresh(job)
+    return job
+
+
+def update_job(
+    *,
+    session: Session,
+    job: Job,
+    data: dict[str, Any],
+    skill_ids: list[int] | None = None,
+) -> Job:
+    job.sqlmodel_update(data)
+    if skill_ids is not None:
+        skills = session.exec(
+            select(Skills).where(cast(Any, Skills.id).in_(skill_ids))
+        ).all()
+        job.skills = list(skills)
+    session.add(job)
+    session.commit()
+    session.refresh(job)
+    return job
+
+
+def delete_job(*, session: Session, job: Job) -> None:
+    session.delete(job)
+    session.commit()
 
 
 def create_semantic_search_log(

@@ -2,8 +2,16 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthProvider";
-import { companyApi } from "@/configs/apis";
+import { APIS } from "@/configs/apis";
 import { useRouter } from "@/i18n/routing";
+
+export const companyApi = {
+  getCompanies: (params = {}) => APIS.getCompanies(params),
+  createCompany: (data) => APIS.createCompany(data),
+  getCompanyDetails: (id) => APIS.getCompanyDetails(id),
+  updateCompany: (id, data) => APIS.updateCompany(id, data),
+  deleteCompany: (id) => APIS.deleteCompany(id),
+};
 
 export function useCompanyDetail(id) {
   const router = useRouter();

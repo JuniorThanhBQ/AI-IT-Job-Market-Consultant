@@ -2,13 +2,25 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthProvider";
-import { profileApi } from "@/configs/apis";
+import { APIS } from "@/configs/apis";
 import { useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { validateProfile } from "@/utils/field_validator";
+
+export const profileApi = {
+  getProfile: () => APIS.getMyProfile(),
+  updateProfile: (data) => APIS.updateMyProfile(data),
+  getCv: () => APIS.getMyCv(),
+  updateCv: (data) => APIS.updateMyCv(data),
+  getCvProjects: () => APIS.getMyCvProjects(),
+  createCvProject: (data) => APIS.createCvProject(data),
+  updateCvProject: (projectId, data) => APIS.updateCvProject(projectId, data),
+  deleteCvProject: (projectId) => APIS.deleteCvProject(projectId),
+};
 
 export function useProfile() {
-  const { user, authLoading } = useAuth();
+  const { user, authLoading, setUser } = useAuth();
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("Counselee.Profile");
@@ -59,23 +71,33 @@ export function useProfile() {
     setError("");
     setSuccess("");
 
+    const validationError = validateProfile(
+      firstName,
+      lastName,
+      birthday,
+      biography,
+      goal,
+      t,
+    );
+    if (validationError) {
+      setError(validationError);
+      setSaving(false);
+      return;
+    }
+
     try {
-      await profileApi.updateProfile({
+      const updatedProfile = await profileApi.updateProfile({
         first_name: firstName,
         last_name: lastName,
         birthday: birthday ? `${birthday}T00:00:00` : null,
         biography,
         goal,
       });
+      setUser(updatedProfile);
       setSuccess(t("success"));
       setTimeout(() => {
         if (isMissingName) {
           router.push("/counselee/overview");
-          setTimeout(() => {
-            window.location.reload();
-          }, 50);
-        } else {
-          window.location.reload();
         }
       }, 1500);
     } catch (err) {

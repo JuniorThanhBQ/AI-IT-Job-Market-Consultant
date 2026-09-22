@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Loader2, CheckCircle, AlertCircle, Save } from "lucide-react";
+import { Loader2, Save } from "lucide-react";
 import { useProfile } from "./hooks/useProfile";
 import { ProfileFormField } from "./components/ProfileFormField";
 
@@ -54,7 +54,7 @@ export default function ProfilePage() {
         </svg>
       </div>
 
-      <main className="relative z-10 max-w-[95vw] md:max-w-[80vw] mx-auto px-4 md:px-8 pt-32 flex flex-col">
+      <main className="relative z-10 w-full max-w-full px-4 sm:px-6 md:px-12 pt-32 flex flex-col">
         <div className="flex flex-col gap-4 border-b border-slate-900 dark:border-white pb-8 mb-12">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl md:text-4xl font-black tracking-tighter uppercase leading-none">
@@ -74,7 +74,6 @@ export default function ProfilePage() {
               exit={{ opacity: 0, y: -10 }}
               className="border border-red-500/30 bg-red-500/5 text-red-500 dark:text-red-400 p-4 text-base font-mono mb-8 flex items-center gap-2"
             >
-              <AlertCircle className="w-4 h-4 shrink-0" />
               {error}
             </motion.div>
           )}
@@ -85,7 +84,6 @@ export default function ProfilePage() {
               exit={{ opacity: 0, y: -10 }}
               className="border border-emerald-500/30 bg-emerald-500/5 text-emerald-600 dark:text-emerald-450 p-4 text-base font-mono mb-8 flex items-center gap-2"
             >
-              <CheckCircle className="w-4 h-4 shrink-0" />
               {success}
             </motion.div>
           )}
@@ -95,8 +93,8 @@ export default function ProfilePage() {
           <div className="border border-slate-900 dark:border-white p-6 mb-12 flex flex-col gap-2 font-mono">
             <p className="text-base font-bold leading-relaxed text-slate-700 dark:text-slate-355">
               {locale === "vi"
-                ? "Cung cấp họ và tên giúp tối ưu hóa tư vấn AI, đề xuất lộ trình học tập và việc làm phù hợp hơn cho riêng bạn."
-                : "Providing your first and last name enables custom AI recommendations, optimized career path consulting, and matching."}
+                ? "Hãy hoàn thành hồ sơ của bạn để AIJMC định hướng theo đúng mong muốn và mục tiêu nhé."
+                : "Providing your information to enables custom AI recommendations, optimized career path consulting and matching."}
             </p>
           </div>
         )}

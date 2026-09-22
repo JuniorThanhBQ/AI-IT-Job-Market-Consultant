@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import MainLayout from "@/components/layouts/MainLayout";
 import { AuthProvider } from "@/context/AuthProvider";
+import { Toaster } from "sonner";
 
 export default async function LocaleLayout({ children, params }) {
   const { locale } = await params;
@@ -17,6 +18,7 @@ export default async function LocaleLayout({ children, params }) {
     <NextIntlClientProvider messages={messages}>
       <AuthProvider>
         <MainLayout>{children}</MainLayout>
+        <Toaster position="bottom-right" richColors />
       </AuthProvider>
     </NextIntlClientProvider>
   );

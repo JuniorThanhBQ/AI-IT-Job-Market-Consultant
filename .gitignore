@@ -2,6 +2,7 @@
 __pycache__/
 *.py[codz]
 *$py.class
+.vscode/
 
 # C extensions
 *.so
@@ -241,14 +242,9 @@ pnpm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
-AGENTS.md
-AGENTS-HISTORY.md
-.agents/
-
-**/crawl_website_information/**/*.html
-
 test-results/
 
 # Rclone config credentials
 rclone.conf
-celery/rclone.conf
+celery_app/rclone.conf
+.vercel

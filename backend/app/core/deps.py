@@ -16,7 +16,7 @@ from app.modules.user.models import User
 from app.modules.user.schemas import TokenPayload
 
 reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_STR}/accounts/sessions/"
+    tokenUrl=f"{settings.API_V2_STR}/accounts/sessions/"
 )
 
 

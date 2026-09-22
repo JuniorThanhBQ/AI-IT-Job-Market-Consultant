@@ -6,12 +6,12 @@ Create Date: 2026-07-31 10:39:56.125233
 
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
-from alembic import op
+import pgvector
 import sqlalchemy as sa
 import sqlmodel
-import pgvector
+from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
@@ -26,9 +26,9 @@ Create Date: 2026-07-31 10:39:56.125233
 
 # revision identifiers, used by Alembic.
 revision: str = "1023ca41535d"
-down_revision: Union[str, Sequence[str], None] = "2e2f51650d34"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "2e2f51650d34"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:

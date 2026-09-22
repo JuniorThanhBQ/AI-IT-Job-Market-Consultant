@@ -5,3 +5,17 @@ app.egg-info
 .coverage
 htmlcov
 .venv
+
+.git
+.github
+.gitignore
+
+*.log
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+
+.DS_Store
+Thumbs.db

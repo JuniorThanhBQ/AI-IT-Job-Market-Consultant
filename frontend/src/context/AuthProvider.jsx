@@ -67,10 +67,9 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (email, username, password) => {
+  const register = async (email, username, password, confirmPassword) => {
     try {
-      await authApi.register(email, username, password);
-      await login(email, password);
+      return await authApi.register(email, username, password, confirmPassword);
     } catch (error) {
       throw error;
     }
@@ -89,6 +88,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     user,
+    setUser,
     loading,
     authLoading: loading,
     login,

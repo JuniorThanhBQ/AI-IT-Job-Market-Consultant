@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { jobApi } from "@/configs/apis";
+import { jobApi } from "./useJobExplorer";
 import { hasXSS, hasSQLInjection } from "@/utils/field_validator";
 
 export function useJobAdvanced() {
@@ -17,7 +17,7 @@ export function useJobAdvanced() {
     const q = overrideQuery ?? query;
     if (!q.trim()) return;
     if (hasXSS(q) || hasSQLInjection(q)) {
-      setError("Search query contains unsafe patterns.");
+      setError("Invalid input.");
       setResults([]);
       setHasSearched(true);
       return;

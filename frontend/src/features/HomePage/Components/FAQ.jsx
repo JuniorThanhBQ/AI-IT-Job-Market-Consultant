@@ -16,32 +16,31 @@ export default function FAQ() {
     <div className="relative w-full bg-slate-50 dark:bg-slate-950">
       <section
         id="general"
-        className="relative min-h-screen pt-40 pb-24 px-6 md:px-12 bg-slate-50 dark:bg-slate-950 overflow-hidden"
+        className="relative min-h-screen pt-32 pb-20 px-6 md:px-12 bg-slate-50 dark:bg-slate-950"
       >
-        <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-blue-500/10 dark:bg-blue-600/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
-
         <div className="w-full max-w-7xl mx-auto relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="mb-24"
+            className="mb-16 md:mb-20"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl leading-[1.1] md:leading-[1.1] font-black tracking-tighter uppercase text-slate-900 dark:text-white">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl leading-[1.2] font-black tracking-tighter uppercase text-slate-900 dark:text-white">
               {t("hero_title")}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">
+              <span className="text-[#285872] dark:text-sky-400">
+                {" "}
                 {t("hero_subtitle")}
               </span>
             </h1>
           </motion.div>
 
-          <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
             <div className="lg:w-1/3">
               <motion.h2
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="text-2xl font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 sticky top-32"
+                className="text-base md:text-lg font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500"
               >
                 {t("section_general")}
               </motion.h2>
@@ -65,23 +64,21 @@ export default function FAQ() {
 
       <section
         id="technical"
-        className="relative min-h-screen py-24 px-6 md:px-12 bg-slate-950 text-white overflow-hidden rounded-t-[3rem] shadow-[0_-20px_50px_-20px_rgba(0,0,0,0.1)]"
+        className="relative min-h-screen py-20 px-6 md:px-12 bg-slate-100 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800"
       >
-        <div className="absolute bottom-0 left-0 w-[50vw] h-[50vw] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none translate-y-1/2 -translate-x-1/3" />
-
         <div className="w-full max-w-7xl mx-auto relative z-10">
-          <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
             <div className="lg:w-1/3">
               <motion.h2
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="text-2xl font-bold uppercase tracking-widest text-slate-500 sticky top-32"
+                className="text-base md:text-lg font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
               >
                 {t("section_technical")}
               </motion.h2>
             </div>
-            <div className="lg:w-2/3 border-t border-slate-800">
+            <div className="lg:w-2/3 border-t border-slate-200 dark:border-slate-800 text-justify">
               {technicalFaqs.map((faq, index) => (
                 <FAQItem
                   key={index}
@@ -91,7 +88,6 @@ export default function FAQ() {
                   onClick={() =>
                     setActiveTech(activeTech === index ? null : index)
                   }
-                  isDarkSection={true}
                 />
               ))}
             </div>

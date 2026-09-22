@@ -1,9 +1,10 @@
 import uuid
+from pathlib import Path
 
 from fastapi import FastAPI
 from sqladmin import Admin
 from sqladmin.authentication import AuthenticationBackend
-from sqlmodel import Session, select
+from sqlmodel import Session
 from starlette.requests import Request
 
 from app.core.config import settings
@@ -19,6 +20,7 @@ from app.modules.consultee_profile.admin import (
 from app.modules.job.admin import JobAdmin, SkillsAdmin
 from app.modules.user.admin import UserAdmin
 from app.modules.user.models import User
+from app.modules.user.repository import get_user_by_email
 
 
 class AdminAuth(AuthenticationBackend):
@@ -30,8 +32,7 @@ class AdminAuth(AuthenticationBackend):
             return False
 
         with Session(engine) as session:
-            statement = select(User).where(User.email == email)
-            user = session.exec(statement).first()
+            user = get_user_by_email(session=session, email=email)
             if (
                 user
                 and user.hashed_password
@@ -41,6 +42,7 @@ class AdminAuth(AuthenticationBackend):
             ):
                 request.session.update({"token": str(user.id)})
                 return True
+
         return False
 
     async def logout(self, request: Request) -> bool:
@@ -51,10 +53,12 @@ class AdminAuth(AuthenticationBackend):
         token = request.session.get("token")
         if not token:
             return False
+
         try:
             user_uuid = uuid.UUID(token)
         except ValueError:
             return False
+
         with Session(engine) as session:
             user = session.get(User, user_uuid)
             if user and user.is_superuser and user.is_active:
@@ -67,7 +71,14 @@ authentication_backend = AdminAuth(secret_key=settings.SECRET_KEY)
 
 
 def init_admin(app: FastAPI) -> Admin:
-    admin = Admin(app, engine, authentication_backend=authentication_backend)
+    templates_dir = Path(__file__).resolve().parent / "templates"
+    admin = Admin(
+        app,
+        engine,
+        authentication_backend=authentication_backend,
+        templates_dir=str(templates_dir),
+        title="AIJMC Admin",
+    )
     admin.add_view(UserAdmin)
     admin.add_view(JobAdmin)
     admin.add_view(SkillsAdmin)
