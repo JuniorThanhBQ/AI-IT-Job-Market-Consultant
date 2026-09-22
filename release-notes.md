@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump the github-actions group with 6 updates. PR [#113](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/113) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the python-packages group with 10 updates. PR [#115](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/115) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * Release: AIJMC public repository version. PR [#111](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/111) by [@JuniorThanhBQ](https://github.com/JuniorThanhBQ).
 * ⬆ Bump fast-uri from 3.1.5 to 3.1.7 in /frontend. PR [#83](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/83) by [@dependabot[bot]](https://github.com/apps/dependabot).
