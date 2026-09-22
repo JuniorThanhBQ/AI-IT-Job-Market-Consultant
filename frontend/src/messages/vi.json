@@ -227,7 +227,7 @@
     "validation_password_weak": "Mật khẩu phải dài ít nhất 8 ký tự và chứa ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt.",
     "validation_username_blank": "Tên đăng nhập không được để trống.",
     "validation_password_mismatch": "Mật khẩu xác nhận không khớp.",
-    "toast_confirm_email": "Đăng ký thành công. Vui lòng kiểm tra email để xác nhận tài khoản trước khi đăng nhập.",
+    "toast_confirm_email": "Vui lòng kiểm tra email để xác nhận tài khoản trước khi đăng nhập. Trong trường hợp không có mail, vui lòng liên hệ quản trị viên.",
     "toast_login_403": "Tài khoản chưa được xác nhận hoặc đã bị hạn chế. Vui lòng xác nhận tài khoản qua email hoặc liên hệ quản trị viên."
   },
   "TOS": {

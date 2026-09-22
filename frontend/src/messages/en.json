@@ -227,7 +227,7 @@
     "validation_password_weak": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
     "validation_username_blank": "Username cannot be blank.",
     "validation_password_mismatch": "Passwords do not match.",
-    "toast_confirm_email": "Registration completed. Please check your email to confirm your account before signing in.",
+    "toast_confirm_email": "Please check your email to confirm your account before signing in. In case you do not receive the email, please contact the administrator.",
     "toast_login_403": "Account is not confirmed or has been restricted. Please confirm your account via email or contact the administrator."
   },
   "TOS": {

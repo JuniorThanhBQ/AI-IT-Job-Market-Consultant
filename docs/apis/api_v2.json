@@ -574,8 +574,8 @@
         "tags": [
           "consultants"
         ],
-        "summary": "Get User Chat History",
-        "operationId": "consultants-get_user_chat_history",
+        "summary": "Get User Chat History View",
+        "operationId": "consultants-get_user_chat_history_view",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -586,7 +586,7 @@
                     "$ref": "#/components/schemas/ConsultantHistoryItem"
                   },
                   "type": "array",
-                  "title": "Response Consultants-Get User Chat History"
+                  "title": "Response Consultants-Get User Chat History View"
                 }
               }
             }
@@ -602,14 +602,16 @@
         "tags": [
           "consultants"
         ],
-        "summary": "Clear User Chat History",
-        "operationId": "consultants-clear_user_chat_history",
+        "summary": "Clear User Chat History View",
+        "operationId": "consultants-clear_user_chat_history_view",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ConsultantHistoryClearResponse"
+                }
               }
             }
           }
@@ -643,7 +645,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/AIAgentResponse"
+                }
               }
             }
           },
@@ -1384,6 +1388,29 @@
   },
   "components": {
     "schemas": {
+      "AIAgentResponse": {
+        "properties": {
+          "final_result": {
+            "type": "string",
+            "title": "Final Result"
+          },
+          "latency": {
+            "type": "number",
+            "title": "Latency"
+          },
+          "iterations": {
+            "type": "integer",
+            "title": "Iterations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "final_result",
+          "latency",
+          "iterations"
+        ],
+        "title": "AIAgentResponse"
+      },
       "AIChatbotRequest": {
         "properties": {
           "intent": {
@@ -2045,8 +2072,38 @@
         "type": "object",
         "title": "CompanyUpdate"
       },
+      "ConsultantHistoryClearResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "cleared_count": {
+            "type": "integer",
+            "title": "Cleared Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "cleared_count"
+        ],
+        "title": "ConsultantHistoryClearResponse"
+      },
       "ConsultantHistoryItem": {
         "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
           "user_input": {
             "type": "string",
             "title": "User Input"
@@ -2054,6 +2111,28 @@
           "output": {
             "type": "string",
             "title": "Output"
+          },
+          "consultant_mode": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConsultantMode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
           }
         },
         "type": "object",

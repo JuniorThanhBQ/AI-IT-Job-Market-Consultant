@@ -70,15 +70,6 @@ app.mount("/static", StaticFiles(directory=static_dir), name="static")
 templates_dir = app_dir / "templates"
 templates = Jinja2Templates(directory=templates_dir)
 
-if settings.all_cors_origins:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.all_cors_origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-
 if settings.trusted_hosts_list:
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.trusted_hosts_list)
 else:
@@ -89,6 +80,15 @@ app.add_middleware(ExceptionHandlerMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(ProcessTimeMiddleware)
 app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
+
+if settings.all_cors_origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.all_cors_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 app.include_router(api_router, prefix=settings.API_V2_STR)
 

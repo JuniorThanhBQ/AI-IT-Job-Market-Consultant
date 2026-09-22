@@ -35,7 +35,7 @@ For any qualifying activity defined in Section 2, the following license terms ap
 ```text
 The MIT License (MIT)
 
-Copyright (c) 2026 Văn Trung Thành
+Copyright (c) 2026 Van Trung Thanh
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

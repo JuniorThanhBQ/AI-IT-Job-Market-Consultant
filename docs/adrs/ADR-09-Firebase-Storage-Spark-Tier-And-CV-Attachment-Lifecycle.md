@@ -1,7 +1,7 @@
 # ADR-09: Decision on Firebase Spark Tier Integration, CV Attachment Uploads, and Lifecycle Operations
 
 ## Status
-Proposed
+Rejected
 
 ## Context
 The platform requires consultees to upload Curriculum Vitae (CV) documents to enable automated profile extraction, scoring, and consultant matching. When a CV file is uploaded, the system needs to host the document securely.
@@ -25,4 +25,7 @@ Using Firebase Storage to upload CV files with PATCH and DELETE endpoints. The d
 * Handling multipart uploads directly in the API process introduces modest latency during large file transfers compared to direct client-to-bucket uploads.
 
 ## Decision Date
-Waiting for approval until 20/09/2026
+Rejected in 22/09/2026.
+
+## Rejected Reason
+Firebase does not support free files storage for the spark tier. It only supports Firecloud Storage, a type of structured storage database, which the project already has with Supabase.

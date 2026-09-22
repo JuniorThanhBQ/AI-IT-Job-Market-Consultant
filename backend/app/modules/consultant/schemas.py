@@ -1,8 +1,7 @@
-import uuid
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.core.enums import ActionType, ConsultantMode
 from app.utils.validators import SafeStr
@@ -33,11 +32,13 @@ class ConsultantResponse(BaseModel):
 
 
 class ConsultantHistoryItem(BaseModel):
-    id: uuid.UUID | None = None
+    id: int | None = None
     user_input: str
     output: str
     consultant_mode: ConsultantMode | None = None
-    created_at: datetime | None = None
+    created_at: datetime | None = Field(default=None, alias="created_date")
+
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 class ConsultantHistoryClearResponse(BaseModel):
