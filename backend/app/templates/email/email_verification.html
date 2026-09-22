@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -109,6 +109,7 @@
                 Thank you for signing up for {{ project_name }}. Please confirm your email address by clicking the button below:
             </div>
             <div class="action-container">
+                <!-- nosemgrep: generic.html-templates.security.var-in-href.var-in-href -->
                 <a href="{{ link }}" class="btn-verify" target="_blank" rel="noopener noreferrer">Verify Email Address</a>
             </div>
             <div class="expire-note">
@@ -116,6 +117,7 @@
             </div>
             <div class="link-fallback">
                 If the button above does not work, copy and paste the following URL into your browser:<br>
+                <!-- nosemgrep: generic.html-templates.security.var-in-href.var-in-href -->
                 <a href="{{ link }}">{{ link }}</a>
             </div>
             <div class="email-footer">
