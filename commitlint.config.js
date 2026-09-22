@@ -6,5 +6,6 @@ module.exports = {
       "always",
       ["Release", "Tag", "Documentation", "Enhancement", "Maintenance"],
     ],
+    "type-case": [2, "always", "pascal-case"],
   },
 };

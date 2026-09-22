@@ -10,7 +10,6 @@ from app.modules.user.exceptions import (
     IncorrectPasswordError,
     InvalidConfirmPassword,
     InvalidCredentialsError,
-    InvalidVerificationStatus,
     InvalidVerificationTokenError,
     PasswordMismatchError,
     SamePasswordError,
@@ -71,8 +70,10 @@ def login_user(*, session: Session, email_name: str, password: str) -> Token:
         raise InvalidCredentialsError("Incorrect account or password")
     if not user.is_active:
         raise InactiveUserError("Inactive user")
-    if not user.is_verified:
-        raise InvalidVerificationStatus("This account is not verified")
+
+    # Temporarily disabled due to the Render port being restricted
+    # if not user.is_verified:
+    #     raise InvalidVerificationStatus("This account is not verified")
 
     user_repo.update_last_login(session=session, user=user)
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)

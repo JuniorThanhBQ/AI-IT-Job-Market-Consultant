@@ -70,11 +70,13 @@ repos:
         types_or: [ts, tsx, javascript, jsx]
         pass_filenames: false
 
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: 7fe32563734d34c2242097e92caba89e4ec55b9a  # frozen: v9.21.0
+    hooks:
       - id: commitlint
-        name: commitlint
-        entry: npx --prefix frontend commitlint --config frontend/commitlint.config.js --edit
         stages: [commit-msg]
-        language: system
+        additional_dependencies:
+          - "@commitlint/config-conventional"
 
   - repo: https://github.com/bridgecrewio/checkov
     rev: 48dbc906f2ce7c0772cc8f106318831dee575de6  # frozen: 3.3.16
