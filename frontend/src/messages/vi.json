@@ -22,16 +22,16 @@
     "nav_features": "Năng lực cốt lõi",
     "nav_cta": "Thống kê",
     "hero_badge": "Định Hướng Sự Nghiệp Kỷ Nguyên Mới",
-    "hero_heading_1": "Tương Lai Của",
-    "hero_heading_2": "Ngành IT",
-    "platforms_title": "Hỗ Trợ Từ Các Nền Tảng Lớn",
+    "hero_heading_1": "Tương lai",
+    "hero_heading_2": "tuyển dụng IT",
+    "platforms_title": "Hỗ trợ từ các nền tảng lớn",
     "platforms_desc": "Dữ liệu của nền tảng tư vấn được tổng hợp từ các nền tảng tuyển dụng trực tuyến. Những thông tin này được nền tảng cập nhật mỗi ngày để đảm bảo nguồn dữ liệu chất lượng cho tư vấn thị trường việc làm CNTT",
     "platforms_itviec": "ITViec",
     "platforms_itviec_desc": "ITviec là nền tảng tuyển dụng chuyên về công nghệ thông tin hàng đầu tại Việt Nam, kết nối hàng nghìn kỹ sư IT với các công ty uy tín.",
     "platforms_topdev": "TopDev",
-    "platforms_topdev_desc": " là nền tảng tuyển dụng hàng đầu tại Việt Nam chuyên về lĩnh vực công nghệ thông tin, kết nối lập trình viên với các doanh nghiệp công nghệ.",
+    "platforms_topdev_desc": "TopDev là nền tảng tuyển dụng hàng đầu tại Việt Nam chuyên về lĩnh vực công nghệ thông tin, kết nối lập trình viên với các doanh nghiệp công nghệ.",
     "platforms_itjobs": "ITJobs",
-    "platforms_itjobs_desc": "là trang web tuyển dụng chuyên biệt dành riêng cho các chuyên gia và nhân sự ngành Công nghệ thông tin tại Việt Nam.",
+    "platforms_itjobs_desc": "ITJobs là trang web tuyển dụng chuyên biệt dành riêng cho các chuyên gia và nhân sự ngành Công nghệ thông tin tại Việt Nam.",
     "platforms_vietnamworks": "VietnamWorks",
     "platforms_vietnamworks_desc": "VietnamWorks là một trong những nền tảng tuyển dụng lớn và lâu đời nhất tại Việt Nam, cung cấp danh sách đa dạng các cơ hội việc làm CNTT.",
     "features_title_1": "Hệ thống",
@@ -64,7 +64,7 @@
     "link_career_roadmaps": "Khuyến nghị công việc",
     "link_pricing": "Tìm hiểu thêm",
     "link_about_us": "Giới thiệu",
-    "link_careers": "Founder & cảm hứng",
+    "link_careers": "Founder và cảm hứng",
     "link_blog": "FAQ",
     "link_contact": "Liên hệ",
     "link_privacy_policy": "Chính sách bảo mật",
@@ -84,23 +84,23 @@
     "problem_1_desc": "Cung cấp hệ thống tư vấn việc làm CNTT cá nhân hoá giữa bối cảnh xu hướng tuyển dụng đang dần trở nên không hiệu quả do thiếu một nền tảng tư vấn cụ thể.",
     "problem_2_title": "Khoảng trống tư vấn",
     "problem_2_desc": "Giải quyết tình trạng thiếu phương thức hiệu quả để người tìm việc CNTT tiếp cận đúng vai trò công việc phù hợp với năng lực và mong muốn cá nhân.",
-    "problem_3_title": "Nghiên cứu hệ thống đa tác nhân",
-    "problem_3_desc": "Chứng minh tính khả thi của ứng dụng kiến trúc đa tác nhân trong giải quyết bài toán tư vấn việc làm với phân tích, khuyến nghị và cá nhân hoá.",
+    "problem_3_title": "Nghiên cứu hệ thống tác nhân",
+    "problem_3_desc": "Chứng minh tính khả thi của ứng dụng kiến trúc tác nhân trong giải quyết bài toán tư vấn việc làm với phân tích, khuyến nghị và cá nhân hoá.",
     "goals_heading": "Mục tiêu trọng tâm",
-    "goals_desc": "Phát triển hệ thống tư vấn thị trường việc làm IT dựa trên kiến trúc đa tác nhân, có khả năng thu thập, xử lý và phân tích dữ liệu tuyển dụng từ nhiều nguồn.",
+    "goals_desc": "Phát triển hệ thống tư vấn thị trường việc làm IT dựa trên kiến trúc tác nhân, có khả năng thu thập, xử lý và phân tích dữ liệu tuyển dụng từ nhiều nguồn.",
     "foundation_1_title": "Kiến Trúc Multi Agent",
-    "foundation_1_desc": "Dựa trên nghiên cứu nền tảng về AI agent của tác giả T. M. Nguyen và cộng sự và các học thuyết về kiến trúc đa tác nhân",
+    "foundation_1_desc": "Dựa trên nghiên cứu nền tảng về AI agent của tác giả T. M. Nguyen và cộng sự và các học thuyết về kiến trúc tác nhân",
     "foundation_2_title": "Tư Vấn Cá Nhân Hoá",
     "foundation_2_desc": "Lý thuyết tư vấn nghề nghiệp xuất phát từ khảo sát của Q. Peng và nghiên cứu của Q. Wang cùng cộng sự.",
     "roadmap_heading": "Phát triển trong 10 tuần",
     "aim_1_time": "Tuần 1 - 2 (từ 06/07/2026 - 19/07/2026)",
     "aim_1_title": "Thực hiện nghiên cứu và thu thập lý thuyết",
-    "aim_1_desc": "Trong tuần này thưc hiện việc thu thập và phân tích yêu cầu nghiệp vụ thông qua tham khảo tài liệu và kỹ thuật user story để hoàn thiện SRS. Ngoài ra, các lý thuyết về hệ thống đa tác nhân và khai thác dữ liệu cũng được thực hiện trong tuần này",
+    "aim_1_desc": "Trong tuần này thưc hiện việc thu thập và phân tích yêu cầu nghiệp vụ thông qua tham khảo tài liệu và kỹ thuật user story để hoàn thiện SRS. Ngoài ra, các lý thuyết về hệ thống tác nhân và khai thác dữ liệu cũng được thực hiện trong tuần này",
     "aim_2_time": "Tuần 3 (từ 20/07/2026 - 26/07/2026)",
     "aim_2_title": "Tổng hợp nền tảng lý thuyết",
-    "aim_2_desc": "Trong tuần này, dựa trên bộ lý thuyết thu thập được thì sẽ đi hệ thống hoá lý thuyết Agentic, AI Agent, kiến trúc đa tác nhân, mô hình ngôn ngữ lớn (LLM), kỹ thuật Hybrid RAG và re-ranking.",
+    "aim_2_desc": "Trong tuần này, dựa trên bộ lý thuyết thu thập được thì sẽ đi hệ thống hoá lý thuyết Agentic, AI Agent, kiến trúc tác nhân, mô hình ngôn ngữ lớn (LLM), kỹ thuật Hybrid RAG và re-ranking.",
     "aim_3_time": "Tuần 4 - 7 (từ 27/07/2026 - 23/08/2026)",
-    "aim_3_title": "Xây dựng hệ thống đa tác nhân",
+    "aim_3_title": "Xây dựng hệ thống tác nhân",
     "aim_3_desc": "Thiết kế và xây dựng agent phân tích thị trường, cá nhân hóa và agent đề xuất. Ngoài ra việc thiết kế và phát triển ứng dụng Web cũng bắt đầu trong tuần này.",
     "aim_4_time": "Tuần 8 (từ 24/08/2026 - 30/08/2026)",
     "aim_4_title": "Hoàn thiện nền tảng ứng dụng Web",
@@ -144,7 +144,7 @@
     "general_faqs": [
       {
         "q": "Nền tảng AIJMC là gì?",
-        "a": "AIJMC (AI IT Job Market Consultant) là một nền tảng dựa trên hệ thống đa tác nhân (multi-agent) được thiết kế để phân tích thị trường việc làm IT và cung cấp lộ trình sự nghiệp được cá nhân hóa cao dựa trên bộ kỹ năng của bạn."
+        "a": "AIJMC (AI IT Job Market Consultant) là một nền tảng dựa trên hệ thống tác nhân (multi-agent) được thiết kế để phân tích thị trường việc làm IT và cung cấp lộ trình sự nghiệp được cá nhân hóa cao dựa trên bộ kỹ năng của bạn."
       },
       {
         "q": "Nền tảng này dành cho đối tượng nào?",
@@ -152,7 +152,7 @@
       },
       {
         "q": "AIJMC có phải là công ty tiếp thị tuyển dụng không?",
-        "a": "AIJMC là nền tảng tư vấn không nhằm mục đích tiếp thị nhân lực cho công ty hay tập đoàn nào. Ở AIJMC, chúng tôi trang bị cho bạn dữ liệu, xu hướng và sự khớp nối trong công việc, để sau đó bạn sẽ tự đi tìm hiểu và ứng tuyển trực tiếp với bên công ty."
+        "a": "AIJMC là nền tảng tư vấn không nhằm mục đích tiếp thị nhân lực cho công ty hay tập đoàn nào. Ở AIJMC, bạn sẽ được tiếp cận dữ liệu, xu hướng và sự khớp nối trong công việc, để sau đó bạn sẽ tự đi tìm hiểu và ứng tuyển trực tiếp với bên công ty."
       },
       {
         "q": "Nền tảng này có miễn phí không?",
@@ -161,12 +161,12 @@
     ],
     "technical_faqs": [
       {
-        "q": "AI đánh giá kỹ năng của tôi như thế nào?",
-        "a": "AI của chúng tôi sẽ sử dụng Xử lý ngôn ngữ tự nhiên và tìm kiếm ngữ nghĩa để so sánh hồ sơ của bạn với hàng trăm mô tả công việc đang hoạt động theo thời gian thực."
+        "q": "AI đánh giá kỹ năng của bạn như thế nào?",
+        "a": "AI của AIJMC sẽ sử dụng Xử lý ngôn ngữ tự nhiên và tìm kiếm ngữ nghĩa để so sánh hồ sơ của bạn với hàng trăm mô tả công việc đang hoạt động theo thời gian thực."
       },
       {
         "q": "Dữ liệu việc làm của bạn được lấy từ đâu?",
-        "a": "Chúng tôi tổng hợp và phân tích dữ liệu thời gian thực từ các nền tảng tuyển dụng IT hàng đầu Việt Nam, bao gồm ITViec, TopDev, Vietnamworks và ITJobs."
+        "a": "AIJMC tổng hợp và phân tích dữ liệu thời gian thực từ các nền tảng tuyển dụng IT hàng đầu Việt Nam, bao gồm ITViec, TopDev, Vietnamworks và ITJobs."
       },
       {
         "q": "Dữ liệu thị trường được cập nhật bao lâu một lần?",
@@ -174,7 +174,7 @@
       },
       {
         "q": "Dữ liệu cá nhân của tôi có an toàn không?",
-        "a": "Miễn là bạn không chia sẻ các thông tin nhạy cảm lên hệ thống chúng tôi như CCCD, Thẻ tín dụng, mật khẩu App, v.v. Chúng tôi khuyến nghị bạn chỉ nên chia sẻ các nội dung liên quan đến kỹ năng và CV cá nhân."
+        "a": "Miễn là bạn không chia sẻ các thông tin nhạy cảm lên hệ thống AIJMC như CCCD, Thẻ tín dụng, mật khẩu App, v.v. Khuyến nghị bạn chỉ nên chia sẻ các nội dung liên quan đến kỹ năng và CV cá nhân."
       }
     ]
   },
@@ -195,28 +195,40 @@
   },
   "Auth": {
     "login_title": "Chào Mừng",
-    "login_subtitle": "Trở Lại.",
-    "login_desc": "Nhập thông tin của bạn để truy cập không gian sự nghiệp IT được cá nhân hóa.",
+    "login_subtitle": "Trở Lại!",
+    "login_desc": "Nhập thông tin của bạn để truy cập vào hệ thống phân tích AIJMC.",
     "signup_title": "Tạo Mới",
-    "signup_subtitle": "Tài Khoản.",
-    "signup_desc": "Bắt đầu hành trình khớp nối công việc và thấu hiểu thị trường một cách tối ưu nhất.",
+    "signup_subtitle": "Tài Khoản",
+    "signup_desc": "Bắt đầu hành trình khớp nối công việc và nắm bắt xu hướng thị trường một cách có định hướng và chọn lọc.",
     "label_username": "Tên đăng nhập",
     "label_email": "Địa chỉ Email",
     "label_password": "Mật khẩu",
-    "placeholder_username": "nguyenvana",
-    "placeholder_email": "hello@example.com",
+    "label_confirm_password": "Xác nhận mật khẩu",
+    "placeholder_username": "vtthanh",
+    "placeholder_email": "thanh.vantrung2005@gmail.com",
     "placeholder_password": "••••••••",
+    "placeholder_confirm_password": "••••••••",
     "forgot_password": "Quên mật khẩu?",
     "btn_login": "Đăng Nhập",
     "btn_signup": "Đăng Ký",
     "visual_login_heading": "Chào Bạn Mới!",
-    "visual_login_desc": "Bạn đã sẵn sàng mở khóa tương lai sự nghiệp IT của mình chưa? Bắt đầu ngay thôi.",
+    "visual_login_desc": "Bạn có mong muốn sử dụng dịch vụ từ hệ thống AIJMC? Bắt đầu ngay.",
     "visual_signup_heading": "Chào Mừng Trở Lại!",
-    "visual_signup_desc": "Để duy trì kết nối với nền tảng, vui lòng đăng nhập bằng thông tin cá nhân của bạn.",
+    "visual_signup_desc": "Để duy trì kết nối với nền tảng, vui lòng đăng nhập bằng tài khoản bạn đã tạo trong AIJMC.",
     "toggle_to_signup": "Chưa có tài khoản?",
     "toggle_to_login": "Đã có tài khoản?",
     "btn_ghost_signup": "Tạo tài khoản",
-    "btn_ghost_login": "Đăng nhập ngay"
+    "btn_ghost_login": "Đăng nhập ngay",
+    "validation_username_invalid": "Tên đăng nhập không phù hợp",
+    "validation_fill_fields": "Vui lòng điền đầy đủ thông tin.",
+    "validation_xss": "Vui lòng nhập đúng email và mật khẩu.",
+    "validation_sqli": "Vui lòng nhập đúng email và mật khẩu.",
+    "validation_email": "Vui lòng nhập địa chỉ email hợp lệ.",
+    "validation_password_weak": "Mật khẩu phải dài ít nhất 8 ký tự và chứa ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt.",
+    "validation_username_blank": "Tên đăng nhập không được để trống.",
+    "validation_password_mismatch": "Mật khẩu xác nhận không khớp.",
+    "toast_confirm_email": "Vui lòng kiểm tra email để xác nhận tài khoản trước khi đăng nhập. Trong trường hợp không có mail, vui lòng liên hệ quản trị viên.",
+    "toast_login_403": "Tài khoản chưa được xác nhận hoặc đã bị hạn chế. Vui lòng xác nhận tài khoản qua email hoặc liên hệ quản trị viên."
   },
   "TOS": {
     "title": "Điều khoản dịch vụ",
@@ -253,9 +265,9 @@
     "disclaimer_point2": "Miễn trừ trách nhiệm: Nền tảng AIJMC sẽ không chịu trách nhiệm pháp lý đối với bất kỳ tổn thất hoặc thiệt hại trực tiếp hay gián tiếp nào do người dùng truy cập hệ thống hoặc tin tưởng vào thông tin việc làm trên nền tảng.",
     "disclaimer_point3": "Liên kết bên ngoài: AIJMC không kiểm soát nội dung và không chịu trách nhiệm về các liên kết dẫn ra ngoài trang web của mình.",
     "takedown_title": "6. Giải quyết khiếu nại và chính sách gỡ bỏ",
-    "takedown_desc": "Mặc dù AIJMC hoạt động dựa trên việc sử dụng hợp lý trong nghiên cứu khoa học, chúng tôi hoàn toàn tôn trọng Điều khoản Dịch vụ và quyền thương mại của các công ty sở hữu dữ liệu.",
-    "takedown_point1": "Quy trình gỡ bỏ: Nếu các nền tảng tuyển dụng nhận thấy thông tin trên AIJMC ảnh hưởng đến hoạt động kinh doanh của họ, vui lòng gửi yêu cầu bằng văn bản (email) đến chúng tôi.",
-    "takedown_point2": "Cam kết hành động: chúng tôi cam kết sẽ thực hiện kiểm tra, phản hồi và xóa dữ liệu, chặn tên miền hoặc đóng các luồng thu thập dữ liệu liên quan sớm nhất có thể để giải quyết các vấn đề pháp lý."
+    "takedown_desc": "Mặc dù AIJMC hoạt động dựa trên việc sử dụng hợp lý trong nghiên cứu khoa học, AIJMC hoàn toàn tôn trọng Điều khoản Dịch vụ và quyền thương mại của các công ty sở hữu dữ liệu.",
+    "takedown_point1": "Quy trình gỡ bỏ: Nếu các nền tảng tuyển dụng nhận thấy thông tin trên AIJMC ảnh hưởng đến hoạt động kinh doanh của họ, vui lòng gửi yêu cầu email đến người phát triển.",
+    "takedown_point2": "Cam kết hành động: AIJMC cam kết sẽ thực hiện kiểm tra, phản hồi và xóa dữ liệu, chặn tên miền hoặc đóng các luồng thu thập dữ liệu liên quan sớm nhất có thể để giải quyết các vấn đề pháp lý."
   },
   "TOSConsent": {
     "title": "Xác nhận điều khoản và bảo mật",
@@ -315,7 +327,7 @@
       "first_name": "Tên",
       "last_name": "Họ",
       "birthday": "Ngày sinh",
-      "biography": "Tiểu sử / Tóm tắt",
+      "biography": "Tiểu sử và Tóm tắt",
       "biography_empty": "Chưa có thông tin tiểu sử.",
       "career_goal": "Mục tiêu nghề nghiệp",
       "goal_empty": "Chưa xác định mục tiêu nghề nghiệp.",
@@ -337,8 +349,8 @@
       "total_cv_score": "Tổng điểm chất lượng CV",
       "cv_advantages": "2. Ưu điểm CV",
       "cv_disadvantages": "Khuyết điểm CV",
-      "conclusion_suggestions": "3. Kết luận & Đề xuất",
-      "conclusion_p1": "CV của bạn có nền tảng tốt thể hiện lịch sử học tập rõ ràng và các tố chất lập trình viên cốt lõi. Tuy nhiên, để tối đa hóa tỷ lệ phản hồi và vượt qua các bộ lọc ATS hiện đại, chúng tôi khuyên bạn nên thực hiện các cải tiến sau:",
+      "conclusion_suggestions": "3. Kết luận và Đề xuất",
+      "conclusion_p1": "CV của bạn có nền tảng tốt thể hiện lịch sử học tập rõ ràng và các tố chất lập trình viên cốt lõi. Tuy nhiên, để tối đa hóa tỷ lệ phản hồi và vượt qua các bộ lọc ATS hiện đại, AIJMC khuyên bạn nên thực hiện các cải tiến sau:",
       "conclusion_bullet1": "Đo lường kết quả dự án: thay vì chỉ liệt kê trách nhiệm, hãy đề cập đến các chỉ số hiệu suất (ví dụ: \"giảm 24% độ trễ kết xuất trang bằng cách sử dụng next-intl\").",
       "conclusion_bullet2": "Điều chỉnh từ khóa phù hợp với chức danh công việc mục tiêu (ví dụ: sử dụng chính xác từ khóa từ phân khúc đã chọn như Python/FastAPI).",
       "conclusion_bullet3": "Giữ bố cục trang trong giới hạn tối đa 1-2 trang.",
@@ -362,15 +374,24 @@
       "first_name": "Tên",
       "last_name": "Họ",
       "birthday": "Ngày sinh",
-      "biography": "Tiểu sử / Tóm tắt",
+      "biography": "Tiểu sử và Tóm tắt",
       "biography_placeholder": "Chia sẻ chi tiết về nền tảng học vấn và con đường sự nghiệp của bạn...",
       "goal": "Mục tiêu nghề nghiệp",
-      "goal_placeholder": "Ví dụ: Trở thành kỹ sư Python & AI cấp cao tại các công ty sản phẩm hàng đầu.",
+      "goal_placeholder": "Ví dụ: Trở thành kỹ sư Python và AI cấp cao tại các công ty sản phẩm hàng đầu.",
       "btn_save": "Lưu thay đổi thông tin",
-      "go_back": "Quay lại"
+      "go_back": "Quay lại",
+      "validation_firstname_length": "Tên phải từ 2 đến 64 ký tự.",
+      "validation_lastname_length": "Họ phải từ 2 đến 64 ký tự.",
+      "validation_name_spam": "Họ tên dường như không hợp lệ hoặc là spam.",
+      "validation_age_invalid": "Tuổi phải từ 16 trở lên.",
+      "validation_bio_length": "Tiểu sử không được vượt quá 512 ký tự.",
+      "validation_goal_length": "Mục tiêu không được vượt quá 512 ký tự.",
+      "validation_fill_fields": "Vui lòng điền đầy đủ các thông tin.",
+      "validation_xss": "Vui lòng nhập đúng định dạng dữ liệu.",
+      "validation_sqli": "Vui lòng nhập đúng định dạng dữ liệu."
     },
     "CV": {
-      "title": "Chỉnh sửa chi tiết CV & Dự án",
+      "title": "Chỉnh sửa chi tiết CV và Dự án",
       "subtitle": "Hoàn thiện thông tin lý lịch cá nhân và quản lý tối đa ba dự án.",
       "back_overview": "Quay lại Tổng quan",
       "save_cv": "Lưu CV",
@@ -436,12 +457,20 @@
     },
     "Chat": {
       "online": "Đang hoạt động",
+      "chatbot_title": "Chatbot thông minh từ AIJMC",
       "confirm_clear": "Xác nhận",
       "cancel_clear": "Hủy",
       "welcome_title": "Chào mừng bạn đến với AI Market Advisor",
       "welcome_desc": "Hỏi tôi bất cứ điều gì về xu hướng việc làm, công nghệ, công ty, hoặc mức lương tiêu chuẩn trong ngành CNTT tại Việt Nam.",
       "error_message": "Đã xảy ra lỗi. Vui lòng thử lại.",
-      "input_placeholder": "Hỏi cố vấn thị trường của bạn..."
+      "input_placeholder": "Hỏi cố vấn thị trường của bạn...",
+      "legal_title": "Nội dung do AI tạo",
+      "legal_desc": "Các câu trả lời không cấu thành lời khuyên pháp lý, tài chính, y tế hoặc cuộc sống dưới bất kỳ hình thức nào. Chủ sở hữu trang web không chịu trách nhiệm pháp lý đối với bất kỳ quyết định hoặc kết quả nào phát sinh từ việc sử dụng chatbot này. Vui lòng tự chịu trách nhiệm khi sử dụng.",
+      "loading_default": "Đang phối hợp với AI Agent",
+      "loading_processing": "Đang xử lý",
+      "loading_large_input": "Phân tích cần nhiều thời gian hơn tôi nghĩ",
+      "loading_heavy_payload": "Đang tính toán và sắp xếp kết quả",
+      "loading_almost_there": "Sắp xong rồi"
     },
     "Company": {
       "title": "Cơ hội việc làm ({count})",
@@ -450,10 +479,41 @@
       "prev": "Trang trước",
       "next": "Trang sau",
       "page_indicator": "Trang {page} / {total}",
-      "go_back": "Quay lại"
+      "go_back": "Quay lại",
+      "try_again": "Thử lại",
+      "profile": "Hồ sơ công ty",
+      "about": "Về công ty",
+      "locations": "Địa điểm văn phòng",
+      "benefits": "Quyền lợi & Phúc lợi chính",
+      "type": "Loại hình công ty",
+      "size": "Quy mô công ty",
+      "country": "Quốc gia",
+      "working_days": "Ngày làm việc",
+      "overtime": "Chính sách tăng ca",
+      "website": "Trang web",
+      "visit_website": "Truy cập trang web ↗",
+      "confidential": "Công ty Bảo mật"
+    },
+    "Job": {
+      "details": "Chi tiết công việc",
+      "back_to_jobs": "Quay lại danh sách việc làm",
+      "view_profile": "Xem hồ sơ công ty →",
+      "salary_range": "Mức lương",
+      "seniority": "Cấp bậc",
+      "model": "Hình thức làm việc",
+      "hours": "Thời gian làm việc",
+      "description": "Mô tả công việc",
+      "responsibilities": "Nhiệm vụ chính",
+      "required": "Yêu cầu bắt buộc",
+      "nice_to_have": "Điểm cộng",
+      "additional": "Yêu cầu thêm",
+      "skills": "Kỹ năng chuyên môn chính",
+      "domains": "Lĩnh vực kinh doanh",
+      "expiration": "Ngày hết hạn",
+      "apply_external": "Ứng tuyển tại trang gốc ↗"
     },
     "Consultant": {
-      "title": "Phân tích thị trường & Cố vấn nghề nghiệp",
+      "title": "Phân tích thị trường và Cố vấn nghề nghiệp",
       "subtitle": "Thông tin chi tiết và chỉ số được cá nhân hóa từ các tin tuyển dụng công nghệ hiện tại và tùy chọn nghề nghiệp của bạn.",
       "back_market": "Quay lại thị trường",
       "demand_title": "1. Tóm tắt nhu cầu thị trường",
@@ -473,17 +533,18 @@
       "rec_2_title": "Cầu nối Backend FastAPI / Node.js",
       "rec_2_desc": "Các công ty đang tăng cường tuyển dụng lập trình viên có thể xây dựng API bất đồng bộ, bảo mật để phục vụ UI client thông minh. Khám phá cách kết nối React với FastAPI/Python.",
       "rec_3_title": "Mục tiêu nơi làm việc linh hoạt (Hybrid) tại TP.HCM",
-      "rec_3_desc": "Phân tích của chúng tôi cho thấy vị trí Hybrid tại TP.HCM hiện mang lại mức lương cao hơn 15% so với hoàn toàn từ xa nhờ tối ưu hóa điều phối nhóm.",
+      "rec_3_desc": "Phân tích của AIJMC cho thấy vị trí Hybrid tại TP.HCM hiện mang lại mức lương cao hơn 15% so với hoàn toàn từ xa nhờ tối ưu hóa điều phối nhóm.",
       "market_summary_desc": "Thị trường tuyển dụng CNTT cho thấy nhu cầu mạnh mẽ đối với nhân tài kỹ thuật trong phát triển AI, triển khai đám mây và kiến trúc hệ thống. Các lập trình viên có bộ kỹ năng kết hợp (hybrid), đặc biệt là kết nối trải nghiệm framework frontend (React/Next.js) với backend container (FastAPI/Node.js), đang nhận được mức đãi ngộ rất cạnh tranh. TP.HCM tiếp tục là thị trường tuyển dụng lớn nhất Việt Nam."
     },
     "Explorer": {
       "title": "Tìm kiếm việc làm IT",
       "subtitle": "Khám phá các công việc công nghệ được cập nhật hàng ngày từ các nền tảng tuyển dụng hàng đầu Việt Nam.",
       "btn_consultant": "Phân tích thị trường và khuyến nghị",
-      "btn_advanced_search": "Tìm kiếm nâng cao (Thử nghiệm)",
+      "btn_advanced_search": "Tìm kiếm nâng cao",
       "label_search": "Từ khóa tìm kiếm",
       "placeholder_search": "Tiêu đề, kỹ năng, từ khóa...",
       "search_placeholder": "Tiêu đề, kỹ năng, từ khóa...",
+      "semantic_search_example": "Thử chức năng nhanh chóng",
       "label_seniority": "Cấp bậc",
       "all_seniorities": "Tất cả cấp bậc",
       "label_model": "Hình thức làm việc",
@@ -520,5 +581,22 @@
       "select_job_desc": "Chọn một công việc từ danh sách để xem đầy đủ mô tả và yêu cầu chi tiết.",
       "placeholder_select": "Chọn một công việc từ danh sách để xem chi tiết."
     }
+  },
+  "UnavailablePage": {
+    "title": "Server đang không hoạt động",
+    "desc": "Hiện tại, máy chủ đang bảo trì.",
+    "status_code": "Lỗi 503",
+    "status_title": "Dịch vụ hiện không khả dụng",
+    "node_browser": "Trình duyệt",
+    "node_edge": "Internet",
+    "node_host": "Máy chủ",
+    "status_working": "Bình thường",
+    "status_error": "Gặp sự cố",
+    "what_happened_title": "Điều gì đã xảy ra?",
+    "what_happened_desc": "Máy chủ Backend API hiện không thể truy cập hoặc đang được bảo trì ở thời điểm hiện tại.",
+    "what_can_do_title": "Bạn có thể làm gì?",
+    "what_can_do_desc": "Vui lòng thử kết nối lại sau vài phút, kiểm tra lại trình duyệt hoặc liên hệ hỗ trợ bên dưới.",
+    "retry_btn": "Kiểm tra kết nối",
+    "support_contact": "Liên hệ"
   }
 }

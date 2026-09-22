@@ -1,36 +1,53 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
+import { validateLogin, validateRegister } from "@/utils/field_validator";
+import { toast } from "sonner";
 
 export default function useAuthForm() {
+  const t = useTranslations("Auth");
   const [isLogin, setIsLogin] = useState(true);
   const { user, authLoading, login, register } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!authLoading && user) {
-      router.replace("/counselee/overview");
+      if (!user.first_name || !user.last_name) {
+        router.replace("/counselee/profile?missing_name=true");
+      } else {
+        router.replace("/counselee/overview");
+      }
     }
   }, [user, authLoading, router]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError("Please fill in all fields.");
+    const cleanEmail = email.trim();
+    const cleanPassword = password.trim();
+    const validationError = validateLogin(cleanEmail, cleanPassword, t);
+    if (validationError) {
+      setError(validationError);
       return;
     }
     setError("");
     setIsSubmitting(true);
     try {
-      await login(email, password);
+      await login(cleanEmail, cleanPassword);
     } catch (err) {
-      setError(err?.message || "Invalid email or password.");
+      if (err?.status === 403) {
+        toast.error(t("toast_login_403"));
+        setError(t("toast_login_403"));
+      } else {
+        setError(err?.message || "Invalid email or password.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -38,14 +55,34 @@ export default function useAuthForm() {
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password || !username) {
-      setError("Please fill in all fields.");
+    const cleanEmail = email.trim();
+    const cleanUsername = username.trim();
+    const cleanPassword = password.trim();
+    const cleanConfirmPassword = confirmPassword.trim();
+    const validationError = validateRegister(
+      cleanEmail,
+      cleanUsername,
+      cleanPassword,
+      cleanConfirmPassword,
+      t,
+    );
+    if (validationError) {
+      setError(validationError);
       return;
     }
     setError("");
     setIsSubmitting(true);
     try {
-      await register(email, username, password);
+      await register(
+        cleanEmail,
+        cleanUsername,
+        cleanPassword,
+        cleanConfirmPassword,
+      );
+      toast.info(t("toast_confirm_email"));
+      setIsLogin(true);
+      setPassword("");
+      setConfirmPassword("");
     } catch (err) {
       setError(
         err?.message || "Registration failed. Please check your inputs.",
@@ -60,6 +97,7 @@ export default function useAuthForm() {
     setError("");
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
     setUsername("");
   };
 
@@ -69,6 +107,8 @@ export default function useAuthForm() {
     setEmail,
     password,
     setPassword,
+    confirmPassword,
+    setConfirmPassword,
     username,
     setUsername,
     error,

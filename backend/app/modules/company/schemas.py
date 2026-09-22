@@ -5,9 +5,42 @@ from typing import TYPE_CHECKING
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.core.enums import CompanyType, CountryEnum
+from app.utils.validators import SafeStr
 
 if TYPE_CHECKING:
     from app.modules.job.schemas import JobRead
+
+
+class CompanyCreate(BaseModel):
+    name: SafeStr = Field(max_length=255)
+    industry: SafeStr = Field(max_length=255)
+    size: SafeStr = Field(max_length=255)
+    location: SafeStr = Field(max_length=255)
+    description: SafeStr
+    website: SafeStr | None = Field(default=None, max_length=255)
+    slogan: SafeStr | None = Field(default=None, max_length=255)
+    company_type: CompanyType | None = Field(default=CompanyType.PRODUCT)
+    country: CountryEnum | None = Field(default=CountryEnum.VIETNAM)
+    addresses: list[SafeStr] | None = None
+    benefits: list[SafeStr] | None = None
+    working_days: SafeStr | None = Field(default=None, max_length=255)
+    overtime_policy: SafeStr | None = Field(default=None, max_length=255)
+
+
+class CompanyUpdate(BaseModel):
+    name: SafeStr | None = Field(default=None, max_length=255)
+    industry: SafeStr | None = Field(default=None, max_length=255)
+    size: SafeStr | None = Field(default=None, max_length=255)
+    location: SafeStr | None = Field(default=None, max_length=255)
+    description: SafeStr | None = None
+    website: SafeStr | None = Field(default=None, max_length=255)
+    slogan: SafeStr | None = Field(default=None, max_length=255)
+    company_type: CompanyType | None = None
+    country: CountryEnum | None = None
+    addresses: list[SafeStr] | None = None
+    benefits: list[SafeStr] | None = None
+    working_days: SafeStr | None = Field(default=None, max_length=255)
+    overtime_policy: SafeStr | None = Field(default=None, max_length=255)
 
 
 class CompanyRead(BaseModel):
@@ -35,13 +68,8 @@ class CompanyDetail(CompanyRead):
 
 
 class CompanyQueryParams(BaseModel):
-    name: str | None = None
-    industry: str | None = None
+    name: SafeStr | None = None
+    industry: SafeStr | None = None
     company_type: CompanyType | None = None
     skip: int = Field(default=0, ge=0)
     limit: int = Field(default=20, ge=1, le=100)
-
-
-from app.modules.job.schemas import JobRead  # noqa: E402  # pylint: disable=reimported
-
-CompanyDetail.model_rebuild()

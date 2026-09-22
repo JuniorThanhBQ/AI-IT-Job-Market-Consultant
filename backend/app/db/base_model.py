@@ -39,6 +39,9 @@ class EmbeddingModel(BaseModel):
     latency: float | None = Field(default=0.0)
     log: str | None = Field(default=None)
 
+    def __str__(self) -> str:
+        return self.embedding_model or f"Embedding #{self.id}"
+
     @field_validator("embedding_model")
     @classmethod
     def validate_embedding_model(cls, value):

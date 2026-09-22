@@ -34,25 +34,29 @@ export function mapWorkingHours(value, locale = "en") {
 
 export function formatSalaryRange(minSalary, maxSalary, locale = "en") {
   const dictionary = locales[locale] || en;
+  const min = Number(minSalary || 0);
+  const max = Number(maxSalary || 0);
   const negotiableText =
     dictionary.Enums?.WorkingHours?.Negotiable ||
     (locale === "vi" ? "Thỏa thuận" : "Negotiable");
-
-  const min = Number(minSalary || 0);
-  const max = Number(maxSalary || 0);
 
   if (min === 0 && max === 0) {
     return negotiableText;
   }
 
+  const baseValue = min > 0 ? min : max;
+  const currency = baseValue > 100000 ? "VND" : "USD";
+  const fromText = locale === "vi" ? "Từ" : "From";
+  const upToText = locale === "vi" ? "Lên đến" : "Up to";
+
   if (min > 0 && max > 0) {
-    return `${min.toLocaleString()} - ${max.toLocaleString()} USD`;
+    return `${min.toLocaleString()} - ${max.toLocaleString()} ${currency}`;
   }
   if (min > 0) {
-    return `From ${min.toLocaleString()} USD`;
+    return `${fromText} ${min.toLocaleString()} ${currency}`;
   }
   if (max > 0) {
-    return `Up to ${max.toLocaleString()} USD`;
+    return `${upToText} ${max.toLocaleString()} ${currency}`;
   }
 
   return negotiableText;

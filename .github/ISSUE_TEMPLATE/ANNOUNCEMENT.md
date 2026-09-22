@@ -1,6 +1,6 @@
 ---
 name: 'Type: Announcement'
-about: These issues are used for the product owner announcement
+about: These issues are used for product owner announcement
 title: '[Announcement] '
 labels: ['Type: Announcement']
 assignees: [JuniorThanhBQ]

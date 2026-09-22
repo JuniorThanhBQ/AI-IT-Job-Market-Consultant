@@ -1,30 +1,34 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/context/AuthProvider";
-import { consultantApi } from "@/configs/apis";
+import { APIS, BASE_URL } from "@/configs/apis";
 import { useRouter } from "@/i18n/routing";
+import { SUGGESTED_INTENTS } from "@/utils/const";
+import { hasXSS, hasSQLInjection } from "@/utils/field_validator";
 
-export const SUGGESTED_INTENTS = [
-  {
-    id: "MARKET_ANALYSIS",
-    name: "Market Analysis",
-    desc: "Analyze IT trends, salary distributions, and market demand.",
-  },
-  {
-    id: "PERSONAL_STANDARD_EVALUATION",
-    name: "Career Evaluation",
-    desc: "Assess your profile and compare skills with current job criteria.",
-  },
-  {
-    id: "JOB_RECOMMEND",
-    name: "Job Recommendation",
-    desc: "Discover vacancies closely matching your tech stack.",
-  },
-  {
-    id: "DEEP_ANALYSIS_EVALUATION",
-    name: "Deep CV Analysis",
-    desc: "Run comprehensive AI feedback to optimize your CV/Resume.",
-  },
-];
+export const consultantApi = {
+  processChatbotIntent: (intent, userInput) =>
+    APIS.executeAgent({ intent, user_input: userInput }),
+  getHistory: (params = {}) => APIS.getAgentHistory(params),
+  clearHistory: () => APIS.clearAgentHistory(),
+  executeAgent: (payload) => APIS.executeAgent(payload),
+};
+
+export const chatbotAPI = (intent, userInput) => {
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  return fetch(`${BASE_URL}/consultants/agent/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "ngrok-skip-browser-warning": "true",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({
+      intent: intent || "MARKET_ANALYSIS",
+      user_input: userInput,
+    }),
+  });
+};
 
 export function useChatbot() {
   const { user, loading: authLoading } = useAuth();
@@ -43,7 +47,7 @@ export function useChatbot() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.replace("/counselee/login");
+      router.replace("/counselee/auth");
     }
   }, [user, authLoading, router]);
 
@@ -105,6 +109,10 @@ export function useChatbot() {
     if (!inputMessage.trim() || isSending) return;
 
     const userText = inputMessage.trim();
+    if (hasXSS(userText) || hasSQLInjection(userText)) {
+      setError("Invalid input.");
+      return;
+    }
     setInputMessage("");
     setError("");
     setMessages((prev) => [
@@ -115,64 +123,20 @@ export function useChatbot() {
     setStreamingMessage("");
 
     try {
-      const token =
-        typeof window !== "undefined" ? localStorage.getItem("token") : null;
-      const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081/api/v1"
-        }/consultants/chatbot/process-intent`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            intent: selectedIntent,
-            user_input: userText,
-          }),
-        },
-      );
-
+      const response = await chatbotAPI(selectedIntent, userText);
       if (!response.ok) {
         throw new Error("Chatbot API response was not OK");
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let done = false;
-      let textBuffer = "";
-      let accumulatedText = "";
-
-      while (!done) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
-        if (value) {
-          const chunkStr = decoder.decode(value, { stream: !done });
-          textBuffer += chunkStr;
-          const lines = textBuffer.split("\n");
-          textBuffer = lines.pop() || "";
-
-          for (const line of lines) {
-            if (!line.trim()) continue;
-            try {
-              const parsed = JSON.parse(line);
-              if (parsed.type === "chunk" && parsed.text) {
-                accumulatedText += parsed.text;
-                setStreamingMessage(accumulatedText);
-              }
-            } catch (err) {
-              console.error(err);
-            }
-          }
-        }
-      }
+      const data = await response.json();
+      const reply =
+        data.final_result || data.output || data.result || "Analysis complete.";
 
       setMessages((prev) => [
         ...prev,
         {
           role: "bot",
-          text: accumulatedText || "Analysis complete.",
+          text: reply,
           timestamp: new Date(),
         },
       ]);

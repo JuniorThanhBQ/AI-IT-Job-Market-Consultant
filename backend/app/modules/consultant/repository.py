@@ -1,100 +1,10 @@
 import uuid
 from typing import Any, cast
 
-from sqlalchemy import func
-from sqlmodel import Session, select, text
+from sqlmodel import Session, or_, select
 
 from app.core.enums import ConsultantMode
-from app.modules.company.models import Company
 from app.modules.consultant.models import ConsultantHistory
-from app.modules.job.models import Job, JobEmbedding
-
-
-def get_relevant_jobs_by_vector(
-    *, session: Session, user_vector: list[float], limit: int = 5
-) -> list[tuple[Job, Company, float]]:
-    distance_expr = cast(Any, JobEmbedding.embedding).cosine_distance(user_vector)
-    stmt = (
-        select(Job, Company, distance_expr)
-        .join(Company)
-        .join(JobEmbedding)
-        .order_by(distance_expr)
-        .limit(limit)
-    )
-    result = session.exec(stmt)
-    return result.all()  # type: ignore[return-value]
-
-
-def get_hybrid_candidates(
-    *, session: Session, user_query: str, user_vector: list[float], limit: int = 15
-) -> list[tuple[Job, Company, float]]:
-    distance_expr = cast(Any, JobEmbedding.embedding).cosine_distance(user_vector)
-    stmt_vector = (
-        select(Job, Company, distance_expr)
-        .join(Company)
-        .join(JobEmbedding)
-        .order_by(distance_expr)
-        .limit(limit * 2)
-    )
-    vector_results = session.exec(stmt_vector).all()
-
-    tsquery = func.plainto_tsquery("simple", user_query)
-    tsvector = func.to_tsvector("simple", Job.vector_context)
-
-    stmt_lexical = (
-        select(Job, Company, func.ts_rank(tsvector, tsquery).label("lexical_score"))
-        .join(Company)
-        .where(tsvector.op("@@")(tsquery))
-        .order_by(text("lexical_score DESC"))
-        .limit(limit * 2)
-    )
-    try:
-        lexical_results = session.exec(stmt_lexical).all()
-    except Exception:
-        stmt_fallback = (
-            select(Job, Company, text("1.0"))
-            .join(Company)
-            .where(cast(Any, Job.vector_context).ilike(f"%{user_query}%"))
-            .limit(limit * 2)
-        )
-        lexical_results = session.exec(stmt_fallback).all()
-
-    doc_map = {}
-
-    vector_rank = {}
-    for rank, (job, company, dist) in enumerate(vector_results, start=1):
-        doc_map[job.id] = (job, company, dist)
-        vector_rank[job.id] = rank
-
-    lexical_rank = {}
-    for rank, (job, company, _score) in enumerate(lexical_results, start=1):
-        if job.id not in doc_map:
-            doc_map[job.id] = (job, company, 1.0)
-        lexical_rank[job.id] = rank
-
-    k = 60
-    rrf_scores = {}
-    for job_id in doc_map:
-        v_score = 1.0 / (k + vector_rank[job_id]) if job_id in vector_rank else 0.0
-        l_score = 1.0 / (k + lexical_rank[job_id]) if job_id in lexical_rank else 0.0
-        rrf_scores[job_id] = v_score + l_score
-
-    sorted_job_ids = sorted(
-        rrf_scores.keys(), key=lambda j_id: rrf_scores[j_id], reverse=True
-    )[:limit]
-
-    return [doc_map[j_id] for j_id in sorted_job_ids]
-
-
-def get_latest_jobs(*, session: Session, limit: int = 20) -> list[tuple[Job, Company]]:
-    stmt = (
-        select(Job, Company)
-        .join(Company)
-        .order_by(cast(Any, Job.id).desc())
-        .limit(limit)
-    )
-    result = session.exec(stmt)
-    return result.all()  # type: ignore[return-value]
 
 
 def create_history(
@@ -107,6 +17,8 @@ def create_history(
     request_log: str,
     response_log: str,
     input_embedding: list[float] | None = None,
+    token_used: float = 0.0,
+    latency: float = 0.0,
 ) -> ConsultantHistory:
     history = ConsultantHistory(
         user_id=user_id,
@@ -116,8 +28,43 @@ def create_history(
         request_log=request_log,
         response_log=response_log,
         input_embedding=input_embedding,
+        token_used=token_used,
+        latency=latency,
     )
     session.add(history)
     session.commit()
     session.refresh(history)
     return history
+
+
+def get_history_by_user_id(
+    *, session: Session, user_id: uuid.UUID
+) -> list[ConsultantHistory]:
+    stmt = (
+        select(ConsultantHistory)
+        .where(ConsultantHistory.user_id == user_id)
+        .where(ConsultantHistory.user_input != "")
+        .where(ConsultantHistory.output != "")
+        .order_by(cast(Any, ConsultantHistory.id))
+    )
+    return list(session.exec(stmt).all())
+
+
+def clear_history_by_user_id(*, session: Session, user_id: uuid.UUID) -> int:
+    stmt = (
+        select(ConsultantHistory)
+        .where(ConsultantHistory.user_id == user_id)
+        .where(
+            or_(
+                ConsultantHistory.user_input != "",
+                ConsultantHistory.output != "",
+            )
+        )
+    )
+    histories = list(session.exec(stmt).all())
+    for h in histories:
+        h.user_input = ""
+        h.output = ""
+        session.add(h)
+    session.commit()
+    return len(histories)

@@ -38,7 +38,7 @@ export default function ChatbotPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-slate-50 dark:bg-slate-955 text-slate-900 dark:text-slate-100 flex flex-col font-sans overflow-hidden transition-colors duration-300">
+    <div className="relative min-h-screen bg-slate-50 dark:bg-slate-955 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300">
       <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.03] dark:opacity-[0.05] mix-blend-overlay">
         <svg className="w-full h-full">
           <filter id="noiseFilter">
@@ -81,14 +81,14 @@ export default function ChatbotPage() {
         onClearHistory={handleClearHistory}
       />
 
-      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col lg:flex-row gap-8 min-h-0 overflow-hidden">
+      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col lg:flex-row gap-8">
         <ChatbotSidebar
           suggestedIntents={suggestedIntents}
           selectedIntent={selectedIntent}
           onSelectIntent={setSelectedIntent}
         />
 
-        <div className="flex-1 bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-[2.5rem] p-8 backdrop-blur-md flex flex-col min-h-0 shadow-sm">
+        <div className="flex-1 bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-[2.5rem] p-8 backdrop-blur-md flex flex-col shadow-sm">
           <ChatbotMessageList
             messages={messages}
             streamingMessage={streamingMessage}

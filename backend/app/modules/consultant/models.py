@@ -40,6 +40,10 @@ class ConsultantHistory(BaseModel, table=True):
         )
     )
 
+    def __str__(self) -> str:
+        preview = self.user_input[:30]
+        return f"{self.user_id} - {preview}"
+
     @field_validator("input_embedding")
     @classmethod
     def validate_embedding(cls, value):

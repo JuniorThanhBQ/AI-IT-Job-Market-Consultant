@@ -11,7 +11,7 @@ from pydantic_settings import PydanticBaseSettingsSource
 logger = logging.getLogger(__name__)
 
 
-def _normalize_env_files(env_files: Any) -> list[str | Path]:
+def normalize_env_files(env_files: Any) -> list[str | Path]:
     if not env_files:
         return []
     if isinstance(env_files, (str, Path)):
@@ -19,7 +19,7 @@ def _normalize_env_files(env_files: Any) -> list[str | Path]:
     return list(env_files)
 
 
-def _parse_env_file(path: Path) -> dict[str, str]:
+def parse_env_file(path: Path) -> dict[str, str]:
     if not path.is_file():
         return {}
     results: dict[str, str] = {}
@@ -42,14 +42,14 @@ class FlatEnvSettingsSource(PydanticBaseSettingsSource):
 
     def __call__(self) -> dict[str, Any]:
         data: dict[str, Any] = {}
-        env_files = _normalize_env_files(
+        env_files = normalize_env_files(
             self.settings_cls.model_config.get("env_file", [])
         )
         search_roots = [Path("."), Path(__file__).resolve().parent.parent.parent]
 
         for env_file in env_files:
             for base_path in search_roots:
-                data.update(_parse_env_file(base_path / env_file))
+                data.update(parse_env_file(base_path / env_file))
 
         data.update(os.environ)
         return data

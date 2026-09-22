@@ -35,5 +35,5 @@ Steps to reproduce the behavior:
 *   **Environment / Runtime:** [e.g. Node.js v22.2.0, Python 3.12.3]
 *   **Additional Tools/Context:**
 
-## Additional Context
-*Add any other context about the problem here.*
+## Additional Reminder
+Please write this problem in test-case-report.xlsx if you found it outside of test case coverage.

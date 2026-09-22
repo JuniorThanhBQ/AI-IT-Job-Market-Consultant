@@ -2,12 +2,15 @@ name: Full CI Commit Workflow
 
 on:
   push:
+    branches:
+      - main
+      - staging
   pull_request:
     types:
       - opened
       - synchronize
       - reopened
-  workflow_call:
+  workflow_call: {}
 
 concurrency:
   group: full-ci-pipeline-${{ github.workflow }}-${{ github.ref }}

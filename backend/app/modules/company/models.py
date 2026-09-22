@@ -12,10 +12,6 @@ from app.db.base_model import BaseModel, EmbeddingModel
 
 if TYPE_CHECKING:
     from app.modules.job.models import Job
-else:
-
-    class Job:
-        pass
 
 
 class CompanyEmbedding(EmbeddingModel, table=True):
@@ -24,7 +20,6 @@ class CompanyEmbedding(EmbeddingModel, table=True):
     company_id: int = Field(
         foreign_key="companies.id", unique=True, index=True, ondelete="CASCADE"
     )
-
     company: Company = Relationship(
         sa_relationship=relationship(
             "Company",
@@ -32,7 +27,6 @@ class CompanyEmbedding(EmbeddingModel, table=True):
             uselist=False,
         )
     )
-
     __table_args__ = (
         Index(
             "idx_company_embeddings_embedding_hnsw",
@@ -66,9 +60,11 @@ class Company(BaseModel, table=True):
     overtime_policy: str | None = Field(default=None)
     vector_context: str
 
-    __table_args__ = ()
+    def __str__(self) -> str:
+        return f"{self.name} - {self.industry}"
 
-    jobs: list[Job] = Relationship(
+    __table_args__ = ()
+    jobs: list["Job"] = Relationship(
         sa_relationship=relationship(
             "Job",
             back_populates="company",

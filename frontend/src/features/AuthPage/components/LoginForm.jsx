@@ -14,24 +14,24 @@ export default function LoginForm({
 }) {
   return (
     <div className="w-full max-w-md mx-auto">
-      <h2 className="text-5xl md:text-6xl leading-[1.2] font-black tracking-tighter uppercase text-slate-900 dark:text-white mb-4">
+      <h2 className="text-3xl md:text-4xl lg:text-5xl leading-[1.15] font-black tracking-tighter uppercase text-slate-900 dark:text-white mb-2 text-center md:text-left">
         {t("login_title")} <br />
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#285872] to-[#407c9c]">
+        <span className="text-[#285872] dark:text-sky-400">
           {t("login_subtitle")}
         </span>
       </h2>
-      <p className="text-slate-505 dark:text-slate-400 font-medium mb-10">
+      <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm font-medium mb-6 text-center md:text-left">
         {t("login_desc")}
       </p>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl p-4 mb-6 text-sm font-medium">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl p-3 mb-4 text-xs font-medium">
           {error}
         </div>
       )}
 
-      <form className="flex flex-col gap-6" onSubmit={onSubmit}>
-        <div className="flex flex-col gap-2">
+      <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+        <div className="flex flex-col gap-1.5">
           <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-2">
             {t("label_email")}
           </label>
@@ -40,12 +40,12 @@ export default function LoginForm({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("placeholder_email")}
-            className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#285872] dark:focus:ring-[#407c9c] focus:border-transparent transition-all text-slate-900 dark:text-white font-medium"
+            className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-[#285872] dark:focus:ring-[#407c9c] focus:border-transparent transition-all text-slate-900 dark:text-white font-medium text-sm"
             disabled={isSubmitting}
           />
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-2">
             {t("label_password")}
           </label>
@@ -54,7 +54,7 @@ export default function LoginForm({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder={t("placeholder_password")}
-            className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#285872] dark:focus:ring-[#407c9c] focus:border-transparent transition-all text-slate-900 dark:text-white font-medium"
+            className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-[#285872] dark:focus:ring-[#407c9c] focus:border-transparent transition-all text-slate-900 dark:text-white font-medium text-sm"
             disabled={isSubmitting}
           />
         </div>

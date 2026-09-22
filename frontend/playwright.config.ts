@@ -6,5 +6,11 @@ export default defineConfig({
   reporter: "list",
   use: {
     trace: "on-first-retry",
+    baseURL: "http://localhost:3000/",
+  },
+  webServer: {
+    command: "npm run dev",
+    url: "http://localhost:3000/",
+    reuseExistingServer: true,
   },
 });

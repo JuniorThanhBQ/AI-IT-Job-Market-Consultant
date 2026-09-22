@@ -1,14 +1,13 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
     hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
       - id: check-toml
       - id: check-yaml
         args:
           - --unsafe
       - id: check-added-large-files
+        args: [--maxkb=1024]
         exclude: ^notebooks/
       - id: check-merge-conflict
       - id: check-ast
@@ -16,25 +15,27 @@ repos:
       - id: check-json
       - id: check-executables-have-shebangs
       - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.48.0  # frozen: v1.48.0
+    rev: d43b6c087ac471e2ea7b8af622ff15f05c0c365b  # frozen: v0.15.1
     hooks:
       - id: typos
         args: [--force-exclude]
 
   - repo: https://github.com/hadolint/hadolint
-    rev: v2.15.1
+    rev: 2eece55955ced00200be9729e9728cb7dacca505  # frozen: v2.15.1
     hooks:
       - id: hadolint-docker
 
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.30.0
+    rev: 2ca41cc1372d1e939a6a879f18cdc19fc1cac1ce  # frozen: v8.30.0
     hooks:
       - id: gitleaks
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
+    rev: f12edd9c7be1c20cfa42420fd0e6df71e42b51ea  # frozen: v4.0.0-alpha.8
     hooks:
       - id: prettier
         files: ^frontend/.*\.(js|jsx|ts|tsx|css|json)$
@@ -43,14 +44,14 @@ repos:
     hooks:
       - id: local-ruff-check
         name: ruff check
-        entry: uv run ruff check --force-exclude --fix --exit-non-zero-on-fix
+        entry: uv run ruff check --config backend/pyproject.toml --force-exclude --fix --exit-non-zero-on-fix
         require_serial: true
         language: system
         types: [python]
 
       - id: local-ruff-format
         name: ruff format
-        entry: uv run ruff format --force-exclude --exit-non-zero-on-format
+        entry: uv run ruff format --config backend/pyproject.toml --force-exclude --exit-non-zero-on-format
         require_serial: true
         language: system
         types: [python]
@@ -63,28 +64,22 @@ repos:
         pass_filenames: false
 
       - id: frontend-lint-typecheck
-        name: Frontend Linter & Type Check (ESLint)
+        name: ESLint
         entry: npm --prefix frontend run lint
         language: system
-        types_or: [javascript, jsx]
+        types_or: [ts, tsx, javascript, jsx]
         pass_filenames: false
 
-      - id: add-release-date
-        name: Add date to latest release header
-        entry: uv run python scripts/add_latest_release_date.py
-        language: system
-        files: ^release-notes\.md$
-        pass_filenames: false
-
-      - id: pytest-backend
-        name: Run Backend Unit Tests
-        entry: uv run --project backend pytest -m "not e2e"
-        language: system
-        pass_filenames: false
-        always_run: true
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: 7fe32563734d34c2242097e92caba89e4ec55b9a  # frozen: v9.21.0
+    hooks:
+      - id: commitlint
+        stages: [commit-msg]
+        additional_dependencies:
+          - "@commitlint/config-conventional"
 
   - repo: https://github.com/bridgecrewio/checkov
-    rev: 3.3.9
+    rev: 48dbc906f2ce7c0772cc8f106318831dee575de6  # frozen: 3.3.16
     hooks:
       - id: checkov
         name: Checkov Docker Compose Lint
@@ -94,14 +89,7 @@ repos:
           - yaml
 
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.29.0
+    rev: cef8b8350da46d8114c7e6b7272aebdccdf193ce  # frozen: v1.30.0
     hooks:
       - id: zizmor
         args: ["--min-severity", "high"]
-
-  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: v9.26.0
-    hooks:
-      - id: commitlint
-        stages: [commit-msg]
-        additional_dependencies: ['@commitlint/config-conventional']

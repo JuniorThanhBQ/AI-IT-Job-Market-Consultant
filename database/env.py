@@ -2,9 +2,8 @@ import sys
 from logging.config import fileConfig
 from pathlib import Path
 
-from sqlalchemy import engine_from_config, pool, text
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool, text
 
 config = context.config
 
@@ -13,9 +12,9 @@ if config.config_file_name is not None:
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
 
-from sqlmodel import SQLModel  # noqa: E402
-from app.core.config import settings  # noqa: E402
 import app.db.base  # noqa: F401, E402
+from app.core.config import settings  # noqa: E402
+from sqlmodel import SQLModel  # noqa: E402
 
 target_metadata = SQLModel.metadata
 

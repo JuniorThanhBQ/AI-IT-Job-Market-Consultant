@@ -55,17 +55,21 @@ export function AuthProvider({ children }) {
         localStorage.setItem("token", data.access_token);
         const userData = await userApi.getMe();
         setUser(userData);
-        router.push("/counselee/overview");
+
+        if (!userData.first_name || !userData.last_name) {
+          router.push("/counselee/profile?missing_name=true");
+        } else {
+          router.push("/counselee/overview");
+        }
       }
     } catch (error) {
       throw error;
     }
   };
 
-  const register = async (email, username, password) => {
+  const register = async (email, username, password, confirmPassword) => {
     try {
-      await authApi.register(email, username, password);
-      await login(email, password);
+      return await authApi.register(email, username, password, confirmPassword);
     } catch (error) {
       throw error;
     }
@@ -78,12 +82,13 @@ export function AuthProvider({ children }) {
       console.error(error);
     } finally {
       setUser(null);
-      router.push("/counselee/login");
+      router.push("/counselee/auth");
     }
   };
 
   const value = {
     user,
+    setUser,
     loading,
     authLoading: loading,
     login,

@@ -36,12 +36,8 @@ export default function ChatbotHeader({
             </div>
             <div>
               <h1 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">
-                AI Career Consultant
+                AIJMC Chatbot
               </h1>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-450 font-semibold uppercase tracking-wider flex items-center gap-1">
-                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping" />
-                Active Multi-Agent Core
-              </p>
             </div>
           </div>
         </div>

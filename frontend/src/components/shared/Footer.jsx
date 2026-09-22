@@ -1,44 +1,14 @@
 "use client";
 
-import { Link } from "@/i18n/routing";
 import Image from "next/image";
+import { Link } from "@/i18n/routing";
 import { motion } from "motion/react";
-import { useTranslations } from "next-intl";
 import { PROJECT_NAME, LINKS } from "@/utils/const";
 import { LOGO } from "@/assets/CloudinaryAssetsUrl";
+import { useFooter } from "@/components/shared/hooks/useFooter";
 
 export default function Footer() {
-  const t = useTranslations("Footer");
-
-  const footerLinks = {
-    product: [
-      { name: t("link_jd_matching"), href: "/counselee/chatbot" },
-      { name: t("link_tech_trends"), href: "/counselee/overview" },
-      { name: t("link_career_roadmaps"), href: "/counselee/overview" },
-      { name: t("link_pricing"), href: "/aijmc" },
-    ],
-    company: [
-      { name: t("link_about_us"), href: "/aijmc" },
-      { name: t("link_careers"), href: "/aijmc/founder-inspiration" },
-      { name: t("link_blog"), href: "/aijmc/faq" },
-      { name: t("link_contact"), href: "/aijmc/contact" },
-    ],
-    legal: [{ name: t("link_terms_of_service"), href: "/tos" }],
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { staggerChildren: 0.1, duration: 0.5 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 },
-  };
+  const { t, footerLinks, containerVariants, itemVariants } = useFooter();
 
   return (
     <footer className="bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 pt-12 pb-6">
@@ -49,8 +19,11 @@ export default function Footer() {
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
-          <motion.div variants={itemVariants} className="lg:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16 text-center md:text-left">
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-2 flex flex-col items-center md:items-start"
+          >
             <Link href="/" className="flex items-center gap-2 mb-6 group">
               <div className="w-12 h-12  rounded-lg flex items-center justify-center text-white transition-transform group-hover:scale-105">
                 <Image
@@ -71,16 +44,19 @@ export default function Footer() {
             </p>
           </motion.div>
 
-          <motion.div variants={itemVariants}>
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col items-center md:items-start"
+          >
             <h3 className="font-semibold text-slate-900 dark:text-white mb-4">
               {t("category_product")}
             </h3>
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-3 items-center md:items-start">
               {footerLinks.product.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors"
+                    className="text-slate-600 dark:text-slate-400 hover:text-[#285872] dark:hover:text-sky-400 text-sm transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -89,16 +65,19 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          <motion.div variants={itemVariants}>
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col items-center md:items-start"
+          >
             <h3 className="font-semibold text-slate-900 dark:text-white mb-4">
               {t("category_company")}
             </h3>
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-3 items-center md:items-start">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors"
+                    className="text-slate-600 dark:text-slate-400 hover:text-[#285872] dark:hover:text-sky-400 text-sm transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -107,16 +86,19 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          <motion.div variants={itemVariants}>
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col items-center md:items-start"
+          >
             <h3 className="font-semibold text-slate-900 dark:text-white mb-4">
               {t("category_legal")}
             </h3>
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-3 items-center md:items-start">
               {footerLinks.legal.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors"
+                    className="text-slate-600 dark:text-slate-400 hover:text-[#285872] dark:hover:text-sky-400 text-sm transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -130,10 +112,10 @@ export default function Footer() {
           variants={itemVariants}
           className="pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4"
         >
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-slate-500 dark:text-slate-400 text-center md:text-left">
             © {new Date().getFullYear()} {PROJECT_NAME.LONG}. {t("since")} 2026.
           </p>
-          <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+          <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400 text-center md:text-right">
             <span>{t("graduation_project")}</span>
             <div>
               <a
