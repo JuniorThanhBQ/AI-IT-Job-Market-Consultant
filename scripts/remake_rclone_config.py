@@ -48,7 +48,7 @@ def get_target_config_paths() -> list[Path]:
     root_dir = Path(__file__).resolve().parent.parent
     return [
         root_dir / "celery_app" / "rclone.conf",
-        root_dir / "deployment" / "rclone.conf",
+        root_dir / "server" / "rclone.conf",
     ]
 
 
