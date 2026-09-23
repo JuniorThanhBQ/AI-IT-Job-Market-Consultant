@@ -79,7 +79,9 @@ jobs:
           context: .
           file: frontend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ai-it-job-market-consultant-frontend:${{ github.sha }} # zizmor: ignore[secrets-outside-env]
+          tags: |
+              ${{ secrets.DOCKERHUB_USERNAME }}/ai-it-job-market-consultant-backend:${{ github.sha }}
+              ${{ secrets.DOCKERHUB_USERNAME }}/ai-it-job-market-consultant-backend:latest
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,scope=frontend,mode=max
 
@@ -89,6 +91,8 @@ jobs:
           context: .
           file: celery_app/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ai-it-job-market-consultant-celery:${{ github.sha }} # zizmor: ignore[secrets-outside-env]
+          tags: |
+              ${{ secrets.DOCKERHUB_USERNAME }}/ai-it-job-market-consultant-backend:${{ github.sha }}
+              ${{ secrets.DOCKERHUB_USERNAME }}/ai-it-job-market-consultant-backend:latest
           cache-from: type=gha,scope=celery
           cache-to: type=gha,scope=celery,mode=max

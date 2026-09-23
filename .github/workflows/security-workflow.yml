@@ -113,7 +113,7 @@ jobs:
             --error \
             --metrics=off
 
-  security-containers:
+  security-packages:
     name: Filesystem Security Scan
     needs: semgrep-scan
     runs-on: ubuntu-latest
