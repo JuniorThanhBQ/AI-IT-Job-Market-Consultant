@@ -1,5 +1,5 @@
 # Local AIJMC Server with Ngrok
-This section is dedicated to the method of deploying AIJMC locally using Ngrok. I will provide instructions for local installation and execution in the near future (likely by September 25, 2026). Please carefully read the information below to fully understand the guidelines and risks associated with running AIJMC locally.  
+This section is dedicated to the method of deploying AIJMC locally using Ngrok. I will provide instructions for local installation and execution in the near future (likely by September 30, 2026). Please carefully read the information below to fully understand the guidelines and risks associated with running AIJMC locally.  
 
 ## I. How to use the platform
 To use the platform, you only need to accept the Terms of Service and create an account. The following features are currently available:

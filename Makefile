@@ -1,4 +1,4 @@
-.PHONY: app-check backup-restore backup-restore-docker clean coverage-xml db-migrate db-migrate-docker db-migration db-migration-docker dev-app-build dev-app-down dev-backend dev-frontend docker-init-admin docker-lint export-fastapi-openapi generate-secret help init-admin install lint pre-commit-autoupdate pre-commit-check prod-app-build prod-app-down radon-check remake-rclone-config run-crawlfourai-celery run-crawler-celery run-crawler-update test test-backend test-celery test-frontend test-report
+.PHONY: app-check backup-restore backup-restore-docker clean cloud-server-down cloud-server-run coverage-xml db-migrate db-migrate-docker db-migration db-migration-docker dev-app-build dev-app-down dev-backend dev-frontend docker-init-admin docker-lint export-fastapi-openapi generate-secret help init-admin install lint local-server-down local-server-run pre-commit-autoupdate pre-commit-check prod-app-build prod-app-down radon-check remake-rclone-config run-crawlfourai-celery run-crawler-celery run-crawler-update test test-backend test-celery test-frontend test-report
 .DEFAULT_GOAL := help
 
 help:
@@ -16,6 +16,10 @@ help:
 	@echo "  make dev-app-down               - Down Docker containers in development mode (warning: includes volumes)"
 	@echo "  make prod-app-build             - Build docker in production mode (Optionally specify CONTAINERS=\"...\")"
 	@echo "  make prod-app-down              - Down all Docker containers in production mode (warning: includes volumes)"
+	@echo "  make local-server-run           - Run local server production with Ngrok"
+	@echo "  make local-server-down          - Down local server containers (warning: includes volumes)"
+	@echo "  make cloud-server-run           - Run cloud crawler services with Supabase"
+	@echo "  make cloud-server-down          - Down cloud crawler containers (warning: includes volumes)"
 	@echo "  make db-migrate                 - Run database migrations locally"
 	@echo "  make db-migrate-docker          - Run database migrations in docker backend container"
 	@echo "  make db-migration               - Generate a new database migration locally (requires MSG=\"...\")"
@@ -69,6 +73,18 @@ prod-app-build:
 
 prod-app-down:
 	docker compose -f docker-compose.yml -f docker-compose.prod.yml down -v $(CONTAINERS)
+
+local-server-run:
+	docker compose --project-directory server -f server/docker-compose.local.yml -f server/docker-compose.prod.yml up -d --build $(CONTAINERS)
+
+local-server-down:
+	docker compose --project-directory server -f server/docker-compose.local.yml -f server/docker-compose.prod.yml down -v $(CONTAINERS)
+
+cloud-server-run:
+	docker compose --project-directory server -f server/cloud/docker-compose.yml up -d --build $(CONTAINERS)
+
+cloud-server-down:
+	docker compose --project-directory server -f server/cloud/docker-compose.yml down -v $(CONTAINERS)
 
 db-migrate:
 	uv run --project backend alembic -c database/alembic.ini upgrade head
