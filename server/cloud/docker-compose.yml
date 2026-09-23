@@ -1,0 +1,168 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management@sha256:e582c0bc7766f3342496d8485efb5a1df782b5ce3886ad017e2eaae442311f69
+    container_name: app-rabbitmq
+    restart: always
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      start_period: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER?Variable not set}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD?Variable not set}
+
+  redis:
+    image: redis:8.10.0-alpine@sha256:978f0e01593e65eed801f2402944efcd936d43b5027e4908a7897baf88ed6241
+    container_name: app-redis
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+      start_period: 10s
+    networks:
+      - backend
+    volumes:
+      - redis-data:/data
+
+  celery-worker-default:
+    image: '${DOCKER_IMAGE_CELERY?Variable not set}:${TAG-latest}'
+    container_name: app-celery-worker-default
+    restart: always
+    command: ["/app/celery/scripts/start_worker.sh", "-Q", "celery"]
+    networks:
+      - backend
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app/backend:/app/celery
+      - POSTGRES_SERVER=${SUPA_HOST}
+      - POSTGRES_PORT=${SUPA_PORT}
+      - POSTGRES_DB=${SUPA_DATABASE}
+      - POSTGRES_USER=${SUBA_USER}
+      - POSTGRES_PASSWORD=${SUPA_PASSWORD}
+      - SUPA_URI=${SUPA_URI}
+      - SUPA_HOST=${SUPA_HOST}
+      - SUPA_PORT=${SUPA_PORT}
+      - SUPA_DATABASE=${SUPA_DATABASE}
+      - SUBA_USER=${SUBA_USER}
+      - SECRET_KEY=${SECRET_KEY?Variable not set}
+      - RABBITMQ_SERVER=${RABBITMQ_SERVER?Variable not set}
+      - RABBITMQ_PORT=${RABBITMQ_PORT?Variable not set}
+      - RABBITMQ_USER=${RABBITMQ_USER?Variable not set}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD?Variable not set}
+      - RCLONE_CONFIG=/app/celery/rclone.conf
+      - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
+      - SMTP_HOST=${SMTP_HOST?Variable not set}
+      - SMTP_USER=${SMTP_USER?Variable not set}
+      - SMTP_PASSWORD=${SMTP_PASSWORD?Variable not set}
+      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL?Variable not set}
+      - SMTP_PORT=${SMTP_PORT?Variable not set}
+      - SMTP_TLS=${SMTP_TLS?Variable not set}
+    volumes:
+      - ./rclone.conf:/app/celery/rclone.conf:ro
+
+  celery-worker-crawler:
+    image: '${DOCKER_IMAGE_CELERY?Variable not set}:${TAG-latest}'
+    container_name: app-celery-worker-crawler
+    restart: always
+    command: ["/app/celery/scripts/start_worker.sh", "-Q", "crawler"]
+    shm_size: '1gb'
+    networks:
+      - backend
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app/backend:/app/celery
+      - POSTGRES_SERVER=${SUPA_HOST}
+      - POSTGRES_PORT=${SUPA_PORT}
+      - POSTGRES_DB=${SUPA_DATABASE}
+      - POSTGRES_USER=${SUBA_USER}
+      - POSTGRES_PASSWORD=${SUPA_PASSWORD}
+      - SUPA_URI=${SUPA_URI}
+      - SUPA_HOST=${SUPA_HOST}
+      - SUPA_PORT=${SUPA_PORT}
+      - SUPA_DATABASE=${SUPA_DATABASE}
+      - SUBA_USER=${SUBA_USER}
+      - SECRET_KEY=${SECRET_KEY?Variable not set}
+      - RABBITMQ_SERVER=${RABBITMQ_SERVER?Variable not set}
+      - RABBITMQ_PORT=${RABBITMQ_PORT?Variable not set}
+      - RABBITMQ_USER=${RABBITMQ_USER?Variable not set}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD?Variable not set}
+      - RCLONE_CONFIG=/app/celery/rclone.conf
+      - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
+      - CELERY_WORKER_CONCURRENCY=1
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_TLS=${SMTP_TLS}
+    volumes:
+      - ./rclone.conf:/app/celery/rclone.conf:ro
+
+  celery-beat:
+    image: '${DOCKER_IMAGE_CELERY?Variable not set}:${TAG-latest}'
+    container_name: app-celery-beat
+    restart: always
+    networks:
+      - backend
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app/backend:/app/celery
+      - POSTGRES_SERVER=${SUPA_HOST}
+      - POSTGRES_PORT=${SUPA_PORT}
+      - POSTGRES_DB=${SUPA_DATABASE}
+      - POSTGRES_USER=${SUBA_USER}
+      - POSTGRES_PASSWORD=${SUPA_PASSWORD}
+      - SUPA_URI=${SUPA_URI}
+      - SUPA_HOST=${SUPA_HOST}
+      - SUPA_PORT=${SUPA_PORT}
+      - SUPA_DATABASE=${SUPA_DATABASE}
+      - SUBA_USER=${SUBA_USER}
+      - SECRET_KEY=${SECRET_KEY?Variable not set}
+      - RABBITMQ_SERVER=${RABBITMQ_SERVER?Variable not set}
+      - RABBITMQ_PORT=${RABBITMQ_PORT?Variable not set}
+      - RABBITMQ_USER=${RABBITMQ_USER?Variable not set}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD?Variable not set}
+      - RCLONE_CONFIG=/app/celery/rclone.conf
+      - CELERY_WORKER_MAX_TASKS_PER_CHILD=${CELERY_WORKER_MAX_TASKS_PER_CHILD-50}
+    volumes:
+      - celery-beat-data:/var/run/celery
+    command: ["celery", "-A", "celery_app", "beat", "--loglevel=info", "-s", "/var/run/celery/celerybeat-schedule"]
+
+volumes:
+  redis-data:
+  celery-beat-data:
+
+networks:
+  backend:
+    name: app-internal-network
+    driver: bridge

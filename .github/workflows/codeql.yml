@@ -1,0 +1,77 @@
+name: "AIJMC CodeQL Advanced"
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - develop
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - '.github/workflows/codeql.yml'
+      - '.github/codeql_config.yml'
+  pull_request:
+    branches:
+      - main
+      - staging
+      - develop
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - '.github/workflows/codeql.yml'
+      - '.github/codeql_config.yml'
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+  workflow_call: {}
+
+concurrency:
+  group: codeql-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          - language: javascript-typescript
+            build-mode: none
+          - language: python
+            build-mode: none
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@e429ea58a9912cadc53f8132ad35562b54de1b30
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          config-file: ./.github/codeql_config.yml
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@e429ea58a9912cadc53f8132ad35562b54de1b30
+        with:
+          category: "/language:${{ matrix.language }}"
+          output: results
+
+      - name: Return SARIF Report Artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: codeql-sarif-${{ matrix.language }}
+          path: results/*.sarif
+          retention-days: 7
