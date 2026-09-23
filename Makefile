@@ -3,45 +3,48 @@
 
 help:
 	@echo "Available commands:"
-	@echo "  make help                       - Show the list of supported commands"
-	@echo "  make clean                      - Cleaning unused files (optional CLEAN_TYPE=\"...\" like --dist --dry-run )"
-	@echo "  make generate-secret            - Generate a secure random SECRET_KEY"
-	@echo "  make print-openapi-docs         - Export FastAPI Swagger OpenAPI JSON spec (optional NAME=\"...\")"
-	@echo "  make init-admin                 - Create initial superuser admin account locally"
-	@echo "  make docker-init-admin          - Create initial superuser admin account in backend container"
-	@echo "  make install                    - Install dependencies for both backend and frontend"
-	@echo "  make dev-backend                - Run backend development local"
-	@echo "  make dev-frontend               - Run frontend development local"
-	@echo "  make dev-app-build              - Build docker in development mode (Optionally specify CONTAINERS=\"...\")"
-	@echo "  make dev-app-down               - Down Docker containers in development mode (warning: includes volumes)"
-	@echo "  make prod-app-build             - Build docker in production mode (Optionally specify CONTAINERS=\"...\")"
-	@echo "  make prod-app-down              - Down all Docker containers in production mode (warning: includes volumes)"
-	@echo "  make local-server-run           - Run local server production with Ngrok"
-	@echo "  make local-server-down          - Down local server containers (warning: includes volumes)"
-	@echo "  make cloud-server-run           - Run cloud crawler services with Supabase"
-	@echo "  make cloud-server-down          - Down cloud crawler containers (warning: includes volumes)"
-	@echo "  make db-migrate                 - Run database migrations locally"
-	@echo "  make db-migrate-docker          - Run database migrations in docker backend container"
-	@echo "  make db-migration               - Generate a new database migration locally (requires MSG=\"...\")"
-	@echo "  make db-migration-docker        - Generate a new database migration in backend container (requires MSG=\"...\")"
-	@echo "  make backup-restore             - Run backup restore locally (requires CMD=[list|backup|restore|restore-override])"
-	@echo "  make backup-restore-docker      - Run backup restore Docker (requires CMD=[list|backup|restore|restore-override])"
-	@echo "  make remake-rclone-config       - Regenerate or sync rclone.conf from local system to celery_app"
-	@echo "  make run-crawler-celery         - Run Celery adaptive crawler task manually in Docker container"
-	@echo "  make run-crawler-update         - Run Celery jobs update task manually in Docker container"
-	@echo "  make run-crawlfourai-celery     - Run Celery crawl4ai task manually in Docker container"
-	@echo "  make app-check                  - Including lint tests for the frontend and backend"
-	@echo "  make lint                       - Run all linters (ruff, mypy, typos, eslint, hadolint)"
-	@echo "  make docker-lint                - Lint Dockerfiles using hadolint"
-	@echo "  make pre-commit-check           - Run pre-commit hooks on all files"
-	@echo "  make pre-commit-autoupdate      - Auto-update pre-commit hook versions"
-	@echo "  make radon-check                - Run radon complexity and maintainability index checks"
-	@echo "  make test                       - Run all tests (bandit, backend, celery, frontend)"
-	@echo "  make test-backend               - Run backend unit and integration tests"
-	@echo "  make test-celery                - Run celery unit and integration tests"
-	@echo "  make test-frontend              - Run frontend audit and e2e tests"
-	@echo "  make test-report                - Scan test-case-report.xlsx and report failures as GitHub issues"
-	@echo "  make coverage-xml               - Generate XML coverage report"
+	@echo "  make help                        - Show the list of supported commands"
+	@echo "  make clean                       - Cleaning unused files (optional CLEAN_TYPE=\"...\" like --dist --dry-run )"
+	@echo "  make generate-secret             - Generate a secure random SECRET_KEY"
+	@echo "  make print-openapi-docs          - Export FastAPI Swagger OpenAPI JSON spec (optional NAME=\"...\")"
+	@echo "  make init-admin                  - Create initial superuser admin account locally"
+	@echo "  make docker-init-admin           - Create initial superuser admin account in backend container"
+	@echo "  make install                     - Install dependencies for both backend and frontend"
+	@echo "  make dev-backend                 - Run backend development local"
+	@echo "  make dev-frontend                - Run frontend development local"
+	@echo "  make dev-app-build               - Build docker in development mode (Optionally specify CONTAINERS=\"...\")"
+	@echo "  make dev-app-down                - Down Docker containers in development mode (warning: includes volumes)"
+	@echo "  make prod-app-build              - Build docker in production mode (Optionally specify CONTAINERS=\"...\")"
+	@echo "  make prod-app-down               - Down all Docker containers in production mode (warning: includes volumes)"
+	@echo "  make local-server-run            - Run local server production with Ngrok"
+	@echo "  make local-server-down           - Down local server containers (warning: includes volumes)"
+	@echo "  make cloud-server-run            - Run cloud crawler services with Supabase"
+	@echo "  make cloud-server-down           - Down cloud crawler containers (warning: includes volumes)"
+	@echo "  make db-migrate                  - Run database migrations locally"
+	@echo "  make db-migrate-docker           - Run database migrations in docker backend container"
+	@echo "  make db-migration                - Generate a new database migration locally (requires MSG=\"...\")"
+	@echo "  make db-migration-docker         - Generate a new database migration in backend container (requires MSG=\"...\")"
+	@echo "  make backup-restore              - Run backup restore locally (requires CMD=[list|backup|restore|restore-override])"
+	@echo "  make backup-restore-docker-ngrok - Run backup restore Ngrok (requires CMD=[list|backup|restore|restore-override])"
+	@echo "  make backup-restore-docker       - Run backup restore Docker (requires CMD=[list|backup|restore|restore-override])"
+	@echo "  make remake-rclone-config        - Regenerate or sync rclone.conf from local system to celery_app"
+	@echo "  make run-crawler-celery-ngrok    - Run Celery adaptive crawler task manually in Docker container"
+	@echo "  make run-crawler-update-ngrok    - Run Celery jobs update task manually in Ngrok"
+	@echo "  make run-crawler-celery          - Run Celery adaptive crawler task manually in Ngrok"
+	@echo "  make run-crawler-update          - Run Celery jobs update task manually in Docker container"
+	@echo "  make run-crawlfourai-celery      - Run Celery crawl4ai task manually in Docker container"
+	@echo "  make app-check                   - Including lint tests for the frontend and backend"
+	@echo "  make lint                        - Run all linters (ruff, mypy, typos, eslint, hadolint)"
+	@echo "  make docker-lint                 - Lint Dockerfiles using hadolint"
+	@echo "  make pre-commit-check            - Run pre-commit hooks on all files"
+	@echo "  make pre-commit-autoupdate       - Auto-update pre-commit hook versions"
+	@echo "  make radon-check                 - Run radon complexity and maintainability index checks"
+	@echo "  make test                        - Run all tests (bandit, backend, celery, frontend)"
+	@echo "  make test-backend                - Run backend unit and integration tests"
+	@echo "  make test-celery                 - Run celery unit and integration tests"
+	@echo "  make test-frontend               - Run frontend audit and e2e tests"
+	@echo "  make test-report                 - Scan test-case-report.xlsx and report failures as GitHub issues"
+	@echo "  make coverage-xml                - Generate XML coverage report"
 
 clean:
 	python scripts/clean_temporary_files.py ${CLEAN_TYPE}
@@ -75,10 +78,10 @@ prod-app-down:
 	docker compose -f docker-compose.yml -f docker-compose.prod.yml down -v $(CONTAINERS)
 
 local-server-run:
-	docker compose --project-directory server -f server/docker-compose.local.yml -f server/docker-compose.prod.yml up -d --build $(CONTAINERS)
+	docker compose --env-file .env --project-directory server -f server/docker-compose.local.yml -f server/docker-compose.prod.yml up -d $(CONTAINERS)
 
 local-server-down:
-	docker compose --project-directory server -f server/docker-compose.local.yml -f server/docker-compose.prod.yml down -v $(CONTAINERS)
+	docker compose --env-file .env --project-directory server -f server/docker-compose.local.yml -f server/docker-compose.prod.yml down -v $(CONTAINERS)
 
 cloud-server-run:
 	docker compose --project-directory server -f server/cloud/docker-compose.yml up -d --build $(CONTAINERS)
@@ -107,6 +110,9 @@ docker-init-admin:
 backup-restore:
 	uv run --project backend python celery_app/scripts/backup_restore_runner.py "$(CMD)"
 
+backup-restore-docker-ngrok:
+	docker compose --env-file .env --project-directory server exec celery-worker-default python celery_app/scripts/backup_restore_runner.py "$(CMD)"
+
 backup-restore-docker:
 	docker compose exec celery-worker-default python celery_app/scripts/backup_restore_runner.py "$(CMD)"
 
@@ -118,6 +124,12 @@ run-crawler-celery:
 
 run-crawler-update:
 	docker compose exec celery-worker-default celery -A celery_app call celery_app.run_jobs_update_task
+
+run-crawler-celery-ngrok:
+	docker compose --env-file .env --project-directory server exec celery-worker-crawler celery -A celery_app call celery_app.run_crawler_task
+
+run-crawler-update-ngrok:
+	docker compose --env-file .env --project-directory server exec celery-worker-default celery -A celery_app call celery_app.run_jobs_update_task
 
 run-crawlfourai-celery:
 	docker compose exec celery-worker-crawler celery -A celery_app call celery_app.run_crawl4ai_task
