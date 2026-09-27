@@ -56,20 +56,20 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@e429ea58a9912cadc53f8132ad35562b54de1b30
+        uses: github/codeql-action/init@3ea06614dafe36dec890db3446326e0d40ce53d4
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
           config-file: ./.github/codeql_config.yml
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@e429ea58a9912cadc53f8132ad35562b54de1b30
+        uses: github/codeql-action/analyze@3ea06614dafe36dec890db3446326e0d40ce53d4
         with:
           category: "/language:${{ matrix.language }}"
           output: results
 
       - name: Return SARIF Report Artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: codeql-sarif-${{ matrix.language }}
