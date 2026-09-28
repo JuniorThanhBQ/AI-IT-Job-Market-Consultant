@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump the python-packages group with 5 updates. PR [#125](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/125) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * Maintenance: Fixing workflow deploy production failure. PR [#121](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/121) by [@JuniorThanhBQ](https://github.com/JuniorThanhBQ).
 * Release: Patch workflow issues and CodeQL re-add. PR [#120](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/120) by [@JuniorThanhBQ](https://github.com/JuniorThanhBQ).
 * ⬆ Bump pgvector/pgvector from 0.8.6-pg18 to 0.8.6-pg18 in the docker-compose group. PR [#112](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/112) by [@dependabot[bot]](https://github.com/apps/dependabot).
