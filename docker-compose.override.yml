@@ -60,7 +60,7 @@ services:
 
   adminer:
     restart: "no"
-    image: adminer:5.5.0-standalone@sha256:a1e730bf95a18f1d7c38b409ab58a39d57d07bdb090614b81f5c7b37c6021b96
+    image: adminer:6.0.1-standalone@sha256:51262b555d9e8ac3e1fa197eec41a3f47d05aea5520ac2ccc78a03ffc7d39b3a
     ports:
       - "8082:8080"
     depends_on:
