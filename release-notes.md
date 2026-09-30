@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump undici from 7.29.0 to 7.30.0 in /frontend. PR [#131](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/131) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump brace-expansion from 1.1.18 to 1.1.21 in /frontend. PR [#132](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/132) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump ip-address from 10.4.0 to 10.7.2 in /frontend. PR [#129](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/129) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the npm-packages group across 1 directory with 11 updates. PR [#126](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/126) by [@dependabot[bot]](https://github.com/apps/dependabot).
