@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump ip-address from 10.4.0 to 10.7.2 in /frontend. PR [#129](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/129) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the npm-packages group across 1 directory with 11 updates. PR [#126](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/126) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the github-actions group with 6 updates. PR [#124](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/124) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the python-packages group with 5 updates. PR [#125](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/125) by [@dependabot[bot]](https://github.com/apps/dependabot).
