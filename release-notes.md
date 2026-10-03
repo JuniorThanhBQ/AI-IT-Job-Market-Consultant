@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump the docker-compose group with 3 updates. PR [#133](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/133) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump fast-uri from 3.1.7 to 3.1.8 in /frontend. PR [#130](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/130) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump undici from 7.29.0 to 7.30.0 in /frontend. PR [#131](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/131) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump brace-expansion from 1.1.18 to 1.1.21 in /frontend. PR [#132](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/132) by [@dependabot[bot]](https://github.com/apps/dependabot).
