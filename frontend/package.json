@@ -16,10 +16,10 @@
     "@base-ui/react": "^1.8.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^1.47.0",
+    "lucide-react": "^1.48.0",
     "motion": "^12.43.0",
-    "next": "^16.2.12",
-    "next-intl": "^4.14.5",
+    "next": "^16.3.6",
+    "next-intl": "^4.14.7",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-markdown": "^10.1.0",
@@ -35,11 +35,11 @@
     "@tailwindcss/postcss": "^4.3.3",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.39.5",
-    "eslint-config-next": "^16.3.5",
+    "eslint-config-next": "^16.3.6",
     "eslint-config-prettier": "^10.1.8",
-    "prettier": "^3.9.8",
+    "prettier": "^3.9.9",
     "tailwindcss": "^4.3.3",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.2"
   },
   "allowScripts": {
     "@swc/core@1.15.47": true,
