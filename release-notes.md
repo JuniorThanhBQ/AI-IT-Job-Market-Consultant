@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump the npm-packages group in /frontend with 6 updates. PR [#134](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/134) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the github-actions group with 4 updates. PR [#135](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/135) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the docker-compose group with 3 updates. PR [#133](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/133) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump fast-uri from 3.1.7 to 3.1.8 in /frontend. PR [#130](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/130) by [@dependabot[bot]](https://github.com/apps/dependabot).
