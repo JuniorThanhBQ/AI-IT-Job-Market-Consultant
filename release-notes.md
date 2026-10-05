@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump the python-packages group with 7 updates. PR [#136](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/136) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the npm-packages group in /frontend with 6 updates. PR [#134](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/134) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the github-actions group with 4 updates. PR [#135](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/135) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the docker-compose group with 3 updates. PR [#133](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/133) by [@dependabot[bot]](https://github.com/apps/dependabot).
