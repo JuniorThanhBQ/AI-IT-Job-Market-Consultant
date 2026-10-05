@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump pyjwt from 2.14.0 to 2.15.0. PR [#138](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/138) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the python-packages group with 7 updates. PR [#136](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/136) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the npm-packages group in /frontend with 6 updates. PR [#134](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/134) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the github-actions group with 4 updates. PR [#135](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/135) by [@dependabot[bot]](https://github.com/apps/dependabot).
