@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump next from 16.3.6 to 16.3.8 in /frontend. PR [#137](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/137) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump virtualenv from 21.7.0 to 21.7.13. PR [#140](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/140) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump urllib3 from 2.7.0 to 2.8.0. PR [#139](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/139) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump pyjwt from 2.14.0 to 2.15.0. PR [#138](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/138) by [@dependabot[bot]](https://github.com/apps/dependabot).
