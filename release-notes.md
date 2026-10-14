@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump pydantic-ai-slim from 2.16.0 to 2.53.0. PR [#145](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/145) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the npm-packages group in /frontend with 6 updates. PR [#141](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/141) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the github-actions group with 2 updates. PR [#142](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/142) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the python-packages group with 8 updates. PR [#143](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/143) by [@dependabot[bot]](https://github.com/apps/dependabot).
