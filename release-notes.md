@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump multidict from 6.7.1 to 6.9.1. PR [#148](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/148) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump mako from 1.3.12 to 1.4.2. PR [#147](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/147) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump langgraph-sdk from 0.4.4 to 0.4.7. PR [#146](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/146) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump pydantic-ai-slim from 2.16.0 to 2.53.0. PR [#145](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/145) by [@dependabot[bot]](https://github.com/apps/dependabot).
