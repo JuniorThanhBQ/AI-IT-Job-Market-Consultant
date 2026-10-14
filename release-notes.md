@@ -1,5 +1,6 @@
 ## Latest Changes
 
+* ⬆ Bump the python-packages group with 8 updates. PR [#143](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/143) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump langgraph-sdk from 0.4.2 to 0.4.4. PR [#144](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/144) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump next from 16.3.6 to 16.3.8 in /frontend. PR [#137](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/137) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump virtualenv from 21.7.0 to 21.7.13. PR [#140](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/140) by [@dependabot[bot]](https://github.com/apps/dependabot).
