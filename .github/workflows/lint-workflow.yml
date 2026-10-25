@@ -67,7 +67,7 @@ jobs:
           docker compose -f docker-compose.yml -f docker-compose.prod.yml config --quiet
 
       - name: Checkov Compose Security Scan
-        uses: bridgecrewio/checkov-action@d0dd2e9434b4428060edba72d050c135273bd677
+        uses: bridgecrewio/checkov-action@6f26dc90000b74feb589a906cdfae540f5119895
         with:
           args: -f docker-compose.yml -f docker-compose.prod.yml
           framework: yaml
