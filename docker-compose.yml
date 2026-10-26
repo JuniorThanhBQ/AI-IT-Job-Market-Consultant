@@ -88,7 +88,7 @@ services:
       - frontend
 
   db:
-    image: pgvector/pgvector:0.8.6-pg18@sha256:2ba9ca5f2e7daa0f0e7723cba1ee9167bab54efd3640516a44ac1a928dd67e7a
+    image: pgvector/pgvector:0.8.7-pg18@sha256:2358fcba361ed2233a5ed81b5fe4ca779ccb304120ce531a3bf51c0ed7e2bc11
     container_name: app-db
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
@@ -242,7 +242,7 @@ services:
     command: ["celery", "-A", "celery_app", "beat", "--loglevel=info", "-s", "/var/run/celery/celerybeat-schedule"]
 
   redis:
-    image: redis:8.10.1-alpine@sha256:ef216d85ec44f4fdf7c0e6df2d1757a4734ed32fbb278cabd3181b5a27353b79
+    image: redis:8.10.2-alpine@sha256:0bf6577d7774e592b29d093e3ac9390eb91e13d72c21e506afce736de5e0eeb0
     container_name: app-redis
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
