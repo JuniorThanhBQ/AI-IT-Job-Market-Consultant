@@ -16,6 +16,16 @@ class EmbeddingResult(list):
         self.latency = latency
         self.log = log
 
+    def __eq__(self, other):
+        if not isinstance(other, EmbeddingResult):
+            return NotImplemented
+        return (
+            super().__eq__(other)
+            and self.token_used == other.token_used
+            and self.latency == other.latency
+            and self.log == other.log
+        )
+
 
 class EmbeddingService:
     def __init__(self, client_manager: GenAIClientManager):

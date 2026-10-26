@@ -8,7 +8,7 @@ on:
 
 concurrency:
   group: security-pipeline-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   actions: read
@@ -17,24 +17,51 @@ permissions:
 jobs:
   secret-scan:
     name: Secret Scanning
+    outputs:
+      scan-outcome: ${{ steps.scan.outcome }}
     permissions:
+      actions: read
       contents: read
       pull-requests: read
+      security-events: write
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Run Gitleaks
+        id: scan
+        continue-on-error: true
         uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_ENABLE_SUMMARY: true
+          GITLEAKS_ENABLE_COMMENTS: false
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: false
+
+      - name: Upload SARIF to Security and quality
+        if: always() && hashFiles('results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        with:
+          sarif_file: results.sarif
+          category: security-gitleaks
+
+      - name: Return SARIF Report Artifact
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: security-gitleaks-sarif
+          path: results.sarif
+          if-no-files-found: error
+          retention-days: 7
 
   bandit-scan:
     name: Bandit for Backend
+    outputs:
+      scan-outcome: ${{ steps.scan.outcome }}
     permissions:
       actions: read
       contents: read
@@ -43,19 +70,41 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884
         with:
           enable-cache: true
           version: "latest"
 
       - name: Run Bandit
+        id: scan
+        continue-on-error: true
         run: |
-          uvx bandit -r backend -ll -ii --exclude '**/tests/**,**/.venv/**,**/migrations/**'
+          uvx --from 'bandit[sarif]' bandit -r backend -ll -ii --exclude '**/tests/**,**/.venv/**,**/migrations/**' -f sarif -o bandit.sarif
+
+      - name: Upload SARIF to Security and quality
+        if: always() && hashFiles('bandit.sarif') != ''
+        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        with:
+          sarif_file: bandit.sarif
+          category: security-bandit
+
+      - name: Return SARIF Report Artifact
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: security-bandit-sarif
+          path: bandit.sarif
+          if-no-files-found: error
+          retention-days: 7
 
   eslint-security:
     name: ESLint Security for Frontend
+    outputs:
+      scan-outcome: ${{ steps.scan.outcome }}
     permissions:
       actions: read
       contents: read
@@ -68,9 +117,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: '20'
           cache: 'npm'
@@ -79,43 +130,76 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install SARIF formatter
-        run: npm install --no-save @microsoft/eslint-formatter-sarif
-
       - name: Run ESLint security scan
+        id: scan
+        continue-on-error: true
         run: |
-          npx eslint .
+          npx --no-install eslint . -f @microsoft/eslint-formatter-sarif -o eslint.sarif
+
+      - name: Upload SARIF to Security and quality
+        if: always() && hashFiles('frontend/eslint.sarif') != ''
+        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        with:
+          sarif_file: frontend/eslint.sarif
+          category: security-eslint
+
+      - name: Return SARIF Report Artifact
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: security-eslint-sarif
+          path: frontend/eslint.sarif
+          if-no-files-found: error
+          retention-days: 7
 
   semgrep-scan:
     name: Semgrep full-repo scan
+    if: ${{ !cancelled() }}
     needs: [bandit-scan, eslint-security]
+    outputs:
+      scan-outcome: ${{ steps.scan.outcome }}
     permissions:
+      actions: read
       contents: read
       security-events: write
     runs-on: ubuntu-latest
     timeout-minutes: 10
     container:
-      image: semgrep/semgrep:1.168.0
+      image: semgrep/semgrep:1.181.1@sha256:3db5c7af55eb1f512eac0abf0ab69a97b52c74b5e9a27314c221aee1a78d7ab2
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
       - name: Run Semgrep
+        id: scan
+        continue-on-error: true
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-        run: |
-          semgrep scan \
-            --config p/security-audit \
-            --config p/secrets \
-            --config p/owasp-top-ten \
-            --config p/python \
-            --config p/javascript \
-            --config p/typescript \
-            --error \
-            --metrics=off
+        run: python3 scripts/github_actions/security_scan.py semgrep
+
+      - name: Upload SARIF to Security and quality
+        if: always() && hashFiles('semgrep.sarif') != ''
+        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        with:
+          sarif_file: semgrep.sarif
+          category: security-semgrep
+
+      - name: Return SARIF Report Artifact
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: security-semgrep-sarif
+          path: semgrep.sarif
+          if-no-files-found: error
+          retention-days: 7
 
   security-packages:
     name: Filesystem Security Scan
+    if: ${{ !cancelled() }}
     needs: semgrep-scan
+    outputs:
+      scan-outcome: ${{ steps.scan.outcome }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -128,13 +212,59 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 1
+          persist-credentials: false
+
+      - name: Load Trivy configuration
+        id: trivy-config
+        run: python3 scripts/github_actions/security_scan.py trivy-config
 
       - name: Enforce Trivy Security Gate
+        id: scan
+        continue-on-error: true
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
         with:
           scan-type: 'fs'
           scan-ref: '.'
-          scanners: 'vuln,secret,misconfig'
-          severity: 'HIGH,CRITICAL'
-          format: 'table'
+          scanners: ${{ steps.trivy-config.outputs.scanners }}
+          severity: ${{ steps.trivy-config.outputs.severity }}
+          skip-dirs: ${{ steps.trivy-config.outputs.skip-dirs }}
+          format: 'sarif'
+          output: trivy.sarif
+          limit-severities-for-sarif: true
           exit-code: '1'
+          timeout: ${{ steps.trivy-config.outputs.timeout }}
+
+      - name: Upload SARIF to Security and quality
+        if: always() && hashFiles('trivy.sarif') != ''
+        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        with:
+          sarif_file: trivy.sarif
+          category: security-trivy
+
+      - name: Return SARIF Report Artifact
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: security-trivy-sarif
+          path: trivy.sarif
+          if-no-files-found: error
+          retention-days: 7
+
+  security-result:
+    name: Security Result
+    if: always()
+    needs: [secret-scan, bandit-scan, eslint-security, semgrep-scan, security-packages]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Evaluate security results
+        env:
+          SCAN_RESULTS: ${{ toJSON(needs) }}
+        run: python3 scripts/github_actions/security_result.py

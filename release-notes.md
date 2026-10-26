@@ -1,5 +1,30 @@
 ## Latest Changes
 
+* ⬆ Bump multidict from 6.7.1 to 6.9.1. PR [#148](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/148) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump mako from 1.3.12 to 1.4.2. PR [#147](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/147) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump langgraph-sdk from 0.4.4 to 0.4.7. PR [#146](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/146) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump pydantic-ai-slim from 2.16.0 to 2.53.0. PR [#145](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/145) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump the npm-packages group in /frontend with 6 updates. PR [#141](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/141) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump the github-actions group with 2 updates. PR [#142](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/142) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump the python-packages group with 8 updates. PR [#143](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/143) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump langgraph-sdk from 0.4.2 to 0.4.4. PR [#144](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/144) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump next from 16.3.6 to 16.3.8 in /frontend. PR [#137](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/137) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump virtualenv from 21.7.0 to 21.7.13. PR [#140](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/140) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump urllib3 from 2.7.0 to 2.8.0. PR [#139](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/139) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump pyjwt from 2.14.0 to 2.15.0. PR [#138](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/138) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump the python-packages group with 7 updates. PR [#136](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/136) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump the npm-packages group in /frontend with 6 updates. PR [#134](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/134) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump the github-actions group with 4 updates. PR [#135](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/135) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump the docker-compose group with 3 updates. PR [#133](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/133) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump fast-uri from 3.1.7 to 3.1.8 in /frontend. PR [#130](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/130) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump undici from 7.29.0 to 7.30.0 in /frontend. PR [#131](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/131) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump brace-expansion from 1.1.18 to 1.1.21 in /frontend. PR [#132](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/132) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump ip-address from 10.4.0 to 10.7.2 in /frontend. PR [#129](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/129) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump the npm-packages group across 1 directory with 11 updates. PR [#126](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/126) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump the github-actions group with 6 updates. PR [#124](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/124) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump the python-packages group with 5 updates. PR [#125](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/125) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* Maintenance: Fixing workflow deploy production failure. PR [#121](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/121) by [@JuniorThanhBQ](https://github.com/JuniorThanhBQ).
+* Release: Patch workflow issues and CodeQL re-add. PR [#120](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/120) by [@JuniorThanhBQ](https://github.com/JuniorThanhBQ).
 * ⬆ Bump pgvector/pgvector from 0.8.6-pg18 to 0.8.6-pg18 in the docker-compose group. PR [#112](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/112) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the github-actions group with 6 updates. PR [#113](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/113) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump the python-packages group with 10 updates. PR [#115](https://github.com/JuniorThanhBQ/AI-IT-Job-Market-Consultant/pull/115) by [@dependabot[bot]](https://github.com/apps/dependabot).

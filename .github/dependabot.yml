@@ -4,81 +4,126 @@ updates:
     directory: /
     schedule:
       interval: "weekly"
-      day: monday
-      timezone: Asia/Ho_Chi_Minh
-    cooldown:
-      default-days: 7
+      day: "monday"
+      time: "13:00"
+      timezone: "Asia/Ho_Chi_Minh"
+    open-pull-requests-limit: 10
     commit-message:
       prefix: ⬆
-    labels:
-      - "internal"
-      - "dependencies"
-      - "github_actions"
+    labels: [dependencies, internal, github_actions]
     groups:
-      github-actions:
+      actions-all:
+        applies-to: "version-updates"
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    assignees:
+      - "JuniorThanhBQ"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: uv
     directory: /
     schedule:
       interval: "weekly"
-      day: monday
-      timezone: Asia/Ho_Chi_Minh
-    cooldown:
-      default-days: 7
+      day: "monday"
+      time: "13:00"
+      timezone: "Asia/Ho_Chi_Minh"
+    open-pull-requests-limit: 10
     commit-message:
       prefix: ⬆
     labels: [dependencies, internal]
     groups:
-      python-packages:
+      python-minor-patch:
+        applies-to: "version-updates"
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    assignees:
+      - "JuniorThanhBQ"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: npm
     directory: /frontend
     schedule:
       interval: "weekly"
-      day: monday
-      timezone: Asia/Ho_Chi_Minh
-    cooldown:
-      default-days: 7
+      day: "monday"
+      time: "13:00"
+      timezone: "Asia/Ho_Chi_Minh"
+    open-pull-requests-limit: 10
     commit-message:
       prefix: "⬆"
     labels:
       - dependencies
       - internal
     groups:
-      npm-packages:
+      nextjs-minor-patch:
+        applies-to: "version-updates"
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    assignees:
+      - "JuniorThanhBQ"
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "13:00"
+      timezone: "Asia/Ho_Chi_Minh"
+    assignees:
+      - "JuniorThanhBQ"
+    labels:
+      - "dependencies"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: docker
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     directories:
       - /backend
       - /frontend
     schedule:
-      interval: "monthly"
-      timezone: Asia/Ho_Chi_Minh
-    cooldown:
-      default-days: 7
+      interval: "weekly"
+      day: "monday"
+      time: "13:00"
+      timezone: "Asia/Ho_Chi_Minh"
     commit-message:
       prefix: ⬆
     groups:
       docker:
         patterns:
           - "*"
+    assignees:
+      - "JuniorThanhBQ"
 
   - package-ecosystem: docker-compose
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     directory: /
     schedule:
-      interval: "monthly"
-      timezone: Asia/Ho_Chi_Minh
-    cooldown:
-      default-days: 7
+      interval: "weekly"
+      day: "monday"
+      time: "13:00"
+      timezone: "Asia/Ho_Chi_Minh"
     commit-message:
       prefix: ⬆
     groups:
       docker-compose:
         patterns:
           - "*"
+    assignees:
+      - "JuniorThanhBQ"
