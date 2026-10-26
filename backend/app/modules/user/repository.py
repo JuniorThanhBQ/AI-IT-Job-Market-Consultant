@@ -41,6 +41,8 @@ def create_user(
     profile = ConsulteeProfile(user_id=user.id)
     session.add(profile)
     session.flush()
+    if profile.id is None:
+        raise RuntimeError("Profile ID was not assigned after flush")
     cv = CurriculumVitae(profile_id=profile.id)
     session.add(cv)
     session.commit()

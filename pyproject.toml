@@ -28,3 +28,23 @@ pythonpath = [".", "backend", "celery_app"]
 [tool.mypy]
 exclude = ["venv", ".venv", "alembic"]
 ignore_missing_imports = true
+
+[tool.app-security-audit.trivy]
+scanners = ["vuln", "misconfig"]
+severity = ["HIGH", "CRITICAL"]
+timeout = "15m"
+skip-dirs = [
+    "**/.venv", "**/venv", "**/node_modules", "**/.next",
+    "**/__pycache__", "**/.pytest_cache", "**/.mypy_cache", "**/.ruff_cache",
+]
+
+[tool.app-security-audit.semgrep]
+severity = ["ERROR"]
+exclude = ["*.ipynb"]
+rules = ["p/security-audit", "p/secrets", "p/owasp-top-ten", "p/python", "p/javascript", "p/typescript"]
+
+[tool.app-security-audit.zap]
+fail-on = "MEDIUM"
+
+[tool.app-security-audit.npm]
+audit-level = "critical"

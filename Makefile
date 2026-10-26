@@ -45,6 +45,7 @@ help:
 	@echo "  make test-frontend               - Run frontend audit and e2e tests"
 	@echo "  make test-report                 - Scan test-case-report.xlsx and report failures as GitHub issues"
 	@echo "  make coverage-xml                - Generate XML coverage report"
+	@echo "  make app-security                - Run security check (optional OPTION='[trivy/semgrep/zap/npm/all] --target host')"
 
 clean:
 	python scripts/clean_temporary_files.py ${CLEAN_TYPE}
@@ -176,3 +177,6 @@ test-report:
 
 coverage-xml:
 	uv run --project backend pytest --cov=app --cov-report=xml:coverage.xml
+
+app-security:
+	uv run python scripts/app_security_audit.py ${OPTION}
