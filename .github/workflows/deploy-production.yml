@@ -28,10 +28,36 @@ jobs:
     name: Run CI Pipeline
     uses: ./.github/workflows/full-ci-commit-workflow.yml
 
+  changes:
+    name: Detect image changes
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      celery: ${{ steps.filter.outputs.celery }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Detect changed build inputs
+        id: filter
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+        run: python3 scripts/github_actions/detect_image_changes.py
+
   deploy-production:
     name: Build & Push to Docker Hub
-    needs: ci-pipeline
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: [ci-pipeline, changes]
+    if: >-
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      (needs.changes.outputs.backend == 'true' ||
+       needs.changes.outputs.frontend == 'true' ||
+       needs.changes.outputs.celery == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -56,6 +82,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build & Push Backend
+        if: needs.changes.outputs.backend == 'true'
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
         with:
           context: .
@@ -68,6 +95,7 @@ jobs:
           cache-to: type=gha,scope=backend,mode=max
 
       - name: Build & Push Frontend
+        if: needs.changes.outputs.frontend == 'true'
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
         with:
           context: .
@@ -80,6 +108,7 @@ jobs:
           cache-to: type=gha,scope=frontend,mode=max
 
       - name: Build & Push Celery
+        if: needs.changes.outputs.celery == 'true'
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
         with:
           context: .

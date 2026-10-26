@@ -39,6 +39,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
         --package backend \
         --no-editable \
         --no-dev \
+    && sed -i 's/\r$//' backend/scripts/start.sh \
     && chmod +x backend/scripts/start.sh
 
 
