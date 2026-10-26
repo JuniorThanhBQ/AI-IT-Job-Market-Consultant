@@ -44,21 +44,21 @@ repos:
     hooks:
       - id: local-ruff-check
         name: ruff check
-        entry: uv run ruff check --config backend/pyproject.toml --force-exclude --fix --exit-non-zero-on-fix
+        entry: uv run --package backend ruff check --config backend/pyproject.toml --force-exclude --fix --exit-non-zero-on-fix
         require_serial: true
         language: system
         types: [python]
 
       - id: local-ruff-format
         name: ruff format
-        entry: uv run ruff format --config backend/pyproject.toml --force-exclude --exit-non-zero-on-format
+        entry: uv run --package backend ruff format --config backend/pyproject.toml --force-exclude --exit-non-zero-on-format
         require_serial: true
         language: system
         types: [python]
 
       - id: local-mypy
         name: mypy check
-        entry: uv run mypy backend/app
+        entry: uv run --package backend mypy backend/app
         require_serial: true
         language: system
         pass_filenames: false

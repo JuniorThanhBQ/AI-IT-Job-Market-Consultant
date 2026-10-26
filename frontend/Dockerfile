@@ -1,4 +1,4 @@
-ARG NODE_VERSION=24.13.0-slim@sha256:4660b1ca8b28d6d1906fd644abe34b2ed81d15434d26d845ef0aced307cf4b6f
+ARG NODE_VERSION=24.22.0-bookworm-slim@sha256:91acba91b842bec0bf7ea6f5e09c644c7ccad72c4996ed9616d861d1c7cd60d4
 
 # Stage 1: Dependencies
 FROM node:${NODE_VERSION} AS dependencies
