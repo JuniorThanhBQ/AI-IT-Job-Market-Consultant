@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e
         with:
           enable-cache: true
           version: "latest"
@@ -67,7 +67,7 @@ jobs:
           docker compose -f docker-compose.yml -f docker-compose.prod.yml config --quiet
 
       - name: Checkov Compose Security Scan
-        uses: bridgecrewio/checkov-action@6f26dc90000b74feb589a906cdfae540f5119895
+        uses: bridgecrewio/checkov-action@c3e106d5f8f4253a6de5110efb41a080f83db294
         with:
           args: -f docker-compose.yml -f docker-compose.prod.yml
           framework: yaml
