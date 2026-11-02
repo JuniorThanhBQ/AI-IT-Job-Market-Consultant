@@ -44,7 +44,7 @@ jobs:
 
       - name: Upload SARIF to Security and quality
         if: always() && hashFiles('results.sarif') != ''
-        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370
         with:
           sarif_file: results.sarif
           category: security-gitleaks
@@ -74,7 +74,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e
         with:
           enable-cache: true
           version: "latest"
@@ -87,7 +87,7 @@ jobs:
 
       - name: Upload SARIF to Security and quality
         if: always() && hashFiles('bandit.sarif') != ''
-        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370
         with:
           sarif_file: bandit.sarif
           category: security-bandit
@@ -138,7 +138,7 @@ jobs:
 
       - name: Upload SARIF to Security and quality
         if: always() && hashFiles('frontend/eslint.sarif') != ''
-        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370
         with:
           sarif_file: frontend/eslint.sarif
           category: security-eslint
@@ -180,7 +180,7 @@ jobs:
 
       - name: Upload SARIF to Security and quality
         if: always() && hashFiles('semgrep.sarif') != ''
-        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370
         with:
           sarif_file: semgrep.sarif
           category: security-semgrep
@@ -236,7 +236,7 @@ jobs:
 
       - name: Upload SARIF to Security and quality
         if: always() && hashFiles('trivy.sarif') != ''
-        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370
         with:
           sarif_file: trivy.sarif
           category: security-trivy
