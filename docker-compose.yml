@@ -62,7 +62,7 @@ services:
     command: alembic -c database/alembic.ini upgrade head
 
   nginx:
-    image: nginx:stable-alpine3.24-slim@sha256:32463212baf0e7d91aded2e9b843a4f2b9e017804b8c9d5bae7b51dcef64389c
+    image: nginx:stable-alpine3.24-slim@sha256:dede8895648b461178c3bc604f7eed4423efe5220b2c4d839f5eb3d34ac3f8f7
     networks:
       - frontend
     ports:
@@ -242,7 +242,7 @@ services:
     command: ["celery", "-A", "celery_app", "beat", "--loglevel=info", "-s", "/var/run/celery/celerybeat-schedule"]
 
   redis:
-    image: redis:8.10.2-alpine@sha256:0bf6577d7774e592b29d093e3ac9390eb91e13d72c21e506afce736de5e0eeb0
+    image: redis:8.10.3-alpine@sha256:21090af93f8324db2f0f0f4f38a7c60369d47d917e000c3423d89d2ae2883537
     container_name: app-redis
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
