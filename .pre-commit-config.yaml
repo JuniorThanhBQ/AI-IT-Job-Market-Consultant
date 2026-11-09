@@ -79,7 +79,7 @@ repos:
           - "@commitlint/config-conventional"
 
   - repo: https://github.com/bridgecrewio/checkov
-    rev: dfeb34b2d52a269bb417b4d4f7854a16bef06629  # frozen: 3.3.30
+    rev: 9504d068f8411b04a0ad67099d0d302242ba7d43  # frozen: 3.4.0
     hooks:
       - id: checkov
         name: Checkov Docker Compose Lint
