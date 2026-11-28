@@ -62,7 +62,7 @@ services:
     command: alembic -c database/alembic.ini upgrade head
 
   nginx:
-    image: nginx:stable-alpine3.24-slim@sha256:f65ed258206d1eb6c4eb6141111715a2cf94ac0a4ec9675fc2da186f7aadb163
+    image: nginx:stable-alpine3.24-slim@sha256:8c950211a641ec5b23f265450517001f6bcca533666120ebe36cb4cff3d00a55
     networks:
       - frontend
     ports:
@@ -88,7 +88,7 @@ services:
       - frontend
 
   db:
-    image: pgvector/pgvector:0.8.7-pg18@sha256:c29f30688a9ad961691bdf0ec1650717cc132a5814619d80f80463d6e4c42e47
+    image: pgvector/pgvector:0.8.7-pg18@sha256:38681dc6eaf55308e2a4c6de392d131652dcfac70e1263e35cd9b5ea3fe39782
     container_name: app-db
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
@@ -242,7 +242,7 @@ services:
     command: ["celery", "-A", "celery_app", "beat", "--loglevel=info", "-s", "/var/run/celery/celerybeat-schedule"]
 
   redis:
-    image: redis:8.10.3-alpine@sha256:71885d8cc6e42f2bc0aa2eb853bfc4be200b5108a46ac50e117ae1df0531fb80
+    image: redis:8.10.3-alpine@sha256:7958cfbb9d152f87dadfbc89f1b0b15938f0b81ff8982feb327476f4911935c3
     container_name: app-redis
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
